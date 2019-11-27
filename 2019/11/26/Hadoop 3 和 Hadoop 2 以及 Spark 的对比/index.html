@@ -20,7 +20,7 @@
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/',
-    scheme: 'Muse',
+    scheme: 'Pisces',
     version: '7.4.2',
     exturl: false,
     sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
@@ -50,18 +50,18 @@
   };
 </script>
 
-  <meta name="description" content="翻译自 Igor Bobriakov 的文章，Hadoop 3: Comparison with Hadoop 2 and Spark。一切权利归原作者所有。 大数据生态系统内工具种类繁多，刚接触时很容易陷入迷茫。这篇文章介绍了大数据生态内的两大明星框架：Hadoop 和 Spark，相信可以给初学者带来一些帮助。在下也是初学者中的一员，有很多概念和术语都没有完全高清。如有疏漏，敬请见谅指正。 以">
-<meta name="keywords" content="Hadoop,Spark">
+  <meta name="description" content="翻译自 Igor Bobriakov 的文章，Hadoop 3: Comparison with Hadoop 2 and Spark。一切权利归原作者所有。 大数据生态系统内工具种类繁多，刚接触时很容易陷入迷茫。这篇文章介绍了大数据生态内的两大重要框架：Hadoop 和 Spark，相信可以给初学者带来一些帮助。在下也是初学者中的一员，有很多概念和术语都没有完全搞清。如有疏漏，敬请见谅指正。">
+<meta name="keywords" content="Spark,Hadoop">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Hadoop 3 与 Hadoop 2 以及 Spark 的对比">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;26&#x2F;Hadoop3%E5%92%8CHadoop2-Spark%E7%9A%84%E5%AF%B9%E6%AF%94&#x2F;index.html">
-<meta property="og:site_name" content="Paprika">
-<meta property="og:description" content="翻译自 Igor Bobriakov 的文章，Hadoop 3: Comparison with Hadoop 2 and Spark。一切权利归原作者所有。 大数据生态系统内工具种类繁多，刚接触时很容易陷入迷茫。这篇文章介绍了大数据生态内的两大明星框架：Hadoop 和 Spark，相信可以给初学者带来一些帮助。在下也是初学者中的一员，有很多概念和术语都没有完全高清。如有疏漏，敬请见谅指正。 以">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;26&#x2F;Hadoop%203%20%E5%92%8C%20Hadoop%202%20%E4%BB%A5%E5%8F%8A%20Spark%20%E7%9A%84%E5%AF%B9%E6%AF%94&#x2F;index.html">
+<meta property="og:site_name" content="陈逸凡的博客">
+<meta property="og:description" content="翻译自 Igor Bobriakov 的文章，Hadoop 3: Comparison with Hadoop 2 and Spark。一切权利归原作者所有。 大数据生态系统内工具种类繁多，刚接触时很容易陷入迷茫。这篇文章介绍了大数据生态内的两大重要框架：Hadoop 和 Spark，相信可以给初学者带来一些帮助。在下也是初学者中的一员，有很多概念和术语都没有完全搞清。如有疏漏，敬请见谅指正。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-11-27T01:10:13.350Z">
+<meta property="og:updated_time" content="2019-11-27T21:20:34.445Z">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://yoursite.com/2019/11/26/Hadoop3%E5%92%8CHadoop2-Spark%E7%9A%84%E5%AF%B9%E6%AF%94/">
+<link rel="canonical" href="http://yoursite.com/2019/11/26/Hadoop%203%20%E5%92%8C%20Hadoop%202%20%E4%BB%A5%E5%8F%8A%20Spark%20%E7%9A%84%E5%AF%B9%E6%AF%94/">
 
 
 <script id="page-configurations">
@@ -75,7 +75,7 @@
   };
 </script>
 
-  <title>Hadoop 3 与 Hadoop 2 以及 Spark 的对比 | Paprika</title>
+  <title>Hadoop 3 与 Hadoop 2 以及 Spark 的对比 | 陈逸凡的博客</title>
   
 
 
@@ -119,11 +119,11 @@
     <div>
       <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
-        <span class="site-title">Paprika</span>
+        <span class="site-title">陈逸凡的博客</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
-        <p class="site-subtitle">「素直な心」、「熱意」、「努力」</p>
+        <p class="site-subtitle">我想玩丝之歌</p>
   </div>
 
   <div class="site-nav-toggle">
@@ -190,16 +190,16 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/26/Hadoop3%E5%92%8CHadoop2-Spark%E7%9A%84%E5%AF%B9%E6%AF%94/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/26/Hadoop%203%20%E5%92%8C%20Hadoop%202%20%E4%BB%A5%E5%8F%8A%20Spark%20%E7%9A%84%E5%AF%B9%E6%AF%94/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Chen Yifan">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="陈逸凡">
       <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Paprika">
+      <meta itemprop="name" content="陈逸凡的博客">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -212,10 +212,16 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2019-11-26 19:09:03 / Modified: 20:10:13" itemprop="dateCreated datePublished" datetime="2019-11-26T19:09:03-05:00">2019-11-26</time>
+              <time title="Created: 2019-11-26 19:09:03" itemprop="dateCreated datePublished" datetime="2019-11-26T19:09:03-05:00">2019-11-26</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-11-27 16:20:34" itemprop="dateModified" datetime="2019-11-27T16:20:34-05:00">2019-11-27</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
@@ -240,23 +246,26 @@
 
       
         <p>翻译自 Igor Bobriakov 的文章，<a href="https://medium.com/activewizards-machine-learning-company/hadoop-3-comparison-with-hadoop-2-and-spark-67efd0e78f81" target="_blank" rel="noopener">Hadoop 3: Comparison with Hadoop 2 and Spark</a>。一切权利归原作者所有。</p>
-<p>大数据生态系统内工具种类繁多，刚接触时很容易陷入迷茫。这篇文章介绍了大数据生态内的两大明星框架：Hadoop 和 Spark，相信可以给初学者带来一些帮助。在下也是初学者中的一员，有很多概念和术语都没有完全高清。如有疏漏，敬请见谅指正。</p>
+<p>大数据生态系统内工具种类繁多，刚接触时很容易陷入迷茫。这篇文章介绍了大数据生态内的两大重要框架：Hadoop 和 Spark，相信可以给初学者带来一些帮助。在下也是初学者中的一员，有很多概念和术语都没有完全搞清。如有疏漏，敬请见谅指正。</p>
+<blockquote>
+<p>我将以注释的形式为原文添加补充信息</p>
+</blockquote>
 <p>以下是正文：</p>
-<p>2017 年 12 月发布的 Hadoop 3 标志着数据科学的新时代。Hadoop 框架是整个 Hadoop 生态的核心，很多库的运作都极大地倚赖 Hadoop。</p>
-<p>本文将介绍与 Hadoop 2 相比，Hadoop 3 最大地变化。本文还将介绍 Hadoop 与 Apache Spark 地区别，同时给予一些为你的项目选择最佳工具的建议。</p>
+<p>2017 年 12 月发布的 Hadoop 3 标志着数据科学新时代的来临。Hadoop 框架是整个 Hadoop 生态的核心，很多库的运行都倚赖于它。</p>
+<p>本文将介绍与 Hadoop 2 相比，Hadoop 3 最大的变化。本文还将介绍 Hadoop 与 Apache Spark 的区别，也会为你的项目提供一些工具选择上的建议。</p>
 <a id="more"></a>
 
-<h1 id="综述"><a href="#综述" class="headerlink" title="综述"></a>综述</h1><p>Hadoop 2 和 Hadoop 3 是基于 Java 开发的数据处理引擎，分别于 2013 和 2017 年发布。Hadoop 的诞生最初是为了应对硬盘上的数据分析，属于批处理任务的范畴。因此最初的 Hadoop 并不支持实时数据分析和人机交互。</p>
+<h1 id="综述"><a href="#综述" class="headerlink" title="综述"></a>综述</h1><p>Hadoop 2 和 Hadoop 3 是基于 Java 开发的数据处理引擎，分别于 2013 和 2017 年发布。Hadoop 的诞生最初是为了处理硬盘上的数据分析，属于批处理任务的范畴。因此最初的 Hadoop 并不支持实时数据分析和交互式任务。</p>
 <p>Spark 2.X 发布于 2016 年，是基于 Scala 开发的数据处理和分析引擎。彼时许多大型互联网服务都十分依赖于即时数据处理，因此对于数据的实时分析能力变得至关重要。Apache Spark 便是为实时数据处理而设计的。它因能够高效处理数据流，还支持交互式工作模式而变得流行。</p>
 <p>Hadoop 和 Spark 都是 Apache 2.0 协议下的开源软件。</p>
-<h1 id="抽象程度、学习和使用难度"><a href="#抽象程度、学习和使用难度" class="headerlink" title="抽象程度、学习和使用难度"></a>抽象程度、学习和使用难度</h1><p>这些工具的抽象程度有很大区别。具体来讲，Hadoop 的抽象程度更低，而 Spark 更高。学习和使用 Hadoop 会更有难度，因为开发者必须掌握许多底层的操作。同时，Hadoop 仅仅作为系统中的核心引擎，要使用更高级的功能往往还要倚赖其它组件。这样结构使得系统的复杂性大大提升。</p>
+<h1 id="抽象程度、学习和使用难度"><a href="#抽象程度、学习和使用难度" class="headerlink" title="抽象程度、学习和使用难度"></a>抽象程度、学习和使用难度</h1><p>这些工具的抽象程度有很大区别。具体来讲，Hadoop 的抽象程度更低，而 Spark 更高。学习和使用 Hadoop 会更有难度，因为开发者必须掌握许多底层的操作。同时，Hadoop 仅仅是系统中的核心引擎，要使用更高级的功能往往还要倚赖其它组件。这样的结构使得系统的复杂性大大提升。</p>
 <p>于 Hadoop 不同，Apache Spark 提供了一整套的数据分析工具。Spark 的核心概念是 RDD（Resilient Distributed Dataset，弹性分布式数据集）。它内建有许多高级方法来处理 RDD。它还提供许多能在集群中发挥作用的库。例如，<a href="https://spark.apache.org/mllib/" target="_blank" rel="noopener">MLlib</a>支持机器学习，<a href="https://spark.apache.org/sql/" target="_blank" rel="noopener">Spark SQL</a>支持 SQL 查询等等。</p>
 <h1 id="硬件成本"><a href="#硬件成本" class="headerlink" title="硬件成本"></a>硬件成本</h1><p>Hadoop 主要运行在硬盘上，所以它的运行不需要很多内存，这比使用大内存要更便宜。Hadoop 3 消耗的硬盘空间比 Hadoop 2 要小，这是由于其在容错系统方面的改进。</p>
 <p>Spark 在内存模式下消耗的内存要远大于 Hadoop，这使得它的硬件成本更高。</p>
 <h1 id="编程语言"><a href="#编程语言" class="headerlink" title="编程语言"></a>编程语言</h1><p>两种 Hadoop 都通过 Hadoop Streaming 支持多种编程语言，但是用的最多的还是 Java。Spark 2.X 支持 Scala、Java、Python 和 R。</p>
 <h1 id="运行速度"><a href="#运行速度" class="headerlink" title="运行速度"></a>运行速度</h1><p>通常情况下 Hadoop 比 Spark 慢，因为它运行在硬盘上。Hadoop 不能将数据缓存到内存中。Hadoop 3 的运行速度比 Hadoop 2 快了 30%。这是因为它在 MapReduce 的基础上引入了原生 Java 搭建的 Map output collector。</p>
 <p>在内存上，Spark 的信息处理速度是 Hadoop 的 100 倍。在硬盘上，这个数字是 10 倍。</p>
-<h1 id="安全性"><a href="#安全性" class="headerlink" title="安全性"></a>安全性</h1><p>Hadoop 被认为是比 Spark 更安全，因为它使用了 Kerberos（computer network authentication protocol），还支持 ACL（Access Control Lists）。Spark 仅提供了基于 shared secret 的密码保护。</p>
+<h1 id="安全性"><a href="#安全性" class="headerlink" title="安全性"></a>安全性</h1><p>Hadoop 被认为是比 Spark 更安全的，因为它使用了 Kerberos（computer network authentication protocol），还支持 ACL（Access Control Lists）。Spark 仅提供了基于 shared secret 的密码保护。</p>
 <h1 id="容错性"><a href="#容错性" class="headerlink" title="容错性"></a>容错性</h1><p>Hadoop 2 通过冗余的方式提供容错性。其储存的每一块数据都被复制到另外两个备份中。这意味着，Hadoop 2 需要三倍于文件大小的存储空间。这对于硬盘容量是一种很大的浪费。</p>
 <p>Hadoop 3 的容错性则是通过纠删码技术实现的。这种技术通过另一块数据和奇偶校验块进行数据恢复。每有两个数据块，Hadoop 就创建一个奇偶校验块。与 Hadoop 2 的三倍存储空间消耗相比，Hadoop 3 只消耗了 1.5 倍。Hadoop 3 的容错能力和 Hadoop 2 是一样的，但是更加节省空间。</p>
 <p>Spark 通过重新计算 DAG（Directed Acyclic Graph，有向五环图）进行数据恢复。DAG 由点和线构成。点代表 RDD，线代表对 RDD 执行的操作。如果有一部分数据发生了丢失，Spark 可以通过对 RDD 重新应用 DAG 中对操作来恢复数据。需要注意的是，每次重新计算 RDD 都需要等待 Spark 完成所有必要计算。Spark 还通过检查点的方式避免错误。</p>
@@ -274,8 +283,8 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/Hadoop/" rel="tag"># Hadoop</a>
               <a href="/tags/Spark/" rel="tag"># Spark</a>
+              <a href="/tags/Hadoop/" rel="tag"># Hadoop</a>
           </div>
 
         
@@ -334,9 +343,9 @@
 
       <div class="site-overview-wrap sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-  <img class="site-author-image" itemprop="image" alt="Chen Yifan"
-    src="/images/avatar.jpg">
-  <p class="site-author-name" itemprop="name">Chen Yifan</p>
+  <img class="site-author-image" itemprop="image" alt="陈逸凡"
+    src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">陈逸凡</p>
   <div class="site-description" itemprop="description"></div>
 </div>
 <div class="site-state-wrap motion-element">
@@ -344,20 +353,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-count">2</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">1</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-count">2</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -386,12 +395,12 @@
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder">Chen Yifan</span>
+  <span class="author" itemprop="copyrightHolder">陈逸凡</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.0.0
   </div>
   <span class="post-meta-divider">|</span>
-  <div class="theme-info">Theme – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.4.2
+  <div class="theme-info">Theme – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.2
   </div>
 
         
@@ -417,7 +426,7 @@
   <script src="/lib/velocity/velocity.min.js"></script>
   <script src="/lib/velocity/velocity.ui.min.js"></script>
 <script src="/js/utils.js"></script><script src="/js/motion.js"></script>
-<script src="/js/schemes/muse.js"></script>
+<script src="/js/schemes/pisces.js"></script>
 <script src="/js/next-boot.js"></script>
 
 
