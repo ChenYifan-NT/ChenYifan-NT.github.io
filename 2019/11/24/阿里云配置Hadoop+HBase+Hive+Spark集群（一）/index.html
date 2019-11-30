@@ -50,18 +50,18 @@
   };
 </script>
 
-  <meta name="description" content="学习搭建 Spark 集群的笔记。">
+  <meta name="description" content="学习在阿里云上搭建 Hadoop + HBase + Hive + Spark 集群的笔记。对比了网上很多资料，最终决定以各种官方文档和技术颜良的博文为主要参考资料完成搭建工作。按照个人遇到的实际情况对一些步骤和内容进行了调整。 本篇是笔记的第一部分，从准备工作开始，到 Hadoop 集群搭建完成为止。">
 <meta name="keywords" content="Spark,Hadoop">
 <meta property="og:type" content="article">
-<meta property="og:title" content="阿里云配置 Spark 集群">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;24&#x2F;%E9%98%BF%E9%87%8C%E4%BA%91%E9%85%8D%E7%BD%AESpark%E9%9B%86%E7%BE%A4&#x2F;index.html">
+<meta property="og:title" content="阿里云配置 Hadoop + HBase + Hive + Spark 集群（一）">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;24&#x2F;%E9%98%BF%E9%87%8C%E4%BA%91%E9%85%8D%E7%BD%AEHadoop+HBase+Hive+Spark%E9%9B%86%E7%BE%A4%EF%BC%88%E4%B8%80%EF%BC%89&#x2F;index.html">
 <meta property="og:site_name" content="陈逸凡的博客">
-<meta property="og:description" content="学习搭建 Spark 集群的笔记。">
+<meta property="og:description" content="学习在阿里云上搭建 Hadoop + HBase + Hive + Spark 集群的笔记。对比了网上很多资料，最终决定以各种官方文档和技术颜良的博文为主要参考资料完成搭建工作。按照个人遇到的实际情况对一些步骤和内容进行了调整。 本篇是笔记的第一部分，从准备工作开始，到 Hadoop 集群搭建完成为止。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-11-30T02:05:18.782Z">
+<meta property="og:updated_time" content="2019-11-30T03:11:39.514Z">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://yoursite.com/2019/11/24/%E9%98%BF%E9%87%8C%E4%BA%91%E9%85%8D%E7%BD%AESpark%E9%9B%86%E7%BE%A4/">
+<link rel="canonical" href="http://yoursite.com/2019/11/24/%E9%98%BF%E9%87%8C%E4%BA%91%E9%85%8D%E7%BD%AEHadoop+HBase+Hive+Spark%E9%9B%86%E7%BE%A4%EF%BC%88%E4%B8%80%EF%BC%89/">
 
 
 <script id="page-configurations">
@@ -75,7 +75,7 @@
   };
 </script>
 
-  <title>阿里云配置 Spark 集群 | 陈逸凡的博客</title>
+  <title>阿里云配置 Hadoop + HBase + Hive + Spark 集群（一） | 陈逸凡的博客</title>
   
 
 
@@ -190,7 +190,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/24/%E9%98%BF%E9%87%8C%E4%BA%91%E9%85%8D%E7%BD%AESpark%E9%9B%86%E7%BE%A4/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/24/%E9%98%BF%E9%87%8C%E4%BA%91%E9%85%8D%E7%BD%AEHadoop+HBase+Hive+Spark%E9%9B%86%E7%BE%A4%EF%BC%88%E4%B8%80%EF%BC%89/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.png">
@@ -203,7 +203,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          阿里云配置 Spark 集群
+          阿里云配置 Hadoop + HBase + Hive + Spark 集群（一）
         </h1>
 
         <div class="post-meta">
@@ -220,7 +220,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-11-29 21:05:18" itemprop="dateModified" datetime="2019-11-29T21:05:18-05:00">2019-11-29</time>
+                <time title="Modified: 2019-11-29 22:11:39" itemprop="dateModified" datetime="2019-11-29T22:11:39-05:00">2019-11-29</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -245,7 +245,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>学习搭建 Spark 集群的笔记。</p>
+        <p>学习在阿里云上搭建 Hadoop + HBase + Hive + Spark 集群的笔记。对比了网上很多资料，最终决定以各种官方文档和<a href="https://www.cnblogs.com/cheyunhua/p/10037162.html" target="_blank" rel="noopener">技术颜良的博文</a>为主要参考资料完成搭建工作。按照个人遇到的实际情况对一些步骤和内容进行了调整。</p>
+<p>本篇是笔记的第一部分，从准备工作开始，到 Hadoop 集群搭建完成为止。</p>
 <a id="more"></a>
 
 <h1 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h1><h2 id="购买阿里云服务器"><a href="#购买阿里云服务器" class="headerlink" title="购买阿里云服务器"></a>购买阿里云服务器</h2><p>在阿里云上配置集群，要做的第一件事情自然是购买阿里云服务器。阿里云上产品种类繁多，初学者（比如我）很容易看花了眼。不过很快我就在新手套餐里找到了合适的服务器。我使用了三台单核 1G 内存的服务器，预装 CentOS 7，并计划以其中一台作为 master 节点，另两台作为 slave 节点搭建我的 hadoop 集群。购买服务器时要注意你所在的位置。我在美国东部留学，选择了弗吉尼亚节点。三台机器（包括免费试用的一台）一个月总共 11 美元，并不昂贵。</p>
@@ -341,10 +342,10 @@
 
 <p>上面的步骤暂时只需要在 master 节点执行就可以了。</p>
 <h2 id="Hadoop-集群配置"><a href="#Hadoop-集群配置" class="headerlink" title="Hadoop 集群配置"></a>Hadoop 集群配置</h2><p>详细的配置说明请参考<a href="https://hadoop.apache.org/docs/r2.10.0/hadoop-project-dist/hadoop-common/ClusterSetup.html" target="_blank" rel="noopener">Hadoop 官方文档</a>。仍在 master 节点上，进入<code>/usr/local/hadoop-2.10.0/etc/hadoop</code>目录，这里保存着 hadoop 的配置文件。</p>
-<h3 id="core-site-xml"><a href="#core-site-xml" class="headerlink" title="core-site.xml"></a>core-site.xml</h3><p>首先新建目录<code>/usr/local/hadoop-2.10.0/tmp</code>。打开<code>core-site.xml</code>，将 configuration 标签下的内容进行如下修改：</p>
+<h3 id="core-site-xml"><a href="#core-site-xml" class="headerlink" title="core-site.xml"></a>core-site.xml</h3><p>打开<code>core-site.xml</code>，将 configuration 标签下的内容进行如下修改：</p>
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">  	<span class="tag">&lt;<span class="name">name</span>&gt;</span>hadoop.tmp.dir<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>file:/usr/local/hadoop-2.10.0/tmp<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">description</span>&gt;</span>A base for other temporary directories.<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">  	<span class="tag">&lt;<span class="name">name</span>&gt;</span>fs.defaultFS<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>hdfs://master:9000<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
-<h3 id="hdfs-site-xml"><a href="#hdfs-site-xml" class="headerlink" title="hdfs-site.xml"></a>hdfs-site.xml</h3><p>首先在刚才的<code>tmp</code>目录下新建<code>/dfs/name</code>和<code>/dfs/data</code>文件夹。打开<code>hdfs-site.xml</code>，将 configuration 标签下的内容进行如下修改：</p>
+<h3 id="hdfs-site-xml"><a href="#hdfs-site-xml" class="headerlink" title="hdfs-site.xml"></a>hdfs-site.xml</h3><p>打开<code>hdfs-site.xml</code>，将 configuration 标签下的内容进行如下修改：</p>
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.namenode.secondary.http-address<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    	<span class="tag">&lt;<span class="name">value</span>&gt;</span>master:50090<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.replication<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>2<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.namenode.name.dir<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>file:/usr/local/hadoop-2.10.0/tmp/dfs/name<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.datanode.data.dir<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>file:/usr/local/hadoop-2.10.0/tmp/dfs/data<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="mapped-site-xml"><a href="#mapped-site-xml" class="headerlink" title="mapped-site.xml"></a>mapped-site.xml</h3><p>先通过下面的命令重命名文件：</p>
@@ -382,6 +383,9 @@
 <blockquote>
 <p>实际应用中开放 50070 端口会带来严重的安全问题，详情请参考：<a href="https://yq.aliyun.com/articles/68945?spm=a2c6h.13066369.0.0.6f4e16809oQWIG" target="_blank" rel="noopener">Hadoop 黑客赎金事件解读及防范</a></p>
 </blockquote>
+<h3 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h3><p>在验收步骤当中，可能会遇到集群启动成功，但是在 50070 端口内看不到 DataNode 信息的情况。这种情况一般是由于没有正确设置 IP 和端口号。请仔细核对上面的配置信息。</p>
+<p>配置过程中遇到问题，如果需要关闭 Hadoop 集群，进入<code>/usr/local/hadoop-2.10.0/sbin</code>文件夹，分别运行<code>stop-yarn.sh</code>和<code>stop-dfs.sh</code>即可。重启集群前别忘了先到各个节点 Hadoop 根目录下，删除<code>tmp</code>和<code>logs</code>文件夹。</p>
+<p>对于其它的问题，可以到各个节点<code>logs</code>文件夹内查看日志来定位问题，方便搜索解决方案。</p>
 
     </div>
 
@@ -445,7 +449,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#准备工作"><span class="nav-number">1.</span> <span class="nav-text">准备工作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#购买阿里云服务器"><span class="nav-number">1.1.</span> <span class="nav-text">购买阿里云服务器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ssh-免密码登录"><span class="nav-number">1.2.</span> <span class="nav-text">ssh 免密码登录</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#本地到服务器"><span class="nav-number">1.2.1.</span> <span class="nav-text">本地到服务器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#服务器到服务器"><span class="nav-number">1.2.2.</span> <span class="nav-text">服务器到服务器</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置-hosts-文件"><span class="nav-number">1.3.</span> <span class="nav-text">配置 hosts 文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装配置-Java-SDK"><span class="nav-number">1.4.</span> <span class="nav-text">安装配置 Java SDK</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Hadoop"><span class="nav-number">2.</span> <span class="nav-text">Hadoop</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装-Hadoop"><span class="nav-number">2.1.</span> <span class="nav-text">安装 Hadoop</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hadoop-集群配置"><span class="nav-number">2.2.</span> <span class="nav-text">Hadoop 集群配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#core-site-xml"><span class="nav-number">2.2.1.</span> <span class="nav-text">core-site.xml</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hdfs-site-xml"><span class="nav-number">2.2.2.</span> <span class="nav-text">hdfs-site.xml</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mapped-site-xml"><span class="nav-number">2.2.3.</span> <span class="nav-text">mapped-site.xml</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#yarn-site-xml"><span class="nav-number">2.2.4.</span> <span class="nav-text">yarn-site.xml</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hadoop-env-sh"><span class="nav-number">2.2.5.</span> <span class="nav-text">hadoop-env.sh</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置-slaves"><span class="nav-number">2.2.6.</span> <span class="nav-text">配置 slaves</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#复制-hadoop-文件夹到各个节点"><span class="nav-number">2.2.7.</span> <span class="nav-text">复制 hadoop 文件夹到各个节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#验收"><span class="nav-number">2.2.8.</span> <span class="nav-text">验收</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#准备工作"><span class="nav-number">1.</span> <span class="nav-text">准备工作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#购买阿里云服务器"><span class="nav-number">1.1.</span> <span class="nav-text">购买阿里云服务器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ssh-免密码登录"><span class="nav-number">1.2.</span> <span class="nav-text">ssh 免密码登录</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#本地到服务器"><span class="nav-number">1.2.1.</span> <span class="nav-text">本地到服务器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#服务器到服务器"><span class="nav-number">1.2.2.</span> <span class="nav-text">服务器到服务器</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置-hosts-文件"><span class="nav-number">1.3.</span> <span class="nav-text">配置 hosts 文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装配置-Java-SDK"><span class="nav-number">1.4.</span> <span class="nav-text">安装配置 Java SDK</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Hadoop"><span class="nav-number">2.</span> <span class="nav-text">Hadoop</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装-Hadoop"><span class="nav-number">2.1.</span> <span class="nav-text">安装 Hadoop</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hadoop-集群配置"><span class="nav-number">2.2.</span> <span class="nav-text">Hadoop 集群配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#core-site-xml"><span class="nav-number">2.2.1.</span> <span class="nav-text">core-site.xml</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hdfs-site-xml"><span class="nav-number">2.2.2.</span> <span class="nav-text">hdfs-site.xml</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mapped-site-xml"><span class="nav-number">2.2.3.</span> <span class="nav-text">mapped-site.xml</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#yarn-site-xml"><span class="nav-number">2.2.4.</span> <span class="nav-text">yarn-site.xml</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hadoop-env-sh"><span class="nav-number">2.2.5.</span> <span class="nav-text">hadoop-env.sh</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置-slaves"><span class="nav-number">2.2.6.</span> <span class="nav-text">配置 slaves</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#复制-hadoop-文件夹到各个节点"><span class="nav-number">2.2.7.</span> <span class="nav-text">复制 hadoop 文件夹到各个节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#验收"><span class="nav-number">2.2.8.</span> <span class="nav-text">验收</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#遇到的问题"><span class="nav-number">2.2.9.</span> <span class="nav-text">遇到的问题</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
