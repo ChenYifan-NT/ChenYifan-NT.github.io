@@ -51,18 +51,18 @@
 </script>
 
   <meta name="description" content="学习在阿里云上搭建 Hadoop + HBase + Hive + Spark 集群的笔记。学习在阿里云上搭建 Hadoop + HBase + Hive + Spark 集群的笔记。搭建过程中遇到了很多问题，在查阅资料的过程中也走了很多弯路。在这里将搭建步骤和问题一一记录，既方便日后复习，也为其它小伙伴提供一些帮助。 本篇是笔记的第二部分，介绍了 HBase 的安装和配置。 这篇笔记中还有未解决">
-<meta name="keywords" content="大数据,HBase">
+<meta name="keywords" content="HBase,大数据">
 <meta property="og:type" content="article">
 <meta property="og:title" content="阿里云配置 Hadoop + HBase + Hive + Spark（二）">
 <meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;30&#x2F;%E9%98%BF%E9%87%8C%E4%BA%91Spark-2&#x2F;index.html">
 <meta property="og:site_name" content="陈逸凡的博客">
 <meta property="og:description" content="学习在阿里云上搭建 Hadoop + HBase + Hive + Spark 集群的笔记。学习在阿里云上搭建 Hadoop + HBase + Hive + Spark 集群的笔记。搭建过程中遇到了很多问题，在查阅资料的过程中也走了很多弯路。在这里将搭建步骤和问题一一记录，既方便日后复习，也为其它小伙伴提供一些帮助。 本篇是笔记的第二部分，介绍了 HBase 的安装和配置。 这篇笔记中还有未解决">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;30&#x2F;%E9%98%BF%E9%87%8C%E4%BA%91Spark-2&#x2F;阿里云Spark-2&#x2F;HMasterNode.png">
-<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;Users&#x2F;chenyifan&#x2F;Github&#x2F;Blog&#x2F;source&#x2F;_posts&#x2F;阿里云Spark-2&#x2F;HSlaveNode.png">
-<meta property="og:updated_time" content="2019-12-01T20:28:59.705Z">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;30&#x2F;%E9%98%BF%E9%87%8C%E4%BA%91Spark-2&#x2F;HMasterNode.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;30&#x2F;%E9%98%BF%E9%87%8C%E4%BA%91Spark-2&#x2F;HSlaveNode.png">
+<meta property="og:updated_time" content="2019-12-01T20:33:32.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;30&#x2F;%E9%98%BF%E9%87%8C%E4%BA%91Spark-2&#x2F;阿里云Spark-2&#x2F;HMasterNode.png">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;30&#x2F;%E9%98%BF%E9%87%8C%E4%BA%91Spark-2&#x2F;HMasterNode.png">
 
 <link rel="canonical" href="http://yoursite.com/2019/11/30/%E9%98%BF%E9%87%8C%E4%BA%91Spark-2/">
 
@@ -223,7 +223,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-12-01 15:28:59" itemprop="dateModified" datetime="2019-12-01T15:28:59-05:00">2019-12-01</time>
+                <time title="Modified: 2019-12-01 15:33:32" itemprop="dateModified" datetime="2019-12-01T15:33:32-05:00">2019-12-01</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -319,10 +319,8 @@
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">start-hbase.sh</span><br><span class="line">hbase shell</span><br></pre></td></tr></table></figure>
 
 <p>如果在此之前，你的 Hadoop 集群还未正常运作，那么还需要先启动 Hadoop 集群才行。进行了上面的操作后，如果能够正常进入 hbase shell，那么安装便成功了。当然了，所谓安装成功，不过是通往使用过程中更多问题的门票罢了。使用<code>jps</code>命令应当能够看到下面的进程：</p>
-<img src="阿里云Spark-2/HMasterNode.png" alt="master 节点" style="zoom:50%;" />
-
-<img src="/Users/chenyifan/Github/Blog/source/_posts/阿里云Spark-2/HSlaveNode.png" alt="HSlaveNode" style="zoom:50%;" />
-
+<p><img src="HMasterNode.png" alt=""></p>
+<p><img src="HSlaveNode.png" alt=""></p>
 <p>另外，你也可以通过 10610 端口进入 Web 界面对集群进行监控。</p>
 <blockquote>
 <p>我在测试的过程中遭遇过 master 节点所有服务启动正常，但是 slave 节点 HRegionServer 无法正常启动的问题。后来发现可能是因为前一次重启 HBase 之前忘记清空 logs</p>
@@ -337,8 +335,8 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag"># 大数据</a>
               <a href="/tags/HBase/" rel="tag"># HBase</a>
+              <a href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag"># 大数据</a>
           </div>
 
         
