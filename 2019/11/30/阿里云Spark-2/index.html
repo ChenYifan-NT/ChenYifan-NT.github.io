@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="学习在阿里云上搭建 Hadoop + HBase + Hive + Spark 集群的笔记。学习在阿里云上搭建 Hadoop + HBase + Hive + Spark 集群的笔记。搭建过程中遇到了很多问题，在查阅资料的过程中也走了很多弯路。在这里将搭建步骤和问题一一记录，既方便日后复习，也为其它小伙伴提供一些帮助。 本篇是笔记的第二部分，介绍了 HBase 的安装和配置。 这篇笔记中还有未解决">
+<meta name="keywords" content="大数据,HBase">
+<meta property="og:type" content="article">
+<meta property="og:title" content="阿里云配置 Hadoop + HBase + Hive + Spark（二）">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;30&#x2F;%E9%98%BF%E9%87%8C%E4%BA%91Spark-2&#x2F;index.html">
+<meta property="og:site_name" content="陈逸凡的博客">
+<meta property="og:description" content="学习在阿里云上搭建 Hadoop + HBase + Hive + Spark 集群的笔记。学习在阿里云上搭建 Hadoop + HBase + Hive + Spark 集群的笔记。搭建过程中遇到了很多问题，在查阅资料的过程中也走了很多弯路。在这里将搭建步骤和问题一一记录，既方便日后复习，也为其它小伙伴提供一些帮助。 本篇是笔记的第二部分，介绍了 HBase 的安装和配置。 这篇笔记中还有未解决">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;30&#x2F;%E9%98%BF%E9%87%8C%E4%BA%91Spark-2&#x2F;阿里云Spark-2&#x2F;HMasterNode.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;Users&#x2F;chenyifan&#x2F;Github&#x2F;Blog&#x2F;source&#x2F;_posts&#x2F;阿里云Spark-2&#x2F;HSlaveNode.png">
+<meta property="og:updated_time" content="2019-12-01T02:01:12.101Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;30&#x2F;%E9%98%BF%E9%87%8C%E4%BA%91Spark-2&#x2F;阿里云Spark-2&#x2F;HMasterNode.png">
+
+<link rel="canonical" href="http://yoursite.com/2019/11/30/%E9%98%BF%E9%87%8C%E4%BA%91Spark-2/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>阿里云配置 Hadoop + HBase + Hive + Spark（二） | 陈逸凡的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">陈逸凡的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">我想玩丝之歌</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/30/%E9%98%BF%E9%87%8C%E4%BA%91Spark-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="陈逸凡">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="陈逸凡的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          阿里云配置 Hadoop + HBase + Hive + Spark（二）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2019-11-30 02:27:08 / Modified: 21:01:12" itemprop="dateCreated datePublished" datetime="2019-11-30T02:27:08-05:00">2019-11-30</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index">
+                    <span itemprop="name">学习笔记</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>学习在阿里云上搭建 Hadoop + HBase + Hive + Spark 集群的笔记。学习在阿里云上搭建 Hadoop + HBase + Hive + Spark 集群的笔记。搭建过程中遇到了很多问题，在查阅资料的过程中也走了很多弯路。在这里将搭建步骤和问题一一记录，既方便日后复习，也为其它小伙伴提供一些帮助。</p>
+<p>本篇是笔记的第二部分，介绍了 HBase 的安装和配置。</p>
+<p>这篇笔记中还有未解决的问题，浏览时请注意甄别。</p>
+<p>#TODO: HMaster 启动后很快消失</p>
+<a id="more"></a>
+
+<h1 id="HBase"><a href="#HBase" class="headerlink" title="HBase"></a>HBase</h1><blockquote>
+<p>参考内容：<a href="https://blog.csdn.net/pycrossover/article/details/102627807" target="_blank" rel="noopener">铲子挖掘数据的博文</a>、<a href="https://www.cnblogs.com/cheyunhua/p/10037162.html" target="_blank" rel="noopener">技术颜良的博文</a>和<a href="https://hbase.apache.org/book.html#quickstart" target="_blank" rel="noopener">HBase 官方文档</a></p>
+</blockquote>
+<h2 id="HBase-安装"><a href="#HBase-安装" class="headerlink" title="HBase 安装"></a>HBase 安装</h2><p>和之前 Hadoop 一样，先在本地下载安装包，上传到 master 节点解压并重命名。我将它部署到了<code>/usr/local/hbase</code>目录下。接下来的所有内容中，请注意比较你的安装目录。</p>
+<p>首先配置环境变量。打开<code>/root/.bash_profile</code>，在末尾添加：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export HBASE_HOME=/usr/local/hbase</span><br><span class="line">export PATH=$PATH:$HBASE_HOME/bin:/$HBASE_HOME/sbin</span><br></pre></td></tr></table></figure>
+
+<p>执行<code>source /root/.bash_profile</code>令配置生效。接着使用 vi 打开<code>/usr/local/hbase/conf/hbase-env.sh</code>，在文件开始处添加环境变量：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export JAVA_HOME=/usr/java/jdk1.8.0_231</span><br><span class="line">export HBASE_MANAGES_ZK=true</span><br></pre></td></tr></table></figure>
+
+<p>输入以下命令检验安装：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hbase version</span><br></pre></td></tr></table></figure>
+
+<p>按照网上的很多教程这一步是不会有问题的。而事实上也有很多人（包括我）反映会有<code>Error: Could not find or load main class org.apache.hadoop.hbase.util.GetJavaProperty</code>的问题。有些教程给出的解决方案是配置环境变量<code>HBASE_CLASSPATH</code>。然而经过官方文档查询和亲身试验，这个环境变量的作用是同步 HBase 中的 Hadoop 集群配置和实际 Hadoop 集群中的配置（前者是依赖后者的，所以要保证配置一致），设置这个变量并不能解决问题。另一些资料显示这个问题存在于 HBase 某些版本的源码中，需要手动修改解决。解决方案我们在后文给出。</p>
+<p>除了上面的问题，还会显示 SLF4J 开头的警告。这个警告可以忽视。</p>
+<h2 id="HBase-集群模式配置"><a href="#HBase-集群模式配置" class="headerlink" title="HBase 集群模式配置"></a>HBase 集群模式配置</h2><p>修改<code>/usr/local/hbase/conf</code>下的<code>hbase-site.xml</code>文件，进行如下配置：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">  	<span class="tag">&lt;<span class="name">name</span>&gt;</span>hbase.rootdir<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>hdfs://master:9000/hbase<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">  	<span class="tag">&lt;<span class="name">name</span>&gt;</span>hbase.cluster.distributed<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>true<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">  	<span class="tag">&lt;<span class="name">name</span>&gt;</span>hbase.zookeeper.quorum<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>master, slave01, slave02<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">  	<span class="tag">&lt;<span class="name">name</span>&gt;</span>hbase.temp.dir<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>/usr/local/hbase/tmp<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">  	<span class="tag">&lt;<span class="name">name</span>&gt;</span>hbase.zookeeper.property.dataDir<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>/usr/local/hbase/tmp/zookeeper<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">  	<span class="tag">&lt;<span class="name">name</span>&gt;</span>hbase.master.info.port<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>16010<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">  	<span class="tag">&lt;<span class="name">name</span>&gt;</span>zookeeper.znode.parent<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>/hbase-unsecure<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>打开<code>regionservers</code>文件，删除默认的 localhost，添加如下内容：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">master</span><br><span class="line">slave01</span><br><span class="line">slave02</span><br></pre></td></tr></table></figure>
+
+<h2 id="将-Hadoop-集群配置同步至-HBase"><a href="#将-Hadoop-集群配置同步至-HBase" class="headerlink" title="将 Hadoop 集群配置同步至 HBase"></a>将 Hadoop 集群配置同步至 HBase</h2><p>HBase 的运行依赖于 Hadoop。在 HBase 中有一些关于 Hadoop 集群的默认配置。倘若我们实际使用的配置和默认配置不同，两者共同运行就会产生冲突。因此这里我们需要通过某种手段“告知” HBase 我们的配置。HBase 的官方文档给出了以下三种办法：</p>
+<ol>
+<li>配置<code>base-env.sh</code>文件，在其中添加<code>HBASE_CLASSPATH</code>参数，并将其设置为 Hadoop 配置文件的目录（即<code>hadoop/etc/hadoop</code>）；</li>
+<li>将<code>hdfs-site.xml</code>复制到<code>hbase/conf</code>下（最好是建立一个软链接）；</li>
+<li>如果仅有少量的配置，也可以将它们写到<code>hbase-site.xml</code>中</li>
+</ol>
+<p>这里我采用了第二种方法，原因是<a href="https://blog.csdn.net/pycrossover/article/details/102627807" target="_blank" rel="noopener">铲子挖掘数据的博文</a>中提到第一种方法也有可能会带来问题。他的博文中还复制了<code>core-site.xml</code>。我想复制了也没有坏处，所以也照做了。</p>
+<h2 id="将-Hadoop-jar-包同步至-HBase"><a href="#将-Hadoop-jar-包同步至-HBase" class="headerlink" title="将 Hadoop jar 包同步至 HBase"></a>将 Hadoop jar 包同步至 HBase</h2><p>根据<a href="https://hbase.apache.org/book.html#quickstart" target="_blank" rel="noopener">HBase 官方文档</a>，HBase 中原有的 jar 包只在非分布式应用情景下使用。要在分布式情景下使用，官方建议将已经部署好的 Hadoop 集群中对应的 jar 包复制到 HBase 中（但没有详细指出是哪些包）。参考<a href="https://blog.csdn.net/pycrossover/article/details/102627807" target="_blank" rel="noopener">铲子挖掘数据的博文</a>中的做法，进行以下步骤：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/local/hbase/lib/client-facing-thirdparty</span><br><span class="line">cp htrace-core4-4.2.0-incubating.jar /usr/local/hbase/lib/</span><br></pre></td></tr></table></figure>
+
+<p>他并没有选择复制 Hadoop 中的 jar 包，但这步操作的确解决了我启动 HBase 后，HMaster 和 HRegionServer 未能正常启动的问题。至于官方的建议究竟什么情况下是有必要的，只能等到未来使用过程中再进一步了解了。</p>
+<h2 id="将配置好的-HBase-文件传送到各个-slave-节点"><a href="#将配置好的-HBase-文件传送到各个-slave-节点" class="headerlink" title="将配置好的 HBase 文件传送到各个 slave 节点"></a>将配置好的 HBase 文件传送到各个 slave 节点</h2><p>将配置好的 hbase 文件夹传送到其它各个节点，最好完成后面的解决方案后再传送：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">scp -r /usr/local/hbase root@slave01:/usr/local/</span><br><span class="line">scp -r /usr/local/hbase root@slave02:/usr/local/</span><br></pre></td></tr></table></figure>
+
+<p>这时还剩下重要的一步：仿照 master 节点修改各个 slave 节点的<code>.bash_profile</code>环境变量。趁热打铁将它完成吧！</p>
+<h2 id="找不到-GetJavaProperty-的解决方案"><a href="#找不到-GetJavaProperty-的解决方案" class="headerlink" title="找不到 GetJavaProperty 的解决方案"></a>找不到 GetJavaProperty 的解决方案</h2><p>解决这个问题需要修改<code>hbase/bin</code>目录下的 hbase 文件。在修改之前不要忘记先备份：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cp hbase hbase_copy</span><br><span class="line">vim /usr/local/hbase/bin/hbase</span><br></pre></td></tr></table></figure>
+
+<p>首先定位到 182 行，在<code>add_to_cp_if_exists “${HBASE_HOME}/hbase-server/target”</code>下面加入：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> Needed <span class="keyword">for</span> GetJavaProperty check below</span></span><br><span class="line">add_to_cp_if_exists "$&#123;HBASE_HOME&#125;/hbase-server/target/classes"</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>对于不熟悉 vim 的小伙伴，这里有几个技巧。第一，在命令模式下输入<code>:set number</code>可以显示行号；第二，在命令模式下输入<code>:行号</code>可以移动到对应行；第三，在命令模式下按<code>o</code>（小写）可以在当前行下方插入一行，<code>O</code>（大写）可以在当前行上方插入一行</p>
+</blockquote>
+<p>插入完成后，在当前约 190 行往下，删除（或者注释掉）以下内容：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">add the hbase jars <span class="keyword">for</span> each module</span></span><br><span class="line">for f in $HBASE_HOME/hbase-jars/hbase*.jar; do</span><br><span class="line">	if [[ $f = *sources.jar ]]</span><br><span class="line">  then</span><br><span class="line">    : # Skip sources.jar</span><br><span class="line">  elif [ -f $f ]</span><br><span class="line">  then</span><br><span class="line">    CLASSPATH=$&#123;CLASSPATH&#125;:$f;</span><br><span class="line">  fi</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>vim 快速批量注释的方法，不熟悉的小伙伴不妨自行搜索一下</p>
+</blockquote>
+<p>接下来在大约 310 到 320 行的地方，找到<code>if [ -n &quot;${HADOOP_IN_PATH}&quot; ] &amp;&amp; [ -f &quot;${HADOOP_IN_PATH}&quot; ]; then</code>。在其下方插入：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> If built hbase, temporarily add hbase-server*.jar to classpath <span class="keyword">for</span> GetJavaProperty</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Exclude hbase-server*-tests.jar</span></span><br><span class="line">temporary_cp=</span><br><span class="line">for f in "$&#123;HBASE_HOME&#125;"/lib/hbase-server*.jar; do</span><br><span class="line">  if [[ ! "$&#123;f&#125;" =~ ^.*\-tests\.jar$ ]]; then</span><br><span class="line">    temporary_cp=":$f"</span><br><span class="line">  fi</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<p>然后将</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HADOOP_JAVA_LIBRARY_PATH=$(HADOOP_CLASSPATH="$CLASSPATH" "$&#123;HADOOP_IN_PATH&#125;" \</span><br></pre></td></tr></table></figure>
+
+<p>改成（还是可以注释掉后再添加）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HADOOP_JAVA_LIBRARY_PATH=$(HADOOP_CLASSPATH="$CLASSPATH$&#123;temporary_cp&#125;" "$&#123;HADOOP_IN_PATH&#125;" \</span><br></pre></td></tr></table></figure>
+
+<p>最后保存退出就可以了。</p>
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><p>切换到 HBase 安装目录<code>/usr/local/hbase/bin</code>，执行以下命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">start-hbase.sh</span><br><span class="line">hbase shell</span><br></pre></td></tr></table></figure>
+
+<p>如果在此之前，你的 Hadoop 集群还未正常运作，那么还需要先启动 Hadoop 集群才行。进行了上面的操作后，如果能够正常进入 hbase shell，那么安装便成功了。当然了，所谓安装成功，不过是通往使用过程中更多问题的门票罢了。使用<code>jps</code>命令应当能够看到下面的进程：</p>
+<img src="阿里云Spark-2/HMasterNode.png" alt="master 节点" style="zoom:50%;" />
+
+<img src="/Users/chenyifan/Github/Blog/source/_posts/阿里云Spark-2/HSlaveNode.png" alt="HSlaveNode" style="zoom:50%;" />
+
+<p>另外，你也可以通过 10610 端口进入 Web 界面对集群进行监控。</p>
+<blockquote>
+<p>我在测试的过程中遭遇过 master 节点所有服务启动正常，但是 slave 节点 HRegionServer 无法正常启动的问题。后来发现可能是因为前一次重启 HBase 之前忘记清空 logs</p>
+</blockquote>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>到这里，HBase 的安装配置就告一段落了。没有什么是永恒的，除了 bug 和死亡。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag"># 大数据</a>
+              <a href="/tags/HBase/" rel="tag"># HBase</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/2019/11/26/Hadoop%203%20%E5%92%8C%20Hadoop%202%20%E4%BB%A5%E5%8F%8A%20Spark%20%E7%9A%84%E5%AF%B9%E6%AF%94/" rel="next" title="Hadoop 3 与 Hadoop 2 以及 Spark 的对比">
+                  <i class="fa fa-chevron-left"></i> Hadoop 3 与 Hadoop 2 以及 Spark 的对比
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#HBase"><span class="nav-number">1.</span> <span class="nav-text">HBase</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#HBase-安装"><span class="nav-number">1.1.</span> <span class="nav-text">HBase 安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HBase-集群模式配置"><span class="nav-number">1.2.</span> <span class="nav-text">HBase 集群模式配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#将-Hadoop-集群配置同步至-HBase"><span class="nav-number">1.3.</span> <span class="nav-text">将 Hadoop 集群配置同步至 HBase</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#将-Hadoop-jar-包同步至-HBase"><span class="nav-number">1.4.</span> <span class="nav-text">将 Hadoop jar 包同步至 HBase</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#将配置好的-HBase-文件传送到各个-slave-节点"><span class="nav-number">1.5.</span> <span class="nav-text">将配置好的 HBase 文件传送到各个 slave 节点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#找不到-GetJavaProperty-的解决方案"><span class="nav-number">1.6.</span> <span class="nav-text">找不到 GetJavaProperty 的解决方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试"><span class="nav-number">1.7.</span> <span class="nav-text">测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结语"><span class="nav-number">1.8.</span> <span class="nav-text">结语</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="陈逸凡"
+    src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">陈逸凡</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">陈逸凡</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
