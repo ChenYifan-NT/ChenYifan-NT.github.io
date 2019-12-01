@@ -186,6 +186,85 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/30/%E9%98%BF%E9%87%8C%E4%BA%91Spark-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="陈逸凡">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="陈逸凡的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/11/30/%E9%98%BF%E9%87%8C%E4%BA%91Spark-1/" class="post-title-link" itemprop="url">阿里云Spark-1</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-11-30 03:00:17" itemprop="dateCreated datePublished" datetime="2019-11-30T03:00:17-05:00">2019-11-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2019-12-01 18:25:51" itemprop="dateModified" datetime="2019-12-01T18:25:51-05:00">2019-12-01</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>title: 阿里云配置 Hadoop + HBase + Hive + Spark 集群（一）<br>date: 2019-11-24 13:49:48<br>tags:</p>
+<ul>
+<li>大数据</li>
+<li>Hadoop<br>categories:</li>
+<li>学习笔记</li>
+</ul>
+<p>学习在阿里云上搭建 Hadoop + HBase + Hive + Spark 集群的笔记。搭建过程中遇到了很多问题，在查阅资料的过程中也走了很多弯路。在这里将搭建步骤和问题一一记录，既方便日后复习，也为其它小伙伴提供一些帮助。</p>
+<p>本篇是笔记的第一部分，从准备工作开始，到 Hadoop 集群搭建完成为止。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/11/30/%E9%98%BF%E9%87%8C%E4%BA%91Spark-1/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/30/%E9%98%BF%E9%87%8C%E4%BA%91Spark-2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -339,90 +418,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2019/11/26/Hadoop%203%20%E5%92%8C%20Hadoop%202%20%E4%BB%A5%E5%8F%8A%20Spark%20%E7%9A%84%E5%AF%B9%E6%AF%94/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/24/%E9%98%BF%E9%87%8C%E4%BA%91Spark-1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.png">
-      <meta itemprop="name" content="陈逸凡">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="陈逸凡的博客">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/11/24/%E9%98%BF%E9%87%8C%E4%BA%91Spark-1/" class="post-title-link" itemprop="url">阿里云配置 Hadoop + HBase + Hive + Spark 集群（一）</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2019-11-24 13:49:48" itemprop="dateCreated datePublished" datetime="2019-11-24T13:49:48-05:00">2019-11-24</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-12-01 15:32:00" itemprop="dateModified" datetime="2019-12-01T15:32:00-05:00">2019-12-01</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index">
-                    <span itemprop="name">学习笔记</span>
-                  </a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>学习在阿里云上搭建 Hadoop + HBase + Hive + Spark 集群的笔记。搭建过程中遇到了很多问题，在查阅资料的过程中也走了很多弯路。在这里将搭建步骤和问题一一记录，既方便日后复习，也为其它小伙伴提供一些帮助。</p>
-<p>本篇是笔记的第一部分，从准备工作开始，到 Hadoop 集群搭建完成为止。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2019/11/24/%E9%98%BF%E9%87%8C%E4%BA%91Spark-1/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
