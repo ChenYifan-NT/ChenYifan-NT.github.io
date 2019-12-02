@@ -61,7 +61,7 @@
 <meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;12&#x2F;01&#x2F;%E9%98%BF%E9%87%8C%E4%BA%91Spark-3&#x2F;SparkName.png">
 <meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;12&#x2F;01&#x2F;%E9%98%BF%E9%87%8C%E4%BA%91Spark-3&#x2F;SparkWebUI.png">
 <meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;12&#x2F;01&#x2F;%E9%98%BF%E9%87%8C%E4%BA%91Spark-3&#x2F;SparkPiTest.png">
-<meta property="og:updated_time" content="2019-12-02T22:31:58.305Z">
+<meta property="og:updated_time" content="2019-12-02T22:46:30.834Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;12&#x2F;01&#x2F;%E9%98%BF%E9%87%8C%E4%BA%91Spark-3&#x2F;SparkName.png">
 
@@ -224,7 +224,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-12-02 17:31:58" itemprop="dateModified" datetime="2019-12-02T17:31:58-05:00">2019-12-02</time>
+                <time title="Modified: 2019-12-02 17:46:30" itemprop="dateModified" datetime="2019-12-02T17:46:30-05:00">2019-12-02</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -257,7 +257,8 @@
 <p>参考内容：<a href="https://www.cnblogs.com/cheyunhua/p/10037162.html" target="_blank" rel="noopener">技术颜良的博文</a></p>
 </blockquote>
 <h2 id="Spark-下载和安装"><a href="#Spark-下载和安装" class="headerlink" title="Spark 下载和安装"></a>Spark 下载和安装</h2><p>和之前的 Hadoop、HBase 类似，首先在官网下载合适的安装包到本地，再上传至服务器解压并重命名。Spark 官方提供了内置 Hadoop 和 Scala 的版本。我们已经有自己配置的 Hadoop 了，所以我这里选择了只有 Scala 的版本。注意，如果你选择自行安装 scala 的话，要记得查阅 Spark 支持的 Scala 版本。这里我们使用 Spark 2.4.4：</p>
-<p><img src="SparkName.png" alt=""></p>
+<img src="SparkName.png" width="50%" height="50%">
+
 <h2 id="Spark-配置"><a href="#Spark-配置" class="headerlink" title="Spark 配置"></a>Spark 配置</h2><p><code>/conf</code>文件夹下的配置文件内有详细的说明。在配置之前可以阅读一下。首先还是配置 Spark 目录。打开<code>/root/.bash_profile</code>，添加如下内容：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export SPARK_HOME=/usr/local/spark</span><br><span class="line">export PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin</span><br></pre></td></tr></table></figure>
 
@@ -283,8 +284,7 @@
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/usr/local/spark/bin/run-example SparkPi 2&gt;&amp;1 | grep "Pi is"</span><br></pre></td></tr></table></figure>
 
 <p>得到结果如下：</p>
-<p><img src="SparkPiTest.png" alt=""></p>
-
+<img src="SparkPiTest.png" width="75%" height="75%">
     </div>
 
     
