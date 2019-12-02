@@ -61,7 +61,7 @@
 <meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;24&#x2F;%E9%98%BF%E9%87%8C%E4%BA%91Spark-1&#x2F;HadoopVersion.png">
 <meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;24&#x2F;%E9%98%BF%E9%87%8C%E4%BA%91Spark-1&#x2F;DataNodeInfo.png">
 <meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;24&#x2F;%E9%98%BF%E9%87%8C%E4%BA%91Spark-1&#x2F;PI.png">
-<meta property="og:updated_time" content="2019-12-02T02:58:31.121Z">
+<meta property="og:updated_time" content="2019-12-02T22:24:24.252Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;24&#x2F;%E9%98%BF%E9%87%8C%E4%BA%91Spark-1&#x2F;HadoopVersion.png">
 
@@ -224,7 +224,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-12-01 21:58:31" itemprop="dateModified" datetime="2019-12-01T21:58:31-05:00">2019-12-01</time>
+                <time title="Modified: 2019-12-02 17:24:24" itemprop="dateModified" datetime="2019-12-02T17:24:24-05:00">2019-12-02</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -256,6 +256,9 @@
 <h1 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h1><h2 id="购买阿里云服务器"><a href="#购买阿里云服务器" class="headerlink" title="购买阿里云服务器"></a>购买阿里云服务器</h2><p>在阿里云上配置集群，要做的第一件事情自然是购买阿里云服务器。阿里云上产品种类繁多，初学者（比如我）很容易看花了眼。不过很快我就在新手套餐里找到了合适的服务器。我使用了三台单核 1G 内存的服务器，预装 CentOS 7，并计划以其中一台作为 master 节点，另两台作为 slave 节点搭建我的 hadoop 集群。购买服务器时要注意你所在的位置。我在美国东部留学，选择了弗吉尼亚节点。三台机器（包括免费试用的一台）一个月总共 11 美元，并不昂贵。</p>
 <p>购买服务器的过程中会提示你新建密码或者新建密钥对。如果你不清楚这些是什么，可以暂时跳过，因为这些都可以在稍后进行设置。</p>
 <p>购买完成后可以先在控制台修改实例名称为 master/slave01/slave02，这样后面就不需要再修改主机名了。</p>
+<blockquote>
+<p>在后来的实践中发现服务器性能太弱，几乎不能完成任何有实际价值的任务。所以后来升级到了三台双核 4G 服务器，加了 45 美元</p>
+</blockquote>
 <br />
 
 <h2 id="ssh-免密码登录"><a href="#ssh-免密码登录" class="headerlink" title="ssh 免密码登录"></a>ssh 免密码登录</h2><blockquote>
@@ -424,7 +427,7 @@
 <h4 id="查看进程"><a href="#查看进程" class="headerlink" title="查看进程"></a>查看进程</h4><p>启动 Hadoop 后，运行 jps 命令，查看当前的 java 进程：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jps</span><br></pre></td></tr></table></figure>
 
-<p>如果能看到 NameNode，SecondaryNameNode 和 ResourceManager 的进程则说明启动成功。</p>
+<p>如果能在 master 节点看到 NameNode，SecondaryNameNode 和 ResourceManager 的进程，并在 slave 节点看到 DataNode 和 ResourceManager 进程，则说明启动成功。</p>
 <blockquote>
 <p>也可以使用<code>hadoop dfsadmin -report</code>命令查看详细的运行状态</p>
 </blockquote>
@@ -558,7 +561,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-count">4</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
