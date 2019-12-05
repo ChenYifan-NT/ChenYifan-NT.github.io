@@ -51,7 +51,7 @@
 </script>
 
   <meta name="description" content="学习在阿里云上搭建 Hadoop + HBase + Hive + Spark 集群的笔记。搭建过程中遇到了很多问题，在查阅资料的过程中也走了很多弯路。在这里将搭建步骤和问题一一记录，既方便日后复习，也为其它小伙伴提供一些帮助。 本篇是笔记的第一部分，从准备工作开始，到 Hadoop 集群搭建完成为止。">
-<meta name="keywords" content="大数据,Hadoop">
+<meta name="keywords" content="Hadoop,大数据">
 <meta property="og:type" content="article">
 <meta property="og:title" content="阿里云配置 Hadoop + HBase + Hive + Spark 集群（一）">
 <meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;24&#x2F;%E9%98%BF%E9%87%8C%E4%BA%91Spark-1&#x2F;index.html">
@@ -61,7 +61,7 @@
 <meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;24&#x2F;%E9%98%BF%E9%87%8C%E4%BA%91Spark-1&#x2F;HadoopVersion.png">
 <meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;24&#x2F;%E9%98%BF%E9%87%8C%E4%BA%91Spark-1&#x2F;DataNodeInfo.png">
 <meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;24&#x2F;%E9%98%BF%E9%87%8C%E4%BA%91Spark-1&#x2F;PI.png">
-<meta property="og:updated_time" content="2019-12-02T22:24:24.252Z">
+<meta property="og:updated_time" content="2019-12-05T21:42:49.033Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;24&#x2F;%E9%98%BF%E9%87%8C%E4%BA%91Spark-1&#x2F;HadoopVersion.png">
 
@@ -224,7 +224,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-12-02 17:24:24" itemprop="dateModified" datetime="2019-12-02T17:24:24-05:00">2019-12-02</time>
+                <time title="Modified: 2019-12-05 16:42:49" itemprop="dateModified" datetime="2019-12-05T16:42:49-05:00">2019-12-05</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -427,7 +427,7 @@
 <h4 id="查看进程"><a href="#查看进程" class="headerlink" title="查看进程"></a>查看进程</h4><p>启动 Hadoop 后，运行 jps 命令，查看当前的 java 进程：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jps</span><br></pre></td></tr></table></figure>
 
-<p>如果能在 master 节点看到 NameNode，SecondaryNameNode 和 ResourceManager 的进程，并在 slave 节点看到 DataNode 和 ResourceManager 进程，则说明启动成功。</p>
+<p>如果能在 master 节点看到 NameNode，SecondaryNameNode 和 ResourceManager 的进程，并在 slave 节点看到 DataNode 和 NodeManager 进程，则说明启动成功。</p>
 <blockquote>
 <p>也可以使用<code>hadoop dfsadmin -report</code>命令查看详细的运行状态</p>
 </blockquote>
@@ -491,8 +491,8 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag"># 大数据</a>
               <a href="/tags/Hadoop/" rel="tag"># Hadoop</a>
+              <a href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag"># 大数据</a>
           </div>
 
         
