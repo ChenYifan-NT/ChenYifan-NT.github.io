@@ -50,18 +50,18 @@
   };
 </script>
 
-  <meta name="description" content="翻译自 Igor Bobriakov 的文章，Hadoop 3: Comparison with Hadoop 2 and Spark。一切权利归原作者所有。 大数据生态系统内工具种类繁多，刚接触时很容易陷入迷茫。这篇文章介绍了大数据生态内的两大重要框架：Hadoop 和 Spark，相信可以给初学者带来一些帮助。在下也是初学者中的一员，有很多概念和术语都没有完全搞清。如有疏漏，敬请见谅指正。">
-<meta name="keywords" content="Hadoop,Spark,大数据">
+  <meta name="description" content="最初撰写于 2014 年，分为三次撰写。  黑一 他是几几年来到我家，我不清楚，但你可以查到——那将是奥巴马上任的年份。他是黑的，所以他也叫奥巴马。 小奥的前爪很着急地轮流跺地，他一定是有什么话想说。 黑二 每一只成功的狗的背后，都有着尽心尽责的狗链子。">
+<meta name="keywords" content="狗">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hadoop 3 与 Hadoop 2 以及 Spark 的对比">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;26&#x2F;Hadoop-3-%E5%92%8C-Hadoop-2-%E4%BB%A5%E5%8F%8A-Spark-%E7%9A%84%E5%AF%B9%E6%AF%94&#x2F;index.html">
+<meta property="og:title" content="我的狗啊">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;10&#x2F;30&#x2F;%E6%88%91%E7%9A%84%E7%8B%97%E5%95%8A&#x2F;index.html">
 <meta property="og:site_name" content="陈逸凡的博客">
-<meta property="og:description" content="翻译自 Igor Bobriakov 的文章，Hadoop 3: Comparison with Hadoop 2 and Spark。一切权利归原作者所有。 大数据生态系统内工具种类繁多，刚接触时很容易陷入迷茫。这篇文章介绍了大数据生态内的两大重要框架：Hadoop 和 Spark，相信可以给初学者带来一些帮助。在下也是初学者中的一员，有很多概念和术语都没有完全搞清。如有疏漏，敬请见谅指正。">
+<meta property="og:description" content="最初撰写于 2014 年，分为三次撰写。  黑一 他是几几年来到我家，我不清楚，但你可以查到——那将是奥巴马上任的年份。他是黑的，所以他也叫奥巴马。 小奥的前爪很着急地轮流跺地，他一定是有什么话想说。 黑二 每一只成功的狗的背后，都有着尽心尽责的狗链子。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-11-30T08:00:05.017Z">
+<meta property="og:updated_time" content="2020-01-26T03:10:18.407Z">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://yoursite.com/2019/11/26/Hadoop-3-%E5%92%8C-Hadoop-2-%E4%BB%A5%E5%8F%8A-Spark-%E7%9A%84%E5%AF%B9%E6%AF%94/">
+<link rel="canonical" href="http://yoursite.com/2019/10/30/%E6%88%91%E7%9A%84%E7%8B%97%E5%95%8A/">
 
 
 <script id="page-configurations">
@@ -75,7 +75,7 @@
   };
 </script>
 
-  <title>Hadoop 3 与 Hadoop 2 以及 Spark 的对比 | 陈逸凡的博客</title>
+  <title>我的狗啊 | 陈逸凡的博客</title>
   
 
 
@@ -199,7 +199,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/26/Hadoop-3-%E5%92%8C-Hadoop-2-%E4%BB%A5%E5%8F%8A-Spark-%E7%9A%84%E5%AF%B9%E6%AF%94/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/30/%E6%88%91%E7%9A%84%E7%8B%97%E5%95%8A/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.png">
@@ -212,7 +212,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Hadoop 3 与 Hadoop 2 以及 Spark 的对比
+          我的狗啊
         </h1>
 
         <div class="post-meta">
@@ -222,14 +222,14 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2019-11-26 19:09:03" itemprop="dateCreated datePublished" datetime="2019-11-26T19:09:03-05:00">2019-11-26</time>
+              <time title="Created: 2019-10-30 06:34:02" itemprop="dateCreated datePublished" datetime="2019-10-30T06:34:02-04:00">2019-10-30</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-11-30 03:00:05" itemprop="dateModified" datetime="2019-11-30T03:00:05-05:00">2019-11-30</time>
+                <time title="Modified: 2020-01-25 22:10:18" itemprop="dateModified" datetime="2020-01-25T22:10:18-05:00">2020-01-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -237,8 +237,8 @@
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index">
-                    <span itemprop="name">学习笔记</span>
+                  <a href="/categories/%E6%9C%9D%E8%8A%B1%E5%A4%95%E6%8B%BE/" itemprop="url" rel="index">
+                    <span itemprop="name">朝花夕拾</span>
                   </a>
                 </span>
             </span>
@@ -254,35 +254,64 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>翻译自 Igor Bobriakov 的文章，<a href="https://medium.com/activewizards-machine-learning-company/hadoop-3-comparison-with-hadoop-2-and-spark-67efd0e78f81" target="_blank" rel="noopener">Hadoop 3: Comparison with Hadoop 2 and Spark</a>。一切权利归原作者所有。</p>
-<p>大数据生态系统内工具种类繁多，刚接触时很容易陷入迷茫。这篇文章介绍了大数据生态内的两大重要框架：Hadoop 和 Spark，相信可以给初学者带来一些帮助。在下也是初学者中的一员，有很多概念和术语都没有完全搞清。如有疏漏，敬请见谅指正。</p>
-<blockquote>
-<p>我将以注释的形式为原文添加补充信息</p>
+        <blockquote>
+<p>最初撰写于 2014 年，分为三次撰写。</p>
 </blockquote>
-<p>以下是正文：</p>
-<p>2017 年 12 月发布的 Hadoop 3 标志着数据科学新时代的来临。Hadoop 框架是整个 Hadoop 生态的核心，很多库的运行都倚赖于它。</p>
-<p>本文将介绍与 Hadoop 2 相比，Hadoop 3 最大的变化。本文还将介绍 Hadoop 与 Apache Spark 的区别，也会为你的项目提供一些工具选择上的建议。</p>
+<p><strong>黑一</strong></p>
+<p>他是几几年来到我家，我不清楚，但你可以查到——那将是奥巴马上任的年份。他是黑的，所以他也叫奥巴马。</p>
+<p>小奥的前爪很着急地轮流跺地，他一定是有什么话想说。</p>
+<p><strong>黑二</strong></p>
+<p>每一只成功的狗的背后，都有着尽心尽责的狗链子。</p>
 <a id="more"></a>
 
-<h1 id="综述"><a href="#综述" class="headerlink" title="综述"></a>综述</h1><p>Hadoop 2 和 Hadoop 3 是基于 Java 开发的数据处理引擎，分别于 2013 和 2017 年发布。Hadoop 的诞生最初是为了处理硬盘上的数据分析，属于批处理任务的范畴。因此最初的 Hadoop 并不支持实时数据分析和交互式任务。</p>
-<p>Spark 2.X 发布于 2016 年，是基于 Scala 开发的数据处理和分析引擎。彼时许多大型互联网服务都十分依赖于即时数据处理，因此对于数据的实时分析能力变得至关重要。Apache Spark 便是为实时数据处理而设计的。它因能够高效处理数据流，还支持交互式工作模式而变得流行。</p>
-<p>Hadoop 和 Spark 都是 Apache 2.0 协议下的开源软件。</p>
-<h1 id="抽象程度、学习和使用难度"><a href="#抽象程度、学习和使用难度" class="headerlink" title="抽象程度、学习和使用难度"></a>抽象程度、学习和使用难度</h1><p>这些工具的抽象程度有很大区别。具体来讲，Hadoop 的抽象程度更低，而 Spark 更高。学习和使用 Hadoop 会更有难度，因为开发者必须掌握许多底层的操作。同时，Hadoop 仅仅是系统中的核心引擎，要使用更高级的功能往往还要倚赖其它组件。这样的结构使得系统的复杂性大大提升。</p>
-<p>于 Hadoop 不同，Apache Spark 提供了一整套的数据分析工具。Spark 的核心概念是 RDD（Resilient Distributed Dataset，弹性分布式数据集）。它内建有许多高级方法来处理 RDD。它还提供许多能在集群中发挥作用的库。例如，<a href="https://spark.apache.org/mllib/" target="_blank" rel="noopener">MLlib</a>支持机器学习，<a href="https://spark.apache.org/sql/" target="_blank" rel="noopener">Spark SQL</a>支持 SQL 查询等等。</p>
-<h1 id="硬件成本"><a href="#硬件成本" class="headerlink" title="硬件成本"></a>硬件成本</h1><p>Hadoop 主要运行在硬盘上，所以它的运行不需要很多内存，这比使用大内存要更便宜。Hadoop 3 消耗的硬盘空间比 Hadoop 2 要小，这是由于其在容错系统方面的改进。</p>
-<p>Spark 在内存模式下消耗的内存要远大于 Hadoop，这使得它的硬件成本更高。</p>
-<h1 id="编程语言"><a href="#编程语言" class="headerlink" title="编程语言"></a>编程语言</h1><p>两种 Hadoop 都通过 Hadoop Streaming 支持多种编程语言，但是用的最多的还是 Java。Spark 2.X 支持 Scala、Java、Python 和 R。</p>
-<h1 id="运行速度"><a href="#运行速度" class="headerlink" title="运行速度"></a>运行速度</h1><p>通常情况下 Hadoop 比 Spark 慢，因为它运行在硬盘上。Hadoop 不能将数据缓存到内存中。Hadoop 3 的运行速度比 Hadoop 2 快了 30%。这是因为它在 MapReduce 的基础上引入了原生 Java 搭建的 Map output collector。</p>
-<p>在内存上，Spark 的信息处理速度是 Hadoop 的 100 倍。在硬盘上，这个数字是 10 倍。</p>
-<h1 id="安全性"><a href="#安全性" class="headerlink" title="安全性"></a>安全性</h1><p>Hadoop 被认为是比 Spark 更安全的，因为它使用了 Kerberos（computer network authentication protocol），还支持 ACL（Access Control Lists）。Spark 仅提供了基于 shared secret 的密码保护。</p>
-<h1 id="容错性"><a href="#容错性" class="headerlink" title="容错性"></a>容错性</h1><p>Hadoop 2 通过冗余的方式提供容错性。其储存的每一块数据都被复制到另外两个备份中。这意味着，Hadoop 2 需要三倍于文件大小的存储空间。这对于硬盘容量是一种很大的浪费。</p>
-<p>Hadoop 3 的容错性则是通过纠删码技术实现的。这种技术通过另一块数据和奇偶校验块进行数据恢复。每有两个数据块，Hadoop 就创建一个奇偶校验块。与 Hadoop 2 的三倍存储空间消耗相比，Hadoop 3 只消耗了 1.5 倍。Hadoop 3 的容错能力和 Hadoop 2 是一样的，但是更加节省空间。</p>
-<p>Spark 通过重新计算 DAG（Directed Acyclic Graph，有向五环图）进行数据恢复。DAG 由点和线构成。点代表 RDD，线代表对 RDD 执行的操作。如果有一部分数据发生了丢失，Spark 可以通过对 RDD 重新应用 DAG 中对操作来恢复数据。需要注意的是，每次重新计算 RDD 都需要等待 Spark 完成所有必要计算。Spark 还通过检查点的方式避免错误。</p>
-<h1 id="YARN-版本"><a href="#YARN-版本" class="headerlink" title="YARN 版本"></a>YARN 版本</h1><p>Hadoop 2 使用 YARN 1. YARN（Yet Another Resource Negotiator）是一种资源调度引擎。它能够管理系统中的可用资源（CPU、内存、硬盘）。同时，YARN 还能执行任务调度。</p>
-<p>在 Hadoop 3 中 YARN 被升级到了版本 2。新版本相比旧版带来了可用性和扩展性方面的重大改变。</p>
-<blockquote>
-<p>先翻译这么多，后面继续</p>
-</blockquote>
+<p>那样粗壮的链子，至少可以同时拴住十条成功的狗。链子另一端是废弃的石碾子——黑狗，石碾子，某一刻会让我想起，把人在脚上浇筑水泥而沉入河中的美国黑帮。莫名其妙，莫名其妙，若你是心理学家，或许可以参考小奥不知怎的的死亡，在我心里留下的想象。</p>
+<p>无论如何，有链子，小奥是成功的看门狗——甚至长于战斗——一块头皮换更大的狗的一条腿；没有链子，小奥是逃犯，杀鸡的逃犯，作案后还晓得回家避难。他利齿下的冤鸡，无一不保留了肉身，因为他不吃。玩弄他的作品，他很得意，就像传奇的盗贼，戴面罩的怪盗。</p>
+<p>披斗篷的怪狗。</p>
+<p>玩过《红警》么？狗链子就是尤里给敌人伸出的精神线，可以控制他的心灵。狗的心灵究竟是多少岁的深奥，有谁知道，但凭着这根狗链，我还能控制他发狠用劲的方向。</p>
+<p>从”哎，快点”到“慢点我跟不上了”，经过的日子并不长.</p>
+<p>从“汪（很高兴认识你 ）”到再也听不到“汪（我们跑）”，经过的日子并不长。</p>
+<p>如果每个人都对我”汪“，我也会响亮地对他们”汪“。这样的日子并不长。</p>
+<p>小奥终究只认识我的声音，”回来“应该是听不懂的。因为没有链子，他几乎什么都听不懂——只有鸡叫和肚子叫能听懂。 但他到底还是记得我的吧。唯一的一次，我在链子放假的时候坐车离开，他从稻田窜出追赶。</p>
+<p>他跑得是那样的快啊。</p>
+<p><strong>黑三</strong></p>
+<p>天。黑三天是《未来警察》里黑晶的外号。片子烂，梗也烂。<br>暂时拿这句废话作我今天晕头转向的结尾。还没有完，可是我已经困了。</p>
+<hr>
+<p><strong>黑三</strong></p>
+<p>我给过小奥垒球，网球，弹弹球，草稿纸加胶带球。他擅长用球充满他的口腔，不擅长把球还给给他球的人，也不擅长把球还给地面。若是有结网球的树，他大概一辈子没机会用他的食盆了。狗为何对球有如此歇斯底里的热爱，有时真让人困惑到，祈求上天让他们转世踢球。</p>
+<p>小奥衔着球，用正常坐姿看远处的旧纺织厂。我用逐渐下降的视角，看到他，像一个等孩子回家的狗，像一个等船开上陆地的孩子，像一个等炸弹降落的船长。</p>
+<p>人张开嘴久了，嘴唇会干，这时候会想来一点酒。酿酒的时候要依靠微生物，还有时间，还用用心的人。人用心酿造的酿造品，都带苦味，这是人剥夺自然的本味后，能得到的最接近自然的味道。</p>
+<p>小奥，我们干一杯。</p>
+<p><strong>黑四</strong></p>
+<p>狗的舌头，可以用来喝水。</p>
+<p>高速相机如果没有骗我们，那么狗是具有这样的本领的：用舌头弯成勺子，舀水喝。</p>
+<p>小奥，你现在有一条链子，一个球，一双耳朵，还有一个勺子，你知不知道？是不是没有勺子的狗，因为生下来就喝不了水，所以被淘汰了。</p>
+<p>但是据我观察，即使是深度低于狗舌头厚度的水，小奥还是能喝到。那一瞬间，我看到无数的受力箭头，无数的方程式，无数的三元积分：水，离开最喜欢的低处，开始最弯曲莫测的旅程，在另一处伴随气味回归大地，而其中的一部分，永远要留在旅程之中。</p>
+<p>呐，小奥，你昨天喝的水，今天升上天空，后天降下来，你喝尿了知道不。</p>
+<p>等等刚才那只鸡，别咽下去，它有话说：“咯咯，你不光喝了尿，吃了我，还吃了我吃的草，吃了我吃的草吸收的你的狗毛，吃了我吃的草吸收的你的狗毛在你肉里采集的养分。咯咯，你还吃了你自己。”</p>
+<p>小奥啊，你每天呼吸的，有你昨天的呼吸，有你的恋人和情敌的呼吸，有你不知何处的狗妈妈的呼吸，有秦始皇的呼吸，伏羲的呼吸，有宇宙大爆炸的呼吸。</p>
+<p>看看你扔的摔炮，那爆炸微笑的地方，正生出一个宇宙。</p>
+<p><strong>黑五</strong></p>
+<p>友善的狗，得和别的狗打招呼，得在狗友圈里交换虱子，得给邻居家的小母狗满满的爱。</p>
+<p>若空虚的时候寻求爱欲， 纪伯伦会跑来鄙夷你的灵魂。狗的灵魂属于风和风车——狂野，或是被轴束缚，灵魂里还是一只奔跑的狗。我没有见过小奥打飞机，但见过别的狗打飞机。别的狗是要遭到鄙夷的，小奥是风一般的。</p>
+<p>无论是多少次不得不回到那低处的海，我也要祈求你：太阳啊！我无惧你的光辉，请把我变作升起的云；我也要祈求你：风啊！我无惧你撕毁我的身躯，请把我吹回我起始的地方；我也要祈求你：山啊！我无惧你的严寒，请让我站立在你的雪峰。</p>
+<p>小奥是风一般的。</p>
+<p><strong>黑六</strong></p>
+<p>音同“黑柳”。那将是神秘的意象。若旁边有银白的泉水，有降霜的风，有漆黑的大地，有暗绿的新芽。有魔法，有封印。</p>
+<p>一切都没结束，即使是火烧过的地方。</p>
+<hr>
+<p><strong>黑六</strong></p>
+<p>不记得是第几个失眠夜了。有不止一人问我是否是想家。我说，我怎么会像是想家的人。我睡过各种的床。曾经我需要两天适应一张新床，如今只需要两秒。</p>
+<p>我曾经说过，最让我悲哀的是，陌生的地方，没有给我一点陌生。</p>
+<p>而狗，大概是不懂什么是床的。</p>
+<p><strong>黑七</strong></p>
+<p>每个地方都有它的秘密。秘密藏在下水道里。老鼠是最熟悉一个“地方”的秘密的，其次是猫，再次是狗。</p>
+<p>老鼠以秘密为生，猫以捕食秘密为生，而狗，只是在冒险。</p>
+<p><strong>黑八</strong></p>
+<p>小奥死了。</p>
+<p>很简单，只有主语，谓语，还有个语气词。死亡鉴定也同样很简单：食鸭而死。真是荒唐。他战胜过比他高一头的黑背狼狗，去过我想象不到的田野的深处。他从那人类无法进入的灌木中窜出，从农村的沟渠上越过。他挣脱过尽心尽职的狗链，咬死过我心爱的小黄狗……他食鸭而死，小说家会断定，那是一个暴雨天。</p>
+<p>而我不在场，因为我在准备我的高考。我不悲伤，悲伤程度没有超过我失去心爱的小黄狗时的失落。小奥死了，我没有情感。画面偶尔，偶尔，不经常，很偶尔；关于他的画面，很偶尔很偶尔地，出现在我的脑海中。</p>
+<p><strong>黑九</strong></p>
+<p>黑酒。万千的事，一句话就可以盖过；万千的人，一个眼神就可以宁息。</p>
 
     </div>
 
@@ -292,25 +321,20 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/Hadoop/" rel="tag"># Hadoop</a>
-              <a href="/tags/Spark/" rel="tag"># Spark</a>
-              <a href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag"># 大数据</a>
+              <a href="/tags/%E7%8B%97/" rel="tag"># 狗</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-next post-nav-item">
-                <a href="/2019/11/24/%E9%98%BF%E9%87%8C%E4%BA%91Spark-1/" rel="next" title="阿里云配置 Hadoop + HBase + Hive + Spark 集群（一）">
-                  <i class="fa fa-chevron-left"></i> 阿里云配置 Hadoop + HBase + Hive + Spark 集群（一）
-                </a>
             </div>
 
             <span class="post-nav-divider"></span>
 
             <div class="post-nav-prev post-nav-item">
-                <a href="/2019/11/30/%E9%98%BF%E9%87%8C%E4%BA%91Spark-2/" rel="prev" title="阿里云配置 Hadoop + HBase + Hive + Spark 集群（二）">
-                  阿里云配置 Hadoop + HBase + Hive + Spark 集群（二） <i class="fa fa-chevron-right"></i>
+                <a href="/2019/11/24/%E9%98%BF%E9%87%8C%E4%BA%91Spark-1/" rel="prev" title="阿里云配置 Hadoop + HBase + Hive + Spark 集群（一）">
+                  阿里云配置 Hadoop + HBase + Hive + Spark 集群（一） <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
@@ -355,7 +379,6 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#综述"><span class="nav-number">1.</span> <span class="nav-text">综述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#抽象程度、学习和使用难度"><span class="nav-number">2.</span> <span class="nav-text">抽象程度、学习和使用难度</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#硬件成本"><span class="nav-number">3.</span> <span class="nav-text">硬件成本</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#编程语言"><span class="nav-number">4.</span> <span class="nav-text">编程语言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#运行速度"><span class="nav-number">5.</span> <span class="nav-text">运行速度</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安全性"><span class="nav-number">6.</span> <span class="nav-text">安全性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#容错性"><span class="nav-number">7.</span> <span class="nav-text">容错性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#YARN-版本"><span class="nav-number">8.</span> <span class="nav-text">YARN 版本</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -371,7 +394,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-count">5</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
