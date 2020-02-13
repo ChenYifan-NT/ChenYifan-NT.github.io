@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="那野草丛中升起的点点火花，到空中又变作星雨落下。这漫无边际的旅程，你便是唯一的火光。——陈逸凡">
+<meta name="keywords" content="网络编程,Java,Socket,TCP,UDP,URL">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从零开始的Java学习之路（二）：网络编程基础">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;02&#x2F;13&#x2F;%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84Java%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF02&#x2F;index.html">
+<meta property="og:site_name" content="陈逸凡的博客">
+<meta property="og:description" content="那野草丛中升起的点点火花，到空中又变作星雨落下。这漫无边际的旅程，你便是唯一的火光。——陈逸凡">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-02-13T21:35:44.504Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2020/02/13/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84Java%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF02/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>从零开始的Java学习之路（二）：网络编程基础 | 陈逸凡的博客</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?57b343bca810fd9bc6bbf4ed8bd15279";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">陈逸凡的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">我想玩丝之歌</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/02/13/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84Java%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF02/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="陈逸凡">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="陈逸凡的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          从零开始的Java学习之路（二）：网络编程基础
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2020-02-13 12:02:06 / Modified: 16:35:44" itemprop="dateCreated datePublished" datetime="2020-02-13T12:02:06-05:00">2020-02-13</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index">
+                    <span itemprop="name">笔记</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>那野草丛中升起的点点火花，到空中又变作星雨落下。这漫无边际的旅程，你便是唯一的火光。——陈逸凡</p>
+</blockquote>
+<a id="more"></a>
+
+<h1 id="IP-地址、端口、URL-的简单使用"><a href="#IP-地址、端口、URL-的简单使用" class="headerlink" title="IP 地址、端口、URL 的简单使用"></a>IP 地址、端口、URL 的简单使用</h1><h2 id="InetAddress"><a href="#InetAddress" class="headerlink" title="InetAddress"></a>InetAddress</h2><p>Java 中使用<code>InetAddress</code>类封装 IP 地址，下面是基本的获取<code>InetAddress</code>对象的方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">InetAddress addr = InetAddress.getLocalHost(); <span class="comment">// 本机</span></span><br><span class="line">System.out.println(addr.getHostAddress()); <span class="comment">// 打印 IP 地址</span></span><br><span class="line">System.out.println(addr.getHostName());  <span class="comment">// 打印计算机名</span></span><br><span class="line"></span><br><span class="line">addr = InetAddress.getByName(<span class="string">"www.google.com"</span>); <span class="comment">// 根据域名</span></span><br><span class="line">addr = InetAddress.getByName(<span class="string">"172.217.12.196"</span>); <span class="comment">// 根据 IP 地址</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="InetSocketAddress"><a href="#InetSocketAddress" class="headerlink" title="InetSocketAddress"></a>InetSocketAddress</h2><p>Java 中的<code>InetSocketAddress</code>则实现了对 IP + 端口的封装。它也可以对 hostname + 端口的封装。后一种情况下它会尝试解析 hostname。如果解析失败，则该地址被标记为<code>unresolved</code>。在某些情况下，<code>unresolved</code>地址仍是可用的，例如使用代理进行连接。下面是<code>InetSocketAddress</code>的简单使用：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">InetSocketAddress socketAddress = <span class="keyword">new</span> InetSocketAddress(<span class="string">"127.0.0.1"</span>,<span class="number">8080</span>); <span class="comment">// IP 地址 + 端口号</span></span><br><span class="line">InetSocketAddress socketAddress = <span class="keyword">new</span> InetSocketAddress(<span class="string">"localhost"</span>,<span class="number">8080</span>); <span class="comment">// hostname + 端口号</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="URL"><a href="#URL" class="headerlink" title="URL"></a>URL</h2><p>URL 是“Uniform Resource Locator“的缩写，指向互联网上的某个资源。下面是<code>URL</code>类的简单使用：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">URL = <span class="keyword">new</span> URL(<span class="string">"https://www.google.com/webhp?hl=zh-CN&amp;sa=X&amp;ved=0ahUKEwissoG9t8_nAhXLknIEHcq5CogQPAgH"</span>)</span><br><span class="line"></span><br><span class="line">url.getProtocol(); <span class="comment">// 协议</span></span><br><span class="line">url.getHost(); <span class="comment">// 域名</span></span><br><span class="line">url.getPort(); <span class="comment">// 端口</span></span><br><span class="line">url.getFile(); <span class="comment">// path + query</span></span><br><span class="line">url.getPath(); <span class="comment">// path</span></span><br><span class="line">url.getQuery(); <span class="comment">// query</span></span><br><span class="line">url.getRef(); <span class="comment">// 锚点</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="使用上面的知识进行简单的爬虫"><a href="#使用上面的知识进行简单的爬虫" class="headerlink" title="使用上面的知识进行简单的爬虫"></a>使用上面的知识进行简单的爬虫</h2><h3 id="第一种情况：网站允许爬虫"><a href="#第一种情况：网站允许爬虫" class="headerlink" title="第一种情况：网站允许爬虫"></a>第一种情况：网站允许爬虫</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">  URL url = <span class="keyword">new</span> URL(<span class="string">"https://www.jd.com"</span>);</span><br><span class="line"></span><br><span class="line">  InputStream is = url.openStream(); <span class="comment">// 相当于 url.openConnection().getInputStream()</span></span><br><span class="line">  BufferedReader br = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(is));</span><br><span class="line">  String msg = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">while</span>((msg = br.readLine()) != <span class="keyword">null</span>) &#123;</span><br><span class="line">    System.out.println(msg);</span><br><span class="line">  &#125;</span><br><span class="line">  br.close();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 进一步分析</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="第二种情况：网站不允许爬虫"><a href="#第二种情况：网站不允许爬虫" class="headerlink" title="第二种情况：网站不允许爬虫"></a>第二种情况：网站不允许爬虫</h3><p>这时我们要将自己伪装成浏览器：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">  </span><br><span class="line">  URL url =<span class="keyword">new</span> URL(<span class="string">"https://www.dianping.com"</span>);</span><br><span class="line">  HttpURLConnection  conn = (HttpURLConnection)url.openConnection();</span><br><span class="line">  conn.setRequestMethod(<span class="string">"GET"</span>);</span><br><span class="line">  conn.setRequestProperty(<span class="string">"User-Agent"</span>,<span class="string">"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36"</span>);</span><br><span class="line">  </span><br><span class="line">  BufferedReader br =<span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(conn.getInputStream(),<span class="string">"UTF-8"</span>));</span><br><span class="line">  String msg =<span class="keyword">null</span>; </span><br><span class="line">  </span><br><span class="line">  <span class="keyword">while</span>(<span class="keyword">null</span>!=(msg=br.readLine())) &#123;</span><br><span class="line">    System.out.println(msg);</span><br><span class="line">  &#125;</span><br><span class="line">  br.close();</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 进一步分析</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="UDP"><a href="#UDP" class="headerlink" title="UDP"></a>UDP</h1><h2 id="UDP-基本步骤"><a href="#UDP-基本步骤" class="headerlink" title="UDP 基本步骤"></a>UDP 基本步骤</h2><blockquote>
+<p>先占个坑，以后再填</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" rel="tag"># 网络编程</a>
+              <a href="/tags/Java/" rel="tag"># Java</a>
+              <a href="/tags/Socket/" rel="tag"># Socket</a>
+              <a href="/tags/TCP/" rel="tag"># TCP</a>
+              <a href="/tags/UDP/" rel="tag"># UDP</a>
+              <a href="/tags/URL/" rel="tag"># URL</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/2020/02/10/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E7%9A%84Java%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF01/" rel="next" title="从零开始的Java学习之路（一）：文件和IO流">
+                  <i class="fa fa-chevron-left"></i> 从零开始的Java学习之路（一）：文件和IO流
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  <div class="comments" id="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC80NzgzOC8yNDMzNQ=="></div>
+  </div>
+  
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#IP-地址、端口、URL-的简单使用"><span class="nav-number">1.</span> <span class="nav-text">IP 地址、端口、URL 的简单使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#InetAddress"><span class="nav-number">1.1.</span> <span class="nav-text">InetAddress</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#InetSocketAddress"><span class="nav-number">1.2.</span> <span class="nav-text">InetSocketAddress</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#URL"><span class="nav-number">1.3.</span> <span class="nav-text">URL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用上面的知识进行简单的爬虫"><span class="nav-number">1.4.</span> <span class="nav-text">使用上面的知识进行简单的爬虫</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#第一种情况：网站允许爬虫"><span class="nav-number">1.4.1.</span> <span class="nav-text">第一种情况：网站允许爬虫</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#第二种情况：网站不允许爬虫"><span class="nav-number">1.4.2.</span> <span class="nav-text">第二种情况：网站不允许爬虫</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#UDP"><span class="nav-number">2.</span> <span class="nav-text">UDP</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#UDP-基本步骤"><span class="nav-number">2.1.</span> <span class="nav-text">UDP 基本步骤</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="陈逸凡"
+    src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">陈逸凡</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">陈逸凡</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+</body>
+</html>
