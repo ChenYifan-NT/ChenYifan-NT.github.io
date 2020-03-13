@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="“Waiting is wasting for people like me”——《Wind》">
+<meta name="keywords" content="Linux,Shell">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux 简单命令和基础知识">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;03&#x2F;12&#x2F;Linux%E7%AE%80%E5%8D%95%E5%91%BD%E4%BB%A4%E5%92%8C%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86&#x2F;index.html">
+<meta property="og:site_name" content="陈逸凡的博客">
+<meta property="og:description" content="“Waiting is wasting for people like me”——《Wind》">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-03-13T08:28:09.154Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2020/03/12/Linux%E7%AE%80%E5%8D%95%E5%91%BD%E4%BB%A4%E5%92%8C%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Linux 简单命令和基础知识 | 陈逸凡的博客</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?57b343bca810fd9bc6bbf4ed8bd15279";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">陈逸凡的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">我想玩丝之歌</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/12/Linux%E7%AE%80%E5%8D%95%E5%91%BD%E4%BB%A4%E5%92%8C%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="陈逸凡">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="陈逸凡的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Linux 简单命令和基础知识
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-03-12 22:55:36" itemprop="dateCreated datePublished" datetime="2020-03-12T22:55:36-04:00">2020-03-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-03-13 04:28:09" itemprop="dateModified" datetime="2020-03-13T04:28:09-04:00">2020-03-13</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index">
+                    <span itemprop="name">笔记</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>“Waiting is wasting for people like me”——《Wind》</p>
+</blockquote>
+<a id="more"></a>
+
+<h1 id="帮助命令"><a href="#帮助命令" class="headerlink" title="帮助命令"></a>帮助命令</h1><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>type</td>
+<td>查看命令类型</td>
+</tr>
+<tr>
+<td>help</td>
+<td>内部命令帮助</td>
+</tr>
+<tr>
+<td>man</td>
+<td>外部命令帮助</td>
+</tr>
+<tr>
+<td>whereis</td>
+<td>命令位置</td>
+</tr>
+<tr>
+<td>file</td>
+<td>文件类型</td>
+</tr>
+<tr>
+<td>ps -fe</td>
+<td>进程列表</td>
+</tr>
+</tbody></table>
+<ul>
+<li>man 命令在部分 Linux 发行版中需要单独安装</li>
+<li>man 命令可以查询种类繁多的手册。常用的例子有<code>man ascii</code>、<code>man utf-8</code>等</li>
+<li>shell 命令的执行：<ul>
+<li>shell 是一个解释器和执行器，使用空白符切割指令。切割得到的第一个元素被识别为命令。这是为什么 [ 命令后面必须有空格的原因</li>
+<li>shell 首先会判断是内部还是外部命令。如果是外部命令，则进入 $PATH 变量给定的目录中寻找</li>
+<li>shell 会将使用过的命令缓存在内存 hash 中。使用<code>hash -r</code>命令可以清除这些缓存</li>
+</ul>
+</li>
+<li>一些脚本代码第一行会以类似于<code>#!/usr/bin/python</code>的格式给出解释器位置，这样的脚本可以省去命令直接执行</li>
+<li>外部命令都是程序，都有独立的进程</li>
+</ul>
+<h1 id="文件系统命令"><a href="#文件系统命令" class="headerlink" title="文件系统命令"></a>文件系统命令</h1><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ls</td>
+<td>显示目录</td>
+</tr>
+<tr>
+<td>df</td>
+<td>磁盘使用情况</td>
+</tr>
+<tr>
+<td>du</td>
+<td>文件系统使用情况</td>
+</tr>
+<tr>
+<td>cd</td>
+<td>切换工作目录</td>
+</tr>
+<tr>
+<td>pwd</td>
+<td>当前工作目录</td>
+</tr>
+<tr>
+<td>mkdir</td>
+<td>创建目录</td>
+</tr>
+<tr>
+<td>rm</td>
+<td>删除</td>
+</tr>
+<tr>
+<td>cp</td>
+<td>拷贝</td>
+</tr>
+<tr>
+<td>mv</td>
+<td>移动</td>
+</tr>
+<tr>
+<td>ln</td>
+<td>链接</td>
+</tr>
+<tr>
+<td>stat</td>
+<td>查看元数据</td>
+</tr>
+<tr>
+<td>touch</td>
+<td>修改文件或目录的时间属性，也可创建文件</td>
+</tr>
+</tbody></table>
+<ul>
+<li><code>ls -l</code>命令显示文件详细信息，包括：<ul>
+<li>文件类型<ul>
+<li>-：普通文件（f）</li>
+<li>d：目录文件</li>
+<li>b：块设备文件（block）</li>
+<li>c：字符设备文件（character）</li>
+<li>l：符号链接文件（symbolic link file）</li>
+<li>p：命令管道文件（pipe）</li>
+<li>s：套接字文件（socket）</li>
+</ul>
+</li>
+<li>文件权限：共 9 位，每 3 位一组，分别代表文件文件（U，G，O）；每组三位，分别代表读、写和执行（rwx）</li>
+<li>文件硬链接次数</li>
+<li>文件属主（owner）</li>
+<li>文件属组（gourp）</li>
+<li>文件大小</li>
+<li>时间戳<ul>
+<li>访问（access）</li>
+<li>修改（modify）</li>
+<li>元数据（change）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>文件系统层次化标准（Filesystem Hierarchy Standard）<ul>
+<li>/boot：系统启动相关的文件，如内核、initrd、grub（bootloader）等</li>
+<li>/dev：设备文件（一切皆文件）</li>
+<li>/etc：配置文件</li>
+<li>/home：用户家目录</li>
+<li>/root：管理员家目录</li>
+<li>/lib：库文件</li>
+<li>/media：挂载点目录，移动设备</li>
+<li>/mnt：挂载点目录，额外的临时文件系统</li>
+<li>/opt：可选目录，程序的自定义安装目录</li>
+<li>/proc：伪文件系统，内核映射文件</li>
+<li>/sys：伪文件系统，于硬件设备相关的属性映射文件</li>
+<li>/tmp：临时文件，/var/tmp</li>
+<li>/var：可变化的文件</li>
+<li>/bin：可执行文件</li>
+<li>/sbin：管理命令</li>
+</ul>
+</li>
+<li>Linux 的目录结构可以规避磁盘挂载带来的移植性问题，即不管目录挂载在哪一块磁盘，目录结构都是一样的</li>
+<li>Linux 开机引导顺序：<ul>
+<li>激活主板 bios 芯片，bios 程序进入内存，决定引导位置（光驱、硬盘等）</li>
+<li>从引导位置读取分区表（最前面的分区）；bootloader 读取分区格式，使用不同解码器</li>
+<li>分区内包含各自 kernel；bootloader 将 kernel 加载到内存。向 CPU 发送 reset 指令，覆盖内存内容，重新分配地址空间</li>
+<li>kernel 挂载磁盘分区，找到 sbin 目录下的 init 程序；根据 init 程序启动其它程序（login 程序以及登陆成功后的 shell 等）</li>
+</ul>
+</li>
+<li>内存被分为内核地址空间和其它地址空间。内核地址空间是专为内核开辟的，受保护的地址空间</li>
+<li>9999 个 a 和一个汉子在 utf-8 编码下占用多少字节？答案是 10002 个。utf-8 字符是变长的，除了节省空间，更能节省 IO</li>
+<li><code>cd</code>命令回到家目录，<code>cd -</code>命令回到上之前打开的目录</li>
+<li><code>mkdir -p</code>递归创建；<code>mkdir /path/to/{x,y,z}</code>水平创建</li>
+<li>尽量用 mv 代替 rm</li>
+<li>硬链接类似于指针，删除一个硬连接文件还在且不影响其它指向这个文件的硬连接；软链接类似于快捷方式，源文件删除，软链接会失效</li>
+<li>touch 可以改变文件元数据，配合其它命令和脚本可以实现异地备份、异常中断等功能</li>
+</ul>
+<h1 id="文件操作命令"><a href="#文件操作命令" class="headerlink" title="文件操作命令"></a>文件操作命令</h1><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>cat</td>
+<td>全文查看文件内容</td>
+</tr>
+<tr>
+<td>more</td>
+<td>分屏查看文件内容，到文件底部自动结束</td>
+</tr>
+<tr>
+<td>less</td>
+<td>分屏查看文件内容，到文件底部不自动结束</td>
+</tr>
+<tr>
+<td>head</td>
+<td>查看文件开头</td>
+</tr>
+<tr>
+<td>tail</td>
+<td>查看文件结尾</td>
+</tr>
+<tr>
+<td>|</td>
+<td>管道命令</td>
+</tr>
+<tr>
+<td>xargs</td>
+<td>参数命令</td>
+</tr>
+</tbody></table>
+<ul>
+<li>more 和 less 的区别可以理解成，后者翻到最后之后还可以往回翻，而前者看到最后就退出程序</li>
+<li>head 和 tail 使用管道连接在一起可以查看文件特定区间的内容，例如<code>head -5 | tail -1</code>查看第 5 行</li>
+<li>xargs 从标准输入读取内容，并将其作为后面命令（参数）的参数执行</li>
+<li>管道会在两边分别新建一个子进程，因此要格外注意新建子进程与七步扩展的优先级顺序</li>
+</ul>
+<blockquote>
+<p>关于 vim 的内容在其它文章中</p>
+</blockquote>
+<h1 id="数据处理"><a href="#数据处理" class="headerlink" title="数据处理"></a>数据处理</h1><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>grep</td>
+<td>显示匹配行</td>
+</tr>
+<tr>
+<td>cut</td>
+<td>垂直切割数据</td>
+</tr>
+<tr>
+<td>sort</td>
+<td>排序</td>
+</tr>
+<tr>
+<td>wc</td>
+<td>word count</td>
+</tr>
+<tr>
+<td>sed</td>
+<td>行编辑器，类似于 vim 的末行模式</td>
+</tr>
+<tr>
+<td>awk</td>
+<td>文本分析工具</td>
+</tr>
+</tbody></table>
+<ul>
+<li><code>grep -v</code>反选，<code>grep -e</code>使用扩展正则表达式</li>
+<li>正则表达式（加粗为基本表达式，不加粗为扩展表达式）：<ul>
+<li>匹配操作符<ul>
+<li><strong>\：转义字符</strong></li>
+<li><strong>.：匹配任意单个字符</strong></li>
+<li><strong>[123a]：字符序列单字符占位</strong></li>
+<li><strong>^：行首</strong></li>
+<li><strong>$：行尾</strong></li>
+<li><strong><code>\&lt;</code>，<code>\&gt;</code>：单词首尾边界</strong></li>
+<li>|：连接操作符</li>
+<li>(,)：选择操作符</li>
+<li>\n：反向引用</li>
+</ul>
+</li>
+<li>重复操作符<ul>
+<li>?：匹配 0 次 到 1 次</li>
+<li><strong>*：匹配 0 次到多次</strong></li>
+<li>+：匹配 1 次到多次</li>
+<li>{n}：匹配 n 次</li>
+<li>{n,}：匹配 n 次到多次</li>
+<li>{n,m}：匹配 n 到 m 次</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>grep 中使用正则表达式要用双引号包裹作为引用</li>
+</ul>
+<blockquote>
+<p>关于 cut、sort、wc、sed、awk 命令的详细使用将会写在另一篇文章中</p>
+</blockquote>
+<h1 id="权限管理"><a href="#权限管理" class="headerlink" title="权限管理"></a>权限管理</h1><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>groupadd</td>
+<td>添加组</td>
+</tr>
+<tr>
+<td>groupdel</td>
+<td>删除组</td>
+</tr>
+<tr>
+<td>useradd</td>
+<td>添加用户</td>
+</tr>
+<tr>
+<td>userdel</td>
+<td>删除用户</td>
+</tr>
+<tr>
+<td>usermod</td>
+<td>修改用户</td>
+</tr>
+<tr>
+<td>id</td>
+<td>查看用户元数据</td>
+</tr>
+<tr>
+<td>passwd</td>
+<td>修改密码</td>
+</tr>
+<tr>
+<td>sudo</td>
+<td>以管理员身份运行</td>
+</tr>
+<tr>
+<td>su</td>
+<td>切换用户</td>
+</tr>
+<tr>
+<td>chmod</td>
+<td>修改文件权限</td>
+</tr>
+<tr>
+<td>chown</td>
+<td>修改用户属组或属主</td>
+</tr>
+</tbody></table>
+<ul>
+<li>rwx 权限可以表示为三位二进制数，Linux 支持直接用十进制数表示权限。例如 7 表示拥有全部的三种权限</li>
+</ul>
+<h1 id="Shell-脚本编程"><a href="#Shell-脚本编程" class="headerlink" title="Shell 脚本编程"></a>Shell 脚本编程</h1><ul>
+<li>shell 本质是一个解释器和启动器，能够解释用户交互输入和文本文件输入。脚本的本质是指明解释器和启动器的代码文件。</li>
+<li>使用<code>source file</code>会在当前 shell 运行脚本；使用<code>/bin/bash file</code>会新建一个进程打开 shell 运行脚本</li>
+</ul>
+<h2 id="文本流和重定向"><a href="#文本流和重定向" class="headerlink" title="文本流和重定向"></a>文本流和重定向</h2><ul>
+<li>重定向不是命令</li>
+<li>任何程序都带有默认 IO<ul>
+<li>0：标准输入</li>
+<li>1：标准输出</li>
+<li>2：错误输出</li>
+</ul>
+</li>
+<li>IO 流指向虚拟终端，<code>cd /proc/$$/fd</code>可以查看（/dev/pts/0,1,2）；通过修改指向的虚拟终端可以做到一个 bash 输入，另一个 bash 输出</li>
+<li>输出重定向：修改程序的 1 或 2（左边与文件描述符之间不能有空格）<ul>
+<li>&gt;：覆盖重定向</li>
+<li>&gt;&gt;：追加重定向</li>
+<li>&amp;&gt;，&amp;&gt;：同时重定向 1 和 2（两个符号中间不能有空格）</li>
+</ul>
+</li>
+<li>输入重定向：修改程序的 0<ul>
+<li>&lt;：文件</li>
+<li>&lt;&lt;：输入多行（首先输入一个自定义的字符串作为识别标记，按下回车后开始输入多行。输入完成后再次输入前面的识别标记）<ul>
+<li>一个简单的例子：在脚本中要用一个 echo 打印多行文本，需要使用一个外部文件，安全性较低；使用多个 echo 不方便调整格式；cat 加多行重定向可以解决这些问题，同时容易调整格式</li>
+</ul>
+</li>
+<li>&lt;&lt;&lt;：字符串（双引号）</li>
+</ul>
+</li>
+<li>read 命令对换行符敏感，可以读取标准输入</li>
+<li>exec 命令在现有进程上运行一个可执行文件，替换原有的可执行文件同时不改变进程号<ul>
+<li>exec 可以用来外挂重定向</li>
+</ul>
+</li>
+<li>全重定向的 socket 案例（获取百度主页）</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">exec 8&lt;&gt; /dev/tcp/www.baidu.com/80</span><br><span class="line">echo -e "GET / HTTP/1.0\n" &gt;&amp; 8</span><br><span class="line">cat &lt;&amp; 8</span><br></pre></td></tr></table></figure>
+
+<h2 id="Shell-脚本"><a href="#Shell-脚本" class="headerlink" title="Shell 脚本"></a>Shell 脚本</h2><p>挖坑，区别的文章填。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+              <a href="/tags/Shell/" rel="tag"># Shell</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/2020/02/09/MoMA/" rel="next" title="MoMA">
+                  <i class="fa fa-chevron-left"></i> MoMA
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+                <a href="/2020/03/13/Shell%E8%84%9A%E6%9C%AC%E7%BC%96%E7%A8%8B/" rel="prev" title="Shell脚本编程">
+                  Shell脚本编程 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  <div class="comments" id="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC80NzgzOC8yNDMzNQ=="></div>
+  </div>
+  
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#帮助命令"><span class="nav-number">1.</span> <span class="nav-text">帮助命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#文件系统命令"><span class="nav-number">2.</span> <span class="nav-text">文件系统命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#文件操作命令"><span class="nav-number">3.</span> <span class="nav-text">文件操作命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数据处理"><span class="nav-number">4.</span> <span class="nav-text">数据处理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#权限管理"><span class="nav-number">5.</span> <span class="nav-text">权限管理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Shell-脚本编程"><span class="nav-number">6.</span> <span class="nav-text">Shell 脚本编程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#文本流和重定向"><span class="nav-number">6.1.</span> <span class="nav-text">文本流和重定向</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Shell-脚本"><span class="nav-number">6.2.</span> <span class="nav-text">Shell 脚本</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="陈逸凡"
+    src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">陈逸凡</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">陈逸凡</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+</body>
+</html>

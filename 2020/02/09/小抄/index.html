@@ -51,14 +51,14 @@
 </script>
 
   <meta name="description" content="Vim 也好，Shell 也好，Markdown 也好，总会遇上一些常常会用但又常常忘记的命令和方法。翻找别人的博客总是不便，不如在这里积累归纳，随时查用。一个简单的原则是只记录自己最常用的操作，提升查找速度的同时，降低记忆的难度。">
-<meta name="keywords" content="小抄">
+<meta name="keywords" content="Vim,MarkDown">
 <meta property="og:type" content="article">
 <meta property="og:title" content="小抄">
 <meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;02&#x2F;09&#x2F;%E5%B0%8F%E6%8A%84&#x2F;index.html">
 <meta property="og:site_name" content="陈逸凡的博客">
 <meta property="og:description" content="Vim 也好，Shell 也好，Markdown 也好，总会遇上一些常常会用但又常常忘记的命令和方法。翻找别人的博客总是不便，不如在这里积累归纳，随时查用。一个简单的原则是只记录自己最常用的操作，提升查找速度的同时，降低记忆的难度。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-02-10T04:01:49.059Z">
+<meta property="og:updated_time" content="2020-03-13T08:00:22.431Z">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="http://yoursite.com/2020/02/09/%E5%B0%8F%E6%8A%84/">
@@ -221,10 +221,16 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2020-02-09 20:56:16 / Modified: 23:01:49" itemprop="dateCreated datePublished" datetime="2020-02-09T20:56:16-05:00">2020-02-09</time>
+              <time title="Created: 2020-02-09 20:56:16" itemprop="dateCreated datePublished" datetime="2020-02-09T20:56:16-05:00">2020-02-09</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-03-13 04:00:22" itemprop="dateModified" datetime="2020-03-13T04:00:22-04:00">2020-03-13</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
@@ -251,7 +257,7 @@
         <p>Vim 也好，Shell 也好，Markdown 也好，总会遇上一些常常会用但又常常忘记的命令和方法。翻找别人的博客总是不便，不如在这里积累归纳，随时查用。一个简单的原则是只记录自己最常用的操作，提升查找速度的同时，降低记忆的难度。</p>
 <a id="more"></a>
 
-<h1 id="Vim"><a href="#Vim" class="headerlink" title="Vim"></a>Vim</h1><h4 id="位移命令"><a href="#位移命令" class="headerlink" title="位移命令"></a>位移命令</h4><table>
+<h1 id="Vim"><a href="#Vim" class="headerlink" title="Vim"></a>Vim</h1><h2 id="位移命令"><a href="#位移命令" class="headerlink" title="位移命令"></a>位移命令</h2><table>
 <thead>
 <tr>
 <th>命令</th>
@@ -279,7 +285,7 @@
 <td>移动到文档开头和结尾</td>
 </tr>
 </tbody></table>
-<h4 id="光标命令"><a href="#光标命令" class="headerlink" title="光标命令"></a>光标命令</h4><table>
+<h2 id="光标命令"><a href="#光标命令" class="headerlink" title="光标命令"></a>光标命令</h2><table>
 <thead>
 <tr>
 <th>命令</th>
@@ -323,7 +329,7 @@
 <td>删除标记。跟名字则删除对应标记，跟 ! 则删除所有标记</td>
 </tr>
 </tbody></table>
-<h4 id="查找替换"><a href="#查找替换" class="headerlink" title="查找替换"></a>查找替换</h4><table>
+<h2 id="查找替换"><a href="#查找替换" class="headerlink" title="查找替换"></a>查找替换</h2><table>
 <thead>
 <tr>
 <th>命令</th>
@@ -367,7 +373,7 @@
 <td>将文档开头到结尾的 old 替换为 new</td>
 </tr>
 </tbody></table>
-<h4 id="编辑命令"><a href="#编辑命令" class="headerlink" title="编辑命令"></a>编辑命令</h4><p>编辑命令最强大之处在于可以和位移命令组合使用，例如 cw 可以改变一个单词。还可以和命令计数配合组合使用，例如 d3w 可以删除三个单词。</p>
+<h2 id="编辑命令"><a href="#编辑命令" class="headerlink" title="编辑命令"></a>编辑命令</h2><p>编辑命令最强大之处在于可以和位移命令组合使用，例如 cw 可以改变一个单词。还可以和命令计数配合组合使用，例如 d3w 可以删除三个单词。</p>
 <table>
 <thead>
 <tr>
@@ -444,6 +450,54 @@
 <td>行模式</td>
 </tr>
 </tbody></table>
+<h1 id="MarkDown"><a href="#MarkDown" class="headerlink" title="MarkDown"></a>MarkDown</h1><h2 id="转义字符"><a href="#转义字符" class="headerlink" title="转义字符"></a>转义字符</h2><p>MarkDown 中一些特殊符号不能直接输入。可以使用 html 中的转义字符来输入。以下是一些常见转义字符：</p>
+<table>
+<thead>
+<tr>
+<th>显示效果</th>
+<th>描述</th>
+<th>实体名称</th>
+<th>实体编号</th>
+</tr>
+</thead>
+<tbody><tr>
+<td></td>
+<td>空格</td>
+<td>&amp;nbsp;</td>
+<td>&amp;#160;</td>
+</tr>
+<tr>
+<td>&lt;</td>
+<td>小于</td>
+<td>&amp;lt;</td>
+<td>&amp;#60;</td>
+</tr>
+<tr>
+<td>&gt;</td>
+<td>大于</td>
+<td>&amp;gt;</td>
+<td>&amp;#62;</td>
+</tr>
+<tr>
+<td>&amp;</td>
+<td>与号</td>
+<td>&amp;amp;</td>
+<td>&amp;#38;</td>
+</tr>
+<tr>
+<td>“</td>
+<td>引号</td>
+<td>&amp;quot;</td>
+<td>&amp;#34;</td>
+</tr>
+<tr>
+<td>‘</td>
+<td>撇号</td>
+<td>&amp;apos;</td>
+<td>&amp;#39;</td>
+</tr>
+</tbody></table>
+<p>如果不希望字符被转义，可以在前面加上反斜杠。</p>
 
     </div>
 
@@ -453,15 +507,16 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/%E5%B0%8F%E6%8A%84/" rel="tag"># 小抄</a>
+              <a href="/tags/Vim/" rel="tag"># Vim</a>
+              <a href="/tags/MarkDown/" rel="tag"># MarkDown</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-next post-nav-item">
-                <a href="/2020/01/25/%E9%BB%91%E7%99%BD%E4%BA%A4%E6%9B%BF%E7%9A%84%E6%A2%A6/" rel="next" title="一个黑白交替的梦">
-                  <i class="fa fa-chevron-left"></i> 一个黑白交替的梦
+                <a href="/2019/12/01/%E9%98%BF%E9%87%8C%E4%BA%91Spark-3/" rel="next" title="阿里云配置 Hadoop + HBase + Hive + Spark 集群（三）">
+                  <i class="fa fa-chevron-left"></i> 阿里云配置 Hadoop + HBase + Hive + Spark 集群（三）
                 </a>
             </div>
 
@@ -514,7 +569,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Vim"><span class="nav-number">1.</span> <span class="nav-text">Vim</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#位移命令"><span class="nav-number">1.0.0.1.</span> <span class="nav-text">位移命令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#光标命令"><span class="nav-number">1.0.0.2.</span> <span class="nav-text">光标命令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#查找替换"><span class="nav-number">1.0.0.3.</span> <span class="nav-text">查找替换</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#编辑命令"><span class="nav-number">1.0.0.4.</span> <span class="nav-text">编辑命令</span></a></li></ol></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Vim"><span class="nav-number">1.</span> <span class="nav-text">Vim</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#位移命令"><span class="nav-number">1.1.</span> <span class="nav-text">位移命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#光标命令"><span class="nav-number">1.2.</span> <span class="nav-text">光标命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查找替换"><span class="nav-number">1.3.</span> <span class="nav-text">查找替换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编辑命令"><span class="nav-number">1.4.</span> <span class="nav-text">编辑命令</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MarkDown"><span class="nav-number">2.</span> <span class="nav-text">MarkDown</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#转义字符"><span class="nav-number">2.1.</span> <span class="nav-text">转义字符</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -530,7 +585,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-count">8</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -543,7 +598,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-count">11</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
