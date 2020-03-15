@@ -53,12 +53,12 @@
   <meta name="description" content="“不能逃避，不能逃避，不能逃避”——碇真嗣">
 <meta name="keywords" content="Linux,Shell">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Shell脚本编程">
+<meta property="og:title" content="Shell 脚本编程">
 <meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;03&#x2F;13&#x2F;Shell%E8%84%9A%E6%9C%AC%E7%BC%96%E7%A8%8B&#x2F;index.html">
 <meta property="og:site_name" content="陈逸凡的博客">
 <meta property="og:description" content="“不能逃避，不能逃避，不能逃避”——碇真嗣">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-03-13T08:35:25.389Z">
+<meta property="og:updated_time" content="2020-03-15T02:41:19.805Z">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="http://yoursite.com/2020/03/13/Shell%E8%84%9A%E6%9C%AC%E7%BC%96%E7%A8%8B/">
@@ -75,7 +75,7 @@
   };
 </script>
 
-  <title>Shell脚本编程 | 陈逸凡的博客</title>
+  <title>Shell 脚本编程 | 陈逸凡的博客</title>
   
 
 
@@ -212,7 +212,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Shell脚本编程
+          Shell 脚本编程
         </h1>
 
         <div class="post-meta">
@@ -221,10 +221,16 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2020-03-13 04:26:22 / Modified: 04:35:25" itemprop="dateCreated datePublished" datetime="2020-03-13T04:26:22-04:00">2020-03-13</time>
+              <time title="Created: 2020-03-13 04:26:22" itemprop="dateCreated datePublished" datetime="2020-03-13T04:26:22-04:00">2020-03-13</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-03-14 22:41:19" itemprop="dateModified" datetime="2020-03-14T22:41:19-04:00">2020-03-14</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
@@ -253,7 +259,302 @@
 </blockquote>
 <a id="more"></a>
 
-<p>占坑</p>
+<h1 id="Shell-脚本创建和执行"><a href="#Shell-脚本创建和执行" class="headerlink" title="Shell 脚本创建和执行"></a>Shell 脚本创建和执行</h1><h2 id="指定解释器"><a href="#指定解释器" class="headerlink" title="指定解释器"></a>指定解释器</h2><p>可以使用任何文本编辑器编辑 shell 脚本，并且可以赋予其任何后缀（在命令行中后缀没有意义）。</p>
+<blockquote>
+<p>命令行中文件后缀没有意义的原因非常简单：在命令行模式中，我们通过命令或指定解释器的方式给定了解释和执行这段脚本的软件；相对的，在图形化界面中，我们常常双击文件打开或执行。这时候才需要后缀帮助系统判断打开或执行所使用的软件</p>
+</blockquote>
+<p>在脚本的第一行一般使用<code>#!</code>标记指定使用的解释器，例如<code>#! /bin/bash</code>。</p>
+<h2 id="运行-shell-脚本"><a href="#运行-shell-脚本" class="headerlink" title="运行 shell 脚本"></a>运行 shell 脚本</h2><p>运行 shell 脚本有两种方式：</p>
+<ul>
+<li>作为可执行程序，使用<code>./file</code>的方式执行<ul>
+<li>需要赋予执行权限</li>
+</ul>
+</li>
+<li>作为解释器参数<code>/bin/bash file</code></li>
+</ul>
+<h2 id="注释"><a href="#注释" class="headerlink" title="注释"></a>注释</h2><p>shell 提供了两种注释方法：第一种是<code>#</code>，能够做到单行注释；第二种是<code>:&lt;&lt;</code>，可以多行注释。多行注释的方法是：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">:&lt;&lt;zelda</span><br><span class="line">注释内容...</span><br><span class="line">注释内容...</span><br><span class="line">注释内容...</span><br><span class="line">zelda</span><br></pre></td></tr></table></figure>
+
+<p>其中 zelda 可以用任何自定义的字符串代替。</p>
+<h1 id="文本流和重定向"><a href="#文本流和重定向" class="headerlink" title="文本流和重定向"></a>文本流和重定向</h1><ul>
+<li>重定向不是命令</li>
+<li>任何程序都带有默认 IO<ul>
+<li>0：标准输入</li>
+<li>1：标准输出</li>
+<li>2：错误输出</li>
+</ul>
+</li>
+<li>IO 流指向虚拟终端，<code>cd /proc/$$/fd</code>可以查看（/dev/pts/0,1,2）；通过修改指向的虚拟终端可以做到一个 bash 输入，另一个 bash 输出</li>
+<li>输出重定向：修改程序的 1 或 2（左边与文件描述符之间不能有空格）<ul>
+<li>&gt;：覆盖重定向</li>
+<li>&gt;&gt;：追加重定向</li>
+<li>&amp;&gt;，&amp;&gt;：同时重定向 1 和 2（两个符号中间不能有空格）</li>
+</ul>
+</li>
+<li>输入重定向：修改程序的 0<ul>
+<li>&lt;：文件</li>
+<li>&lt;&lt;：输入多行（首先输入一个自定义的字符串作为识别标记，按下回车后开始输入多行。输入完成后再次输入前面的识别标记）<ul>
+<li>一个简单的例子：在脚本中要用一个 echo 打印多行文本，需要使用一个外部文件，安全性较低；使用多个 echo 不方便调整格式；cat 加多行重定向可以解决这些问题，同时容易调整格式</li>
+</ul>
+</li>
+<li>&lt;&lt;&lt;：字符串（双引号）</li>
+</ul>
+</li>
+<li>read 命令对换行符敏感，可以读取标准输入</li>
+<li>exec 命令在现有进程上运行一个可执行文件，替换原有的可执行文件同时不改变进程号<ul>
+<li>exec 可以用来外挂重定向</li>
+</ul>
+</li>
+<li>全重定向的 socket 案例（获取百度主页）</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">exec 8&lt;&gt; /dev/tcp/www.baidu.com/80</span><br><span class="line">echo -e "GET / HTTP/1.0\n" &gt;&amp; 8</span><br><span class="line">cat &lt;&amp; 8</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="Shell-变量"><a href="#Shell-变量" class="headerlink" title="Shell 变量"></a>Shell 变量</h1><h2 id="变量命名"><a href="#变量命名" class="headerlink" title="变量命名"></a>变量命名</h2><p>Shell 定义变量的格式非常简单，例如<code>a=&quot;hello, world&quot;</code>。需要注意的是，shell 变量等号左右不能有空格。</p>
+<blockquote>
+<p>这是因为 shell 根据空格切分指令，会将变量定义理解为某个不存在的指令</p>
+</blockquote>
+<p>Shell 变量命名遵循一些熟悉的规则：</p>
+<ul>
+<li>可以使用英文字母、数字和下划线</li>
+<li>不能使用数字开头</li>
+<li>不能包含空格</li>
+<li>不能使用标点</li>
+<li>不能使用 bash 关键字</li>
+</ul>
+<h2 id="使用变量"><a href="#使用变量" class="headerlink" title="使用变量"></a>使用变量</h2><p>使用定义过的变量，只需要在变量名前加 $：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">line="hello world"</span><br><span class="line">echo $line</span><br><span class="line">echo $&#123;line&#125;</span><br></pre></td></tr></table></figure>
+
+<p>$ 符号后的花括号可以帮助解释器识别变量边界，例如：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo "I am good at $&#123;skill&#125;Script"</span><br></pre></td></tr></table></figure>
+
+<p>变量可以重新定义。重新定义时不需要使用 $ 符号，只有在使用变量时才使用 $ 符号。</p>
+<p>与变量使用相关的一些命令：</p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>readonly</td>
+<td>将变量定义为只读</td>
+</tr>
+<tr>
+<td>unset</td>
+<td>删除变量</td>
+</tr>
+<tr>
+<td>set</td>
+<td>查看当前 shell 变量</td>
+</tr>
+<tr>
+<td>export</td>
+<td>设置环境变量</td>
+</tr>
+</tbody></table>
+<h3 id="写时复制"><a href="#写时复制" class="headerlink" title="写时复制"></a>写时复制</h3><p>环境变量在父子进程中是不共享的，即：在父进程中 export 的环境变量，随着子进程的开启，父子进程中对其进行的修改不会影响对方进程下的相应环境变量。这带来了潜在的性能问题：如果父进程有大量的环境变量，子进程开启时需要复制同样数量的环境变量，会占用大量的系统资源。</p>
+<p>Linux 引入了写时复制的机制来规避这一问题，具体的实现通过<code>fork()</code>函数：系统拥有两套内存空间，一套为真实的物理内存，一套为虚拟内存。系统为进程开辟连续的虚拟内存空间，但是它们实际指向的物理内存位置可能是不连续的。当需要开辟子进程时，系统首先为其开辟虚拟内存空间，同时将空间上的内容指向父进程对应内容的物理内存地址（类似于引用）。只有当父进程变量发生改变时，才为子进程开辟物理地址复制变量值。这一过程通过开辟新的物理内存地址并修改虚拟内存指针实现。</p>
+<p>对于 Java 虚拟机而言，真实的内存地址要经过两次翻译：JVM、系统、内存。</p>
+<h2 id="变量类型"><a href="#变量类型" class="headerlink" title="变量类型"></a>变量类型</h2><p>Shell 中的变量分为本地、局部、环境变量，另外这里还介绍一些特殊变量：</p>
+<ul>
+<li>本地：当前 shell 拥有，生命周期跟随当前 shell</li>
+<li>局部：使用 local 关键字，创建一个只在函数局部有效的变量<ul>
+<li>和我们熟悉的编程语言如 Python 不同，函数外存在某一个变量的情况下，函数内使用相同的变量名不会新建一个局部变量</li>
+</ul>
+</li>
+<li>环境：所有的程序，包括 shell 启动的程序，都能访问环境变量</li>
+<li>特殊：<ul>
+<li>$n：第 n 个参数，例如 $1，$2，${11}</li>
+<li>$@，$*：参数列表</li>
+<li>$#：参数个数</li>
+<li>$$：当前 shell 的 PID，优先级高于管道</li>
+<li>$BASHPID：同上，优先级低于管道</li>
+<li>$?：上一个命令的退出状态<ul>
+<li>0：成功</li>
+<li>其它：失败</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h2><ul>
+<li>shell 中的字符串可以使用单引号、双引号，甚至不用引号</li>
+<li>单引号是强引用，里面的任何字符都会原样输出，因此单引号内不能使用变量</li>
+<li>双引号是弱引用，支持参数扩展（执行时先将变量扩展为变量的值）；</li>
+<li>花括号扩展不能被引用</li>
+<li>命令替换（反引号）可以将命令的结果作为变量的赋值</li>
+</ul>
+<h2 id="数组和字符串"><a href="#数组和字符串" class="headerlink" title="数组和字符串"></a>数组和字符串</h2><p>bash 仅支持一维数组，定义数组的方式是使用括号并以空白符（回车也可以！）隔开数组元素：<code>a=(a1 a2 a3)</code>。</p>
+<ul>
+<li>获取数组元素：<code>${数组名[下标]}</code>（序号从 1 开始）</li>
+<li>获取数组所有元素：<code>${数组名[@]}</code></li>
+<li>获取数组长度（即元素个数，这个方法对字符串也有用）：<code>${ #数组名[@]}</code>（@ 可以替换为 *）</li>
+<li>获取某个元素长度：<code>${ #数组名[下标]}</code></li>
+</ul>
+<blockquote>
+<p>上面 { 和 # 不应该有空格。这里是为了规避和 nunjucks syntax 的冲突写成了这样</p>
+</blockquote>
+<h3 id="字符串截取"><a href="#字符串截取" class="headerlink" title="字符串截取"></a>字符串截取</h3><p>这一部分完全来自<a href="https://www.runoob.com/linux/linux-shell-variable.html" target="_blank" rel="noopener">runoob</a>。字符串可以使用下标截取，也可以使用 # 和 % 操作符截取：</p>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>#*t</td>
+<td>从左边开始删除到第一个指定的字符 t</td>
+</tr>
+<tr>
+<td>##*t</td>
+<td>从左边开始删除到最后一个指定的字符 t</td>
+</tr>
+<tr>
+<td>%t*</td>
+<td>从右边开始删除到第一个指定的字符 t</td>
+</tr>
+<tr>
+<td>%%t*</td>
+<td>从右边开始删除到最后一个指定的字符 t</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>删除包括指定的字符本身</p>
+</blockquote>
+<p>一些例子：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">var=http://www.aaa.com/123.htm</span><br><span class="line">echo $&#123;var#*//&#125; # www.aaa.com/123.htm</span><br><span class="line">echo $&#123;var##*/&#125; #  123.htm</span><br><span class="line">echo $&#123;var%/*&#125; # http://www.aaa.com</span><br><span class="line">echo $&#123;var%%/*&#125; # http:</span><br><span class="line"></span><br><span class="line">echo $&#123;var:0:5&#125; # 从第 0 个字符开始截取，截取 5 个字符</span><br><span class="line"><span class="meta">#</span><span class="bash"> http:</span></span><br><span class="line">echo $&#123;var:7&#125; # 从左边第 7 个字符开始截取，直到结束</span><br><span class="line"><span class="meta">#</span><span class="bash"> www.aaa.com/123.htm</span></span><br><span class="line">echo $&#123;var:0-7:3&#125; # 从右边第 7 个字符开始截取，截取 3 个字符</span><br><span class="line"><span class="meta">#</span><span class="bash"> 123</span></span><br><span class="line">echo $&#123;var:0-7&#125; # 从右边第 7 个字符开始截取，直到结束</span><br><span class="line"><span class="meta">#</span><span class="bash"> 123.htm</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>上面 0-7 这样的用法可以理解为 -7，类似于 Python 中的用法。最右边的字符是 0-1，而左边是 0</p>
+</blockquote>
+<h1 id="Shell-运算符"><a href="#Shell-运算符" class="headerlink" title="Shell 运算符"></a>Shell 运算符</h1><h2 id="算术运算符"><a href="#算术运算符" class="headerlink" title="算术运算符"></a>算术运算符</h2><p>原生 bash 不支持简单算术运算，但可以由以下几种方式实现：</p>
+<ul>
+<li>expr 表达式，数值和运算符之间必须有空格，且表达式要作命令替换（反斜杠）。* 需要用反斜杠转义<ul>
+<li>Mac 中 shell 的 expr 语法是<code>$((expression))</code>，同时 * 不需要转义</li>
+</ul>
+</li>
+<li>let 表达式：<code>let C=$A+$B</code></li>
+<li><code>$[expression]</code></li>
+<li><code>$((expression))</code><ul>
+<li><code>C=$(($A+$B))</code>，双括号里面的 $ 可以省略</li>
+<li>$ 用于取值，不需要取值的算术运算可以省略，例如<code>((a++))</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="关系运算符和布尔运算符"><a href="#关系运算符和布尔运算符" class="headerlink" title="关系运算符和布尔运算符"></a>关系运算符和布尔运算符</h2><p>关系运算符和布尔运算符可以被用在条件表达式中（内容在下一节）。它们在 shell 中的形式比较特殊：</p>
+<table>
+<thead>
+<tr>
+<th>运算符</th>
+<th>作用</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-eq</td>
+<td>相等</td>
+<td>equal</td>
+</tr>
+<tr>
+<td>-ne</td>
+<td>不等</td>
+<td>not equal</td>
+</tr>
+<tr>
+<td>-gt</td>
+<td>大于</td>
+<td>greater than</td>
+</tr>
+<tr>
+<td>-lt</td>
+<td>小于</td>
+<td>less than</td>
+</tr>
+<tr>
+<td>-ge</td>
+<td>大于等于</td>
+<td>greater / equal</td>
+</tr>
+<tr>
+<td>-le</td>
+<td>小于等于</td>
+<td>less / equal</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>!</td>
+<td>非</td>
+<td></td>
+</tr>
+<tr>
+<td>-o</td>
+<td>或</td>
+<td>or</td>
+</tr>
+<tr>
+<td>-a</td>
+<td>与</td>
+<td>and</td>
+</tr>
+<tr>
+<td>&amp;&amp;</td>
+<td>逻辑与</td>
+<td></td>
+</tr>
+<tr>
+<td>||</td>
+<td>逻辑或</td>
+<td></td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>还有字符串运算符和文件测试运算符。前者可以判断字符串是否相等、字符串是否为空等；后者可以判断文件的各种属性。暂时先知道它们存在，以后再根据需要学习</p>
+</blockquote>
+<h1 id="Shell-流程控制"><a href="#Shell-流程控制" class="headerlink" title="Shell 流程控制"></a>Shell 流程控制</h1><h2 id="条件表达式"><a href="#条件表达式" class="headerlink" title="条件表达式"></a>条件表达式</h2><p>Shell 条件表达式有三种实现方法，分别是 test 命令，中括号和双中括号。其中 test 命令（test 后面直接加表达式）和中括号需要使用上一节中的关系运算符，而双中括号可以使用常见的大于小于符号等；另外 [ 是一个命令，所以和后面的表达式之间必须有空格。</p>
+<p>脚本例题：</p>
+<ul>
+<li>允许用户以参数形式提供用户名添加用户</li>
+<li>自动添加与用户名相同的密码</li>
+<li>静默运行脚本</li>
+<li>避免捕获用户接口</li>
+<li>程序自定义输出</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">! /bin/bash</span></span><br><span class="line"></span><br><span class="line">[ ! $# -eq 1 ] &amp;&amp; echo "参数错误" &amp;&amp; exit 2 # 判断参数是否为 1 个，同时利用 &amp;&amp; 左边为真才执行右边的特性，打印错误信息</span><br><span class="line"></span><br><span class="line">id $1 &gt;&amp; /dev/null &amp;&amp; echo "用户已存在" &amp;&amp; exit 3 # /dev/null 是一个数据黑洞，可以当作垃圾桶使用，不会开辟空间存储</span><br><span class="line"></span><br><span class="line">! useradd $1 &gt;&amp; /dev/null &amp;&amp; echo "用户添加失败" &amp;&amp; exit 7 # 执行 useradd，根据退出码决定是否打印失败信息</span><br><span class="line"></span><br><span class="line">echo $1 | passwd --stdin $1 &gt;&amp; /dev/null # 添加密码</span><br><span class="line">echo "用户$1添加成功"</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="流程控制语句"><a href="#流程控制语句" class="headerlink" title="流程控制语句"></a>流程控制语句</h2><h3 id="if-else"><a href="#if-else" class="headerlink" title="if else"></a>if else</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">if condition 1</span><br><span class="line">then</span><br><span class="line">	command 1</span><br><span class="line">elif condition 2</span><br><span class="line">	command 2</span><br><span class="line">else</span><br><span class="line">	command 3</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+
+<p>写在一行内：</p>
+<p><code>if [ $(ps -ef | grep -c &quot;ssh&quot;) -gt 1 ]; then echo &quot;true&quot;; fi</code></p>
+<h3 id="for"><a href="#for" class="headerlink" title="for"></a>for</h3><p>for 语句支持步进和增强 for 循环：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">for var in item1 item2 ... itemN</span><br><span class="line">do</span><br><span class="line">	command</span><br><span class="line">done</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 增强 <span class="keyword">for</span> 循环看后面例子</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="while"><a href="#while" class="headerlink" title="while"></a>while</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">while condition</span><br><span class="line">do</span><br><span class="line">	command</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="until"><a href="#until" class="headerlink" title="until"></a>until</h3><p>until 和 while 刚好相反，一直执行直到 condition 为 true：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">until condition</span><br><span class="line">do</span><br><span class="line">	command</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="case"><a href="#case" class="headerlink" title="case"></a>case</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">case var in</span><br><span class="line">var1)</span><br><span class="line">	command1</span><br><span class="line">	;;</span><br><span class="line">var2)</span><br><span class="line">	command2</span><br><span class="line">	;;</span><br><span class="line">esac</span><br></pre></td></tr></table></figure>
+
+
+
+<p>例子：循环遍历文件每一行，使用 num 变量统计行数并打印</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">! /bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 增强 <span class="keyword">for</span> 循环</span></span><br><span class="line">num=0</span><br><span class="line">oldIFS=$IFS # split 切割扩展的切割规则保存在 IFS 环境变量中，默认包含空白符。这里我们希望只切割换行符</span><br><span class="line">IFS=$'\n'</span><br><span class="line"></span><br><span class="line">for k in `cat $1`;</span><br><span class="line">do</span><br><span class="line">	echo $k</span><br><span class="line">	((num++))</span><br><span class="line">done;</span><br><span class="line">IFS=oldIFS</span><br><span class="line">echo num:$num</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="keyword">for</span> 循环步进</span></span><br><span class="line">num=0</span><br><span class="line">lines=`cat $1 | wc -l`</span><br><span class="line">for((i=1;i&lt;=lines;i++))</span><br><span class="line">do</span><br><span class="line">	head -$i $1 | tail -1</span><br><span class="line">	((num++))</span><br><span class="line">done;</span><br><span class="line">echo num:$num</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="keyword">while</span> <span class="built_in">read</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">read</span> 每次从标准输入读取一行，并将其读取到 line 变量中</span></span><br><span class="line">exec 8&lt;&amp;0</span><br><span class="line">exec 0&lt; $1</span><br><span class="line"></span><br><span class="line">num=0</span><br><span class="line">while read line</span><br><span class="line">do</span><br><span class="line">	echo $line</span><br><span class="line">	((num++))</span><br><span class="line">done</span><br><span class="line">echo num:$num</span><br><span class="line">exec 0&lt;&amp;8</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 上一种方式的简写，shell 自动在 <span class="keyword">while</span> 执行前后重设 0</span></span><br><span class="line">num=0</span><br><span class="line">while read line</span><br><span class="line">do</span><br><span class="line">	echo $line</span><br><span class="line">	((num++))</span><br><span class="line">done 0&lt; $1</span><br><span class="line">echo num:$num</span><br></pre></td></tr></table></figure>
 
     </div>
 
@@ -279,6 +580,9 @@
             <span class="post-nav-divider"></span>
 
             <div class="post-nav-prev post-nav-item">
+                <a href="/2020/03/14/Shell%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86%E5%92%8C%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" rel="prev" title="Shell 文本处理和数据分析">
+                  Shell 文本处理和数据分析 <i class="fa fa-chevron-right"></i>
+                </a>
             </div>
           </div>
       </footer>
@@ -322,6 +626,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Shell-脚本创建和执行"><span class="nav-number">1.</span> <span class="nav-text">Shell 脚本创建和执行</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#指定解释器"><span class="nav-number">1.1.</span> <span class="nav-text">指定解释器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#运行-shell-脚本"><span class="nav-number">1.2.</span> <span class="nav-text">运行 shell 脚本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注释"><span class="nav-number">1.3.</span> <span class="nav-text">注释</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#文本流和重定向"><span class="nav-number">2.</span> <span class="nav-text">文本流和重定向</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Shell-变量"><span class="nav-number">3.</span> <span class="nav-text">Shell 变量</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#变量命名"><span class="nav-number">3.1.</span> <span class="nav-text">变量命名</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用变量"><span class="nav-number">3.2.</span> <span class="nav-text">使用变量</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#写时复制"><span class="nav-number">3.2.1.</span> <span class="nav-text">写时复制</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#变量类型"><span class="nav-number">3.3.</span> <span class="nav-text">变量类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#引用"><span class="nav-number">3.4.</span> <span class="nav-text">引用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数组和字符串"><span class="nav-number">3.5.</span> <span class="nav-text">数组和字符串</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#字符串截取"><span class="nav-number">3.5.1.</span> <span class="nav-text">字符串截取</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Shell-运算符"><span class="nav-number">4.</span> <span class="nav-text">Shell 运算符</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#算术运算符"><span class="nav-number">4.1.</span> <span class="nav-text">算术运算符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关系运算符和布尔运算符"><span class="nav-number">4.2.</span> <span class="nav-text">关系运算符和布尔运算符</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Shell-流程控制"><span class="nav-number">5.</span> <span class="nav-text">Shell 流程控制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#条件表达式"><span class="nav-number">5.1.</span> <span class="nav-text">条件表达式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#流程控制语句"><span class="nav-number">5.2.</span> <span class="nav-text">流程控制语句</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#if-else"><span class="nav-number">5.2.1.</span> <span class="nav-text">if else</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#for"><span class="nav-number">5.2.2.</span> <span class="nav-text">for</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#while"><span class="nav-number">5.2.3.</span> <span class="nav-text">while</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#until"><span class="nav-number">5.2.4.</span> <span class="nav-text">until</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#case"><span class="nav-number">5.2.5.</span> <span class="nav-text">case</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -337,7 +642,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-count">9</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -350,7 +655,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-count">13</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

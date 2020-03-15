@@ -58,7 +58,7 @@
 <meta property="og:site_name" content="陈逸凡的博客">
 <meta property="og:description" content="“Waiting is wasting for people like me”——《Wind》">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-03-13T08:28:09.154Z">
+<meta property="og:updated_time" content="2020-03-13T23:23:29.647Z">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="http://yoursite.com/2020/03/12/Linux%E7%AE%80%E5%8D%95%E5%91%BD%E4%BB%A4%E5%92%8C%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">
@@ -229,7 +229,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-03-13 04:28:09" itemprop="dateModified" datetime="2020-03-13T04:28:09-04:00">2020-03-13</time>
+                <time title="Modified: 2020-03-13 19:23:29" itemprop="dateModified" datetime="2020-03-13T19:23:29-04:00">2020-03-13</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -293,14 +293,17 @@
 </tbody></table>
 <ul>
 <li>man 命令在部分 Linux 发行版中需要单独安装</li>
-<li>man 命令可以查询种类繁多的手册。常用的例子有<code>man ascii</code>、<code>man utf-8</code>等</li>
+<li>man 命令可以查询种类繁多的手册，包括<code>man ascii</code>、<code>man utf-8</code>等</li>
 <li>shell 命令的执行：<ul>
 <li>shell 是一个解释器和执行器，使用空白符切割指令。切割得到的第一个元素被识别为命令。这是为什么 [ 命令后面必须有空格的原因</li>
 <li>shell 首先会判断是内部还是外部命令。如果是外部命令，则进入 $PATH 变量给定的目录中寻找</li>
 <li>shell 会将使用过的命令缓存在内存 hash 中。使用<code>hash -r</code>命令可以清除这些缓存</li>
 </ul>
 </li>
-<li>一些脚本代码第一行会以类似于<code>#!/usr/bin/python</code>的格式给出解释器位置，这样的脚本可以省去命令直接执行</li>
+<li>一些脚本代码第一行会以类似于<code>#!/usr/bin/python</code>的格式给出解释器位置，这样的脚本可以省去命令直接执行<ul>
+<li>执行这样的脚本必须使用<code>./file</code>的格式，因为直接写<code>file</code>的话 shell 会将其当成一个命令前往 $PATH 中寻找</li>
+</ul>
+</li>
 <li>外部命令都是程序，都有独立的进程</li>
 </ul>
 <h1 id="文件系统命令"><a href="#文件系统命令" class="headerlink" title="文件系统命令"></a>文件系统命令</h1><table>
@@ -404,12 +407,21 @@
 </li>
 <li>Linux 的目录结构可以规避磁盘挂载带来的移植性问题，即不管目录挂载在哪一块磁盘，目录结构都是一样的</li>
 <li>Linux 开机引导顺序：<ul>
-<li>激活主板 bios 芯片，bios 程序进入内存，决定引导位置（光驱、硬盘等）</li>
-<li>从引导位置读取分区表（最前面的分区）；bootloader 读取分区格式，使用不同解码器</li>
+<li>激活主板 bios 芯片，bios 程序进入内存，决定引导位置（光驱、硬盘等）<ul>
+<li>bios 包含 CPU 相关信息、设备启动顺序、硬盘、内存、时钟、PnP 特性等重要信息</li>
+</ul>
+</li>
+<li>读取 MBR（Master Boot Record）</li>
+<li>bootloader 读取分区格式，使用不同解码器</li>
 <li>分区内包含各自 kernel；bootloader 将 kernel 加载到内存。向 CPU 发送 reset 指令，覆盖内存内容，重新分配地址空间</li>
 <li>kernel 挂载磁盘分区，找到 sbin 目录下的 init 程序；根据 init 程序启动其它程序（login 程序以及登陆成功后的 shell 等）</li>
 </ul>
 </li>
+</ul>
+<blockquote>
+<p>关于开机引导上面的只是粗略的一个过程，详细可以参考<a href="https://zhuanlan.zhihu.com/p/73566297" target="_blank" rel="noopener">linux开机过程</a></p>
+</blockquote>
+<ul>
 <li>内存被分为内核地址空间和其它地址空间。内核地址空间是专为内核开辟的，受保护的地址空间</li>
 <li>9999 个 a 和一个汉子在 utf-8 编码下占用多少字节？答案是 10002 个。utf-8 字符是变长的，除了节省空间，更能节省 IO</li>
 <li><code>cd</code>命令回到家目录，<code>cd -</code>命令回到上之前打开的目录</li>
@@ -524,7 +536,7 @@
 <li>grep 中使用正则表达式要用双引号包裹作为引用</li>
 </ul>
 <blockquote>
-<p>关于 cut、sort、wc、sed、awk 命令的详细使用将会写在另一篇文章中</p>
+<p>关于 cut、sort、wc、sed、awk 命令的详细使用在另一篇文章中</p>
 </blockquote>
 <h1 id="权限管理"><a href="#权限管理" class="headerlink" title="权限管理"></a>权限管理</h1><table>
 <thead>
@@ -584,6 +596,7 @@
 <h1 id="Shell-脚本编程"><a href="#Shell-脚本编程" class="headerlink" title="Shell 脚本编程"></a>Shell 脚本编程</h1><ul>
 <li>shell 本质是一个解释器和启动器，能够解释用户交互输入和文本文件输入。脚本的本质是指明解释器和启动器的代码文件。</li>
 <li>使用<code>source file</code>会在当前 shell 运行脚本；使用<code>/bin/bash file</code>会新建一个进程打开 shell 运行脚本</li>
+<li>对于指定了解释器的脚本应该使用<code>./file</code>的格式，因为直接写<code>file</code>的话 shell 会将其当成一个命令前往 $PATH 中寻找</li>
 </ul>
 <h2 id="文本流和重定向"><a href="#文本流和重定向" class="headerlink" title="文本流和重定向"></a>文本流和重定向</h2><ul>
 <li>重定向不是命令</li>
@@ -618,7 +631,9 @@
 </ul>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">exec 8&lt;&gt; /dev/tcp/www.baidu.com/80</span><br><span class="line">echo -e "GET / HTTP/1.0\n" &gt;&amp; 8</span><br><span class="line">cat &lt;&amp; 8</span><br></pre></td></tr></table></figure>
 
-<h2 id="Shell-脚本"><a href="#Shell-脚本" class="headerlink" title="Shell 脚本"></a>Shell 脚本</h2><p>挖坑，区别的文章填。</p>
+<h2 id="Shell-脚本"><a href="#Shell-脚本" class="headerlink" title="Shell 脚本"></a>Shell 脚本</h2><blockquote>
+<p>这一部分涉及变量、参数、数组、运算符、流程控制等丰富内容，将会在另一篇文章中进行总结</p>
+</blockquote>
 
     </div>
 
@@ -644,8 +659,8 @@
             <span class="post-nav-divider"></span>
 
             <div class="post-nav-prev post-nav-item">
-                <a href="/2020/03/13/Shell%E8%84%9A%E6%9C%AC%E7%BC%96%E7%A8%8B/" rel="prev" title="Shell脚本编程">
-                  Shell脚本编程 <i class="fa fa-chevron-right"></i>
+                <a href="/2020/03/13/Shell%E8%84%9A%E6%9C%AC%E7%BC%96%E7%A8%8B/" rel="prev" title="Shell 脚本编程">
+                  Shell 脚本编程 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
@@ -706,7 +721,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-count">9</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -719,7 +734,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-count">13</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
