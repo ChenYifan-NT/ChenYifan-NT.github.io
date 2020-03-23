@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="“不要慌张、不要停止思考、不要放弃生存。”——罗伊·马斯坦">
+<meta name="keywords" content="Java,注解,反射,动态编译,脚本引擎,字节码操作">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java 动态性">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;03&#x2F;19&#x2F;Java%E5%8A%A8%E6%80%81%E6%80%A7&#x2F;index.html">
+<meta property="og:site_name" content="陈逸凡的博客">
+<meta property="og:description" content="“不要慌张、不要停止思考、不要放弃生存。”——罗伊·马斯坦">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-03-23T17:35:01.185Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2020/03/19/Java%E5%8A%A8%E6%80%81%E6%80%A7/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Java 动态性 | 陈逸凡的博客</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?57b343bca810fd9bc6bbf4ed8bd15279";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">陈逸凡的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">我想玩丝之歌</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/19/Java%E5%8A%A8%E6%80%81%E6%80%A7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="陈逸凡">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="陈逸凡的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Java 动态性
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-03-19 21:52:05" itemprop="dateCreated datePublished" datetime="2020-03-19T21:52:05-04:00">2020-03-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-03-23 13:35:01" itemprop="dateModified" datetime="2020-03-23T13:35:01-04:00">2020-03-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index">
+                    <span itemprop="name">笔记</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>“不要慌张、不要停止思考、不要放弃生存。”——罗伊·马斯坦</p>
+</blockquote>
+<a id="more"></a>
+
+<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>动态语言可以在程序运行时改变程序的结构和变量类型，典型的语言包括 Python、Ruby、Javascript 等。Java 是一种非动态语言，但其也包含一定的动态特性。Java 动态特性体现在注解和反射机制、动态编译、脚本引擎、动态字节码操作等方面。</p>
+<h1 id="注解"><a href="#注解" class="headerlink" title="注解"></a>注解</h1><p>注解（Annotation）是 JDK5.0 引入的技术。注解作为对程序的解释，不属于程序本身，但是可以被其它程序读取并处理。注解的格式为 @AnnotationName，例如<code>@SuppressWarnings(value=&quot;unchecked&quot;)</code>。注解可以被附加在 package、class、method、field 等元素之上，为它们添加额外的辅助信息。通过反射机制可以实现对这些元数据的访问。</p>
+<h2 id="部分内置注解"><a href="#部分内置注解" class="headerlink" title="部分内置注解"></a>部分内置注解</h2><table>
+<thead>
+<tr>
+<th>注解</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>@Override</td>
+<td>修饰方法，表示一个方法重写父类方法</td>
+</tr>
+<tr>
+<td>@Deprecated</td>
+<td>修饰方法、属性、类，表示不鼓励使用</td>
+</tr>
+<tr>
+<td>@SuppressWarnings</td>
+<td>抑制编译时的警告信息</td>
+</tr>
+</tbody></table>
+<h3 id="SuppressWarnings-参数"><a href="#SuppressWarnings-参数" class="headerlink" title="@SuppressWarnings 参数"></a>@SuppressWarnings 参数</h3><table>
+<thead>
+<tr>
+<th>参数</th>
+<th>抑制的警告类型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>deprecation</td>
+<td>过时的类或方法</td>
+</tr>
+<tr>
+<td>unchecked</td>
+<td>未检查的转换</td>
+</tr>
+<tr>
+<td>fallthrough</td>
+<td>switch 语句中的 case 穿透</td>
+</tr>
+<tr>
+<td>path</td>
+<td>不存在的路径</td>
+</tr>
+<tr>
+<td>serial</td>
+<td>可序列化类缺少 serialVersionUID 定义</td>
+</tr>
+<tr>
+<td>finally</td>
+<td>finally 子句不能完成</td>
+</tr>
+<tr>
+<td>all</td>
+<td>以上所有警告</td>
+</tr>
+</tbody></table>
+<h4 id="使用参数的例子"><a href="#使用参数的例子" class="headerlink" title="使用参数的例子"></a>使用参数的例子</h4><p><code>@SupressWarnings(&quot;unchecked&quot;)</code></p>
+<p><code>@SupressWarnings(value={&quot;unchecked, &quot;deprecation&quot;})</code></p>
+<h2 id="自定义注解"><a href="#自定义注解" class="headerlink" title="自定义注解"></a>自定义注解</h2><p>自定义注解的格式为<code>public @interface AnnotationName {definition}</code>。使用 @interface 会自动继承 java.lang.annotation.Annotation 接口。定义体中的每一个方法实际上声明了一个配置参数，其中方法的名称是参数的名称，返回值类型是参数的类型（只能是基本类型、Class、String 和 enum）。可以在方法后使用 default 声明参数的默认值。如果只有一个参数成员，一般命名为 value。</p>
+<blockquote>
+<p>注解元素必须有值。定义时经常使用空字符串或0 作为默认值，或者使用负数表示不存在的含义</p>
+</blockquote>
+<h3 id="元注解"><a href="#元注解" class="headerlink" title="元注解"></a>元注解</h3><p>元注解（meta-annotation）被用于注解其它注解。Java 定义了四种元注解：@Target、@Retention、@Documented、@Inherited。</p>
+<h4 id="Target"><a href="#Target" class="headerlink" title="@Target"></a>@Target</h4><p>@Target 描述注解的使用范围，其参数取值为名为 ElementType 的穷举类型：</p>
+<table>
+<thead>
+<tr>
+<th>取值</th>
+<th>修饰范围</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>PACKAGE</td>
+<td>package</td>
+</tr>
+<tr>
+<td>TYPE</td>
+<td>类、接口、枚举、Annotation</td>
+</tr>
+<tr>
+<td>CONSTRUCTOR</td>
+<td>构造器</td>
+</tr>
+<tr>
+<td>FIELD</td>
+<td>域</td>
+</tr>
+<tr>
+<td>METHOD</td>
+<td>方法</td>
+</tr>
+<tr>
+<td>LOCAL_VARIABLE</td>
+<td>局部变量</td>
+</tr>
+<tr>
+<td>PARAMETER</td>
+<td>参数</td>
+</tr>
+</tbody></table>
+<h4 id="Retention"><a href="#Retention" class="headerlink" title="@Retention"></a>@Retention</h4><p>@Retention 描述注解的生命周期，参数名称为 RetentionPolicy：</p>
+<table>
+<thead>
+<tr>
+<th>取值</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SOURCE</td>
+<td>源文件中有效，在源文件中保留</td>
+</tr>
+<tr>
+<td>CLASS</td>
+<td>在 class 文件中有效，class 文件中保留</td>
+</tr>
+<tr>
+<td>RUNTIME</td>
+<td>运行时有效，可以被反射机制读取</td>
+</tr>
+</tbody></table>
+<h1 id="反射机制"><a href="#反射机制" class="headerlink" title="反射机制"></a>反射机制</h1><p>反射机制指的是程序可以在运行时加载、探知和使用在编译期间完全未知的类。程序在运行状态中可以动态加载一个只有名称的类。对于任意一个已加载的类，可以探知其所有属性和方法；对于任意一个对象，可以调用其任意方法和属性。加载类的方法是<code>Class c = Class.forName(&quot;className&quot;);</code>。</p>
+<p>完成类加载后，程序会在堆内存中放入一个 Class 类型对象（一个类对应一个对象），该对象包含了完整的类的结构信息。这个对象就像一面镜子，映照出类的结构信息。</p>
+<h2 id="Class-类"><a href="#Class-类" class="headerlink" title="Class 类"></a>Class 类</h2><p>区别于 class（小写），java.lang.Class 是一种特殊的类，用来表示 Java 中的类型本身（class、interface、enum、annotation、primitive type、void等）。</p>
+<ul>
+<li>Class 类等对象包含某个被加载的类的结构。一个被加载的类只对应一个 Class 对象</li>
+<li>具有相同类型和维度（不是长度）的类对应相同的 Class 对象（例如长度为 10 和 30 的数组，Class 是相同的）</li>
+<li>当类被加载，或加载器（class loader）的<code>defineClass()</code>方法被 JVM 调用，JVM 便自动产生一个 Class 对象</li>
+<li>想要动态加载或运行某个类，必须先获得相应的 Class 对象</li>
+</ul>
+<p>获取 Class 类对象有三种方式：</p>
+<ul>
+<li><code>getClass()</code></li>
+<li><code>Class.forName()</code></li>
+<li><code>.class</code></li>
+</ul>
+<p>例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">String path = <span class="string">"com.group.className"</span>;</span><br><span class="line"></span><br><span class="line">Class clazz1 = Class.forName(path);</span><br><span class="line">Class clazz2 = path.getClass();</span><br><span class="line"></span><br><span class="line">Class clazz3 = String.class;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="使用反射机制获取类信息"><a href="#使用反射机制获取类信息" class="headerlink" title="使用反射机制获取类信息"></a>使用反射机制获取类信息</h2><p>反射机制提供了一些用于获取类信息的 API（clazz 是 Class 对象），以下是其中的一部分：</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>clazz.getname()</td>
+<td>获取包名 + 类名</td>
+</tr>
+<tr>
+<td>clazz.getSimpleName()</td>
+<td>获取类名</td>
+</tr>
+<tr>
+<td>clazz.getField(name)</td>
+<td>获取 name 对应的属性</td>
+</tr>
+<tr>
+<td>clazz.getFields()</td>
+<td>以列表形式返回全部的公有属性</td>
+</tr>
+<tr>
+<td>clazz.getDeclaredFields()</td>
+<td>获取全部属性</td>
+</tr>
+<tr>
+<td>clazz.getMethod(name, Class&lt;?&gt;… parameterType)</td>
+<td>获取 name 对应的方法，后一个参数是该方法参数类型的列表（用于区分重载）</td>
+</tr>
+<tr>
+<td>clazz.getMethods()</td>
+<td>获取全部公有方法</td>
+</tr>
+<tr>
+<td>clazz.getDeclaredMethods()</td>
+<td>获取全部方法（不包括继承）</td>
+</tr>
+<tr>
+<td>clazz.getDeclaredMethods(name, Class&lt;?&gt;… parameterType)</td>
+<td>获取 name 对应的方法，后一个参数是该方法参数类型（用于区分重载）</td>
+</tr>
+<tr>
+<td>clazz.getConstructors()</td>
+<td>获取全部公有构造器</td>
+</tr>
+<tr>
+<td>clazz.getDeclaredConstructors()</td>
+<td>获取全部构造器</td>
+</tr>
+<tr>
+<td>clazz.getDeclaredConstructors(Class&lt;?&gt;… parameterTypes)</td>
+<td>获取与参数类型相匹配的构造器</td>
+</tr>
+</tbody></table>
+<h2 id="使用反射机制动态操作构造器、方法和属性"><a href="#使用反射机制动态操作构造器、方法和属性" class="headerlink" title="使用反射机制动态操作构造器、方法和属性"></a>使用反射机制动态操作构造器、方法和属性</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">String path = <span class="string">"com.group.className"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">  Class&lt;ClassName&gt; clazz = (Class&lt;ClassName&gt;) Class.forName(path);</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 通过反射 API 调用构造方法</span></span><br><span class="line">  ClassName classOne = clazz.newInstance(); <span class="comment">// 调用无参构造器</span></span><br><span class="line">  Constructor&lt;ClassName&gt; c = clazz.getDeclaredConstructor(String.class); <span class="comment">// 调用有参构造器</span></span><br><span class="line">  ClassName classTwo = c.newInstance(<span class="string">"This is a test of reflection"</span>);</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 通过反射 API 调用普通方法</span></span><br><span class="line">  Method method = clazz.getDeclaredMethod(<span class="string">"methodName"</span>, String.class);</span><br><span class="line">  method.invoke(classOne, <span class="string">"This is a test of reflecting method"</span>); <span class="comment">// 相当于在 classTwo 对象中调用了 methodName(String) 方法，并且传入了参数</span></span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 通过反射 API 操作属性</span></span><br><span class="line">  Field f = clazz.getDeclaredFiled(<span class="string">"filedName"</span>);</span><br><span class="line">  f.setAccessible(<span class="keyword">true</span>); <span class="comment">// 如果是私有属性，先修改访问权限才能进行接下来的操作。似有方法同理</span></span><br><span class="line">  f.set(classOne, <span class="string">"This is a test of reflecting field"</span>); <span class="comment">// 设置 classOne 对象的 filedName 属性设置值</span></span><br><span class="line">  f.get(classOne); <span class="comment">// 读取 classOne 的 filedName 属性</span></span><br><span class="line">  </span><br><span class="line">&#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">  e.printStackTrace();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>反射机制被大量应用于各种开源框架中。很多框架都使用无参构造器构造对象，因此在 Java Bean 中总是应该写上无参构造器</p>
+</blockquote>
+<h2 id="使用反射机制操作泛型"><a href="#使用反射机制操作泛型" class="headerlink" title="使用反射机制操作泛型"></a>使用反射机制操作泛型</h2><p>Java 采用泛型擦出机制来引入泛型。只有编译器 javac会使用泛型，以确保数据的安全性和免去强制类型转换的麻烦。一旦编译完成，和泛型有关的类型信息会被全部擦出（这样的条件下反射机制是无法读取泛型信息的）。</p>
+<p>为迎合反射操作泛型的需要，Java 新增了 ParameterizedType、GenericArrayType、TypeVariable 和 WildcardType 类型来代表，不能归一到 Class 类，但是又与原始类型齐名的类型。</p>
+<ul>
+<li>ParameterizedType：一种参数化类型，例如<code>Collection&lt;String&gt;</code></li>
+<li>GenericArrayType：一种元素类型是参数化类型或类型变量的数组类型</li>
+<li>TypeVariable：各种类型变量的公共父接口</li>
+<li>WildcardType：一种通配符类型表达式，例如<code>?</code>、<code>? extends Number</code>、<code>? super Integer</code></li>
+</ul>
+<h3 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test1</span><span class="params">(Map&lt;String, User&gt; map, List&lt;User&gt; list)</span> </span>&#123;</span><br><span class="line">    System.out.println(<span class="string">"Demo.test1"</span>());</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="function"><span class="keyword">public</span> Map&lt;Integer, User&gt; <span class="title">test2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    System.out.println(<span class="string">"Demo.test2()"</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="comment">// 获得指定方法参数泛型信息</span></span><br><span class="line">      Method m = Demo.class.getMethod(<span class="string">"test1"</span>, Map.class, List.class);</span><br><span class="line">      Type[] t = m.getGenericParameterTypes();</span><br><span class="line">      </span><br><span class="line">      <span class="keyword">for</span>(Type ParamType : t) &#123;</span><br><span class="line">        System.out.println(<span class="string">"#"</span> + paramType);</span><br><span class="line">        <span class="keyword">if</span>(paramType <span class="keyword">instanceof</span> ParameterizedType) &#123;</span><br><span class="line">          Type[] genericTypes = ((ParameterizedType) paramType).getActualTypeArguments();</span><br><span class="line">          <span class="keyword">for</span> (Type genericType : genericTypes) &#123;</span><br><span class="line">            System.out.println(<span class="string">"泛型类型："</span> + genericType);</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      </span><br><span class="line">      <span class="comment">// 获得指定方法返回值泛型信息</span></span><br><span class="line">      Method m2 = Demo.class.getMethod(<span class="string">"test2"</span>, <span class="keyword">null</span>);</span><br><span class="line">      Type returnType = m2.getGenericReturnType();</span><br><span class="line">      <span class="keyword">if</span>(returnType <span class="keyword">instanceof</span> ParameterizedType) &#123;</span><br><span class="line">        Type[] genericTypes = ((ParameterizedType) returnType).getActualTypeArguments();</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span>(Type genericType : genericTypes) &#123;</span><br><span class="line">          System.out.println(<span class="string">"返回值泛型类型："</span> + genericType);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">catch</span>(Exception e) &#123;</span><br><span class="line">      e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输出：</p>
+<figure class="highlight plain"><figcaption><span>x</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">#java.util.Map&lt;java.lang.String, com.group.test.bean.User&gt;</span><br><span class="line">泛型类型：class java.lang.String</span><br><span class="line">泛型类型：class com.group.test.bean.User</span><br><span class="line">#java.util.List&lt;com.group.test.bean.User&gt;</span><br><span class="line">泛型类型：class com.group.test.bean.User</span><br><span class="line">返回值泛型类型：class java.lang.Integer</span><br><span class="line">返回值泛型类型：class com.group.test.bean.Use</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="使用反射机制操作注解"><a href="#使用反射机制操作注解" class="headerlink" title="使用反射机制操作注解"></a>使用反射机制操作注解</h2><p>可以通过 getAnnotations 和 getAnnotation 获取注解信息。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 获取类的所有有效注解</span></span><br><span class="line">Annotation[] annotations = clazz.getAnnotations();</span><br><span class="line"><span class="keyword">for</span>(Annotation a : annotations) &#123;</span><br><span class="line">  System.out.println(a);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取类的指定的注解</span></span><br><span class="line">Table t = (Table)clazz.getAnnotation(Table.class);</span><br><span class="line">System.out.println(t.value());</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取类的属性的注解</span></span><br><span class="line">Filed f = clazz.getDeclaredField(<span class="string">"name"</span>);</span><br><span class="line">MyField myField = f.getAnnotation(myField.class);</span><br><span class="line">System.out.println(myField.columnName());</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="反射机制性能"><a href="#反射机制性能" class="headerlink" title="反射机制性能"></a>反射机制性能</h2><p>setAccessible 本质是启用和禁用访问安全检查开关，值为 true 则指示反射的对象取消 Java 语言访问检查，值为 false 则进行访问检查。并非是为 true 就能访问而为 false 就不能访问。禁用安全检查可以提高反射的运行速度。</p>
+<blockquote>
+<p>执行访问检查大概会带来三十倍的性能降低。非常依赖性能时可以考虑使用字节码操作。在大部分开发中开发效率比运行效率更重要，因此反射得到了大规模的应用。字节码操作将会在后面的内容中进行介绍</p>
+</blockquote>
+<h1 id="动态编译"><a href="#动态编译" class="headerlink" title="动态编译"></a>动态编译</h1><p>Java 6.0 引入了动态编译机制。在 6.0 之前实现类似动态编译效果的手段是通过 Runtime 调用 javac，启动新的进程去运行：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Runtime run = Runtime.getRuntime();</span><br><span class="line">Process process = run.exec(<span class="string">"javac -cp /path/to/file HelloWorld.java"</span>);</span><br></pre></td></tr></table></figure>
+
+<p>现在的做法是使用 JavaCompiler 实现动态编译。</p>
+<h2 id="动态编译源文件"><a href="#动态编译源文件" class="headerlink" title="动态编译源文件"></a>动态编译源文件</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">compileFile</span><span class="params">(String sourceFile)</span> </span>&#123;</span><br><span class="line">  JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();</span><br><span class="line">  <span class="keyword">int</span> result = compiler.run(<span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">null</span>, sourceFile); <span class="comment">// 参数 null 使用 System.in 和 System.out 作为信息输入输出流</span></span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>第一个参数：为 Java 编译器提供的参数的输入流</li>
+<li>第二个参数：接收 Java 编译器的输出信息的输出流</li>
+<li>第三个参数：接收 Java 编译器的错误信息的输出流</li>
+<li>第四个参数：Java 源文件，String 数组，可以输入多个文件</li>
+<li>返回值：0 表示编译成功，非 0 表示失败</li>
+</ul>
+<h2 id="动态运行已经编译的类"><a href="#动态运行已经编译的类" class="headerlink" title="动态运行已经编译的类"></a>动态运行已经编译的类</h2><h3 id="通过-Runtime-启动新的进程运行"><a href="#通过-Runtime-启动新的进程运行" class="headerlink" title="通过 Runtime 启动新的进程运行"></a>通过 Runtime 启动新的进程运行</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Runtime run = Runtime.getRuntime();</span><br><span class="line">Process process = run.exec(<span class="string">"javac -cp /path/to/file HelloWorld.java"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 输出文本</span></span><br><span class="line">InputStream in = process.getInputStream();</span><br><span class="line">BufferedReader reader = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(in));</span><br><span class="line">String info = <span class="string">""</span>;</span><br><span class="line"><span class="keyword">while</span>((info=reader.readLine()) != <span class="keyword">null</span>) &#123;</span><br><span class="line">  System.out.println(info);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="通过反射运行已经编译的类"><a href="#通过反射运行已经编译的类" class="headerlink" title="通过反射运行已经编译的类"></a>通过反射运行已经编译的类</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">runJavaClassByReflect</span><span class="params">(String dir, String classFile)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    URL[] urls = <span class="keyword">new</span> URL[] &#123;<span class="keyword">new</span> URL(<span class="string">"file:/"</span> + dir)&#125;;</span><br><span class="line">    URLClassLoader loader = <span class="keyword">new</span> URLClassLoader(urls);</span><br><span class="line">    Class c = loader.loadClass(classFile);</span><br><span class="line">    <span class="comment">// 这里需要强转为 Object，因为编译器会将 String[] 编译成多个参数，和 main 函数参数数量不匹配</span></span><br><span class="line">    c.getMethod(<span class="string">"main"</span>, String[].class).invoke(<span class="keyword">null</span>, (Object)<span class="keyword">new</span> String[]&#123;&#125;);</span><br><span class="line">  &#125; <span class="keyword">catch</span>(Exception e) &#123;</span><br><span class="line">    e.printStackTrace();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>URL 和 URLClassLoader 将会在后面的内容中进行介绍</p>
+</blockquote>
+<h1 id="脚本引擎"><a href="#脚本引擎" class="headerlink" title="脚本引擎"></a>脚本引擎</h1><p>Java 脚本 API 提供了一套接口实现与各种脚本引擎的交互。获得脚本引擎的方法是：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ScriptEngineManager sem = <span class="keyword">new</span> ScriptEngineManager();</span><br><span class="line">ScriptEngine engine = sem.getEngineByName(<span class="string">"javascript"</span>); <span class="comment">// 获取 javascript 脚本引擎</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="脚本引擎执行-JavaScript-代码"><a href="#脚本引擎执行-JavaScript-代码" class="headerlink" title="脚本引擎执行 JavaScript 代码"></a>脚本引擎执行 JavaScript 代码</h2><p>Java 脚本 API 提供了如下功能：</p>
+<ul>
+<li>获取脚本程序输入，通过脚本引擎执行并返回结果（最核心的接口）：<ul>
+<li>API 提供的是接口，可以选择不同的实现<ul>
+<li>JavaScript 使用 Rhino</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>通过脚本引擎在脚本和 Java 上下文间交换数据</li>
+<li>通过 Java 应用程序调用脚本函数</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    <span class="comment">// 获取脚本引擎对象</span></span><br><span class="line">    ScriptEngineManager sem = <span class="keyword">new</span> ScriptEngineManager();</span><br><span class="line">    ScriptEngine engine = sem.getEngineByName(<span class="string">"javascript"</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 定义变量，存储到引擎上下文中，脚本和 Java 都能获取</span></span><br><span class="line">    engine.put(<span class="string">"msg"</span>, <span class="string">"Hello JavaScript!"</span>);</span><br><span class="line">    String str = <span class="string">"var user = &#123;name: 'Link'&#125;;"</span>;</span><br><span class="line">    str += <span class="string">"println(user.name)"</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 执行脚本</span></span><br><span class="line">    engine.eval(str); <span class="comment">// 输出 Link</span></span><br><span class="line">    </span><br><span class="line">    engine.eval(<span class="string">"msg = 'Hello World!';"</span>);</span><br><span class="line">    System.out.println(engine.get(<span class="string">"msh"</span>)); <span class="comment">// 输出 Hello World!</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 定义 js 函数</span></span><br><span class="line">    engine.eval(<span class="string">"function add(a, b) &#123;var sum = a + b; return sum;&#125;"</span>);</span><br><span class="line">    <span class="comment">// 执行 js 函数</span></span><br><span class="line">    Invocable jsInvoke = (Invocable) engine;</span><br><span class="line">    Object result = jsInvoke.invokeFunction(<span class="string">"add"</span>, <span class="keyword">new</span> Object[]&#123;<span class="number">13</span>, <span class="number">20</span>&#125;);</span><br><span class="line">    System.out.println(result); <span class="comment">// 输出 33</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 导入其它 Java 包，使用其中的类</span></span><br><span class="line">    String jsCode = <span class="string">"importPackage(java.util); var list = Arrays.asList([\"Java\", \"JavaScript\"]);"</span>;</span><br><span class="line">    engine.eval(jsCode);</span><br><span class="line">    List&lt;String&gt; list = (List&lt;String&gt;)engine.get(<span class="string">"list"</span>);</span><br><span class="line">    <span class="keyword">for</span>(String temp : list) &#123;</span><br><span class="line">      System.out.println(temp);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 执行 js 文件</span></span><br><span class="line">    URL url = Demo.class.getClassLoader().getResource(<span class="string">"a.js"</span>); <span class="comment">// 放在 src 目录下即可</span></span><br><span class="line">    FileReader fr = <span class="keyword">new</span> FileReader(url.getPath());</span><br><span class="line">    engine.eval(fr);</span><br><span class="line">    fr.close(); <span class="comment">// 实际生产中要使用 try catch finally</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="字节码操作"><a href="#字节码操作" class="headerlink" title="字节码操作"></a>字节码操作</h1><p>Java 动态性的实现有反射和字节码操作两种常用方式。字节码操作可以实现动态生成新类和动态改变类结构的功能（添加、删除、修改新的属性、方法等）。字节码的优势在于其比反射开销小且性能更高。</p>
+<p>Java 程序首先由编译器编译为 class 文件，运行时读入虚拟机中。字节码操作便是创建或修改虚拟机中的 class 文件实现动态的类操作。</p>
+<p>常见字节码操作类库包括 BCEL、ASM、CGLIB、Javassist。BCEL 和 ASM 基于 JVM 底层操作和指令实现，性能好，但是学习难度大。后两者性能稍弱，但是更容易使用和学习，它们常见于各种开源框架中。本文将会介绍 Javassist，它同时提供源码和底层级别的 API 供不同级别的开发者使用。</p>
+<blockquote>
+<p>Javassist 也经常应用于面向切面编程（Aspect Oriented Programming）。面向切面编程指在程序生命周期的各个阶段（编译、运行等）动态地将代码切入指定代码的指定位置，从而实现业务的解耦</p>
+</blockquote>
+<h2 id="Javassist-简单使用"><a href="#Javassist-简单使用" class="headerlink" title="Javassist 简单使用"></a>Javassist 简单使用</h2><p>Javassist 最外层 API 和 Java 反射包中的 API 类似，主要由 CtClass、CtMethod 和 CtField 组成，分别对应 java.lang.Class、java.lang.reflect.Method 和 java.lang.reflect.Method.Field。</p>
+<h3 id="使用-Javassist-生成新类"><a href="#使用-Javassist-生成新类" class="headerlink" title="使用 Javassist 生成新类"></a>使用 Javassist 生成新类</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    ClassPool pool = ClassPool.getDefault();</span><br><span class="line">    CtClass cc = pool.makeClass(<span class="string">"com.group.bean.Emp"</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 创建属性</span></span><br><span class="line">    CtField f1 = CtField.make(<span class="string">"private int empno;"</span>, cc);</span><br><span class="line">    CtField f2 = CtField.make(<span class="string">"private String ename;"</span>, cc);</span><br><span class="line">    cc.addField(f1);</span><br><span class="line">    cc.addField(f2);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 创建方法</span></span><br><span class="line">    CtMethod m1 = CtMethod.make(<span class="string">"public int getEmpno()&#123;return empno;&#125;"</span>, cc);</span><br><span class="line">    CtMethod m2 = CtMethod.make(<span class="string">"public void setEmpno(int empno)&#123;this.empno = empno;&#125;"</span>, cc);</span><br><span class="line">    cc.addMethod(m1);</span><br><span class="line">    cc.addMethod(m2);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 添加构造器</span></span><br><span class="line">    CtConstructor constructor = <span class="keyword">new</span> CtConstructor(<span class="keyword">new</span> CtClass[]&#123;CtClass.intType, pool.get(<span class="string">"java.lang.String"</span>)&#125;, cc);</span><br><span class="line">    constructor.setBody(<span class="string">"&#123;this.empno = empno; this.ename = ename;&#125;"</span>);</span><br><span class="line">    cc.addConstructor(constructor);</span><br><span class="line">    </span><br><span class="line">    cc.writeFile(<span class="string">"/path/to/file"</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<blockquote>
+<p>TODO：字节码操作 API 和 JVM 核心机制</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java/" rel="tag"># Java</a>
+              <a href="/tags/%E6%B3%A8%E8%A7%A3/" rel="tag"># 注解</a>
+              <a href="/tags/%E5%8F%8D%E5%B0%84/" rel="tag"># 反射</a>
+              <a href="/tags/%E5%8A%A8%E6%80%81%E7%BC%96%E8%AF%91/" rel="tag"># 动态编译</a>
+              <a href="/tags/%E8%84%9A%E6%9C%AC%E5%BC%95%E6%93%8E/" rel="tag"># 脚本引擎</a>
+              <a href="/tags/%E5%AD%97%E8%8A%82%E7%A0%81%E6%93%8D%E4%BD%9C/" rel="tag"># 字节码操作</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/2020/03/14/Shell%E6%96%87%E6%9C%AC%E5%A4%84%E7%90%86%E5%92%8C%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" rel="next" title="Shell 文本处理和数据分析">
+                  <i class="fa fa-chevron-left"></i> Shell 文本处理和数据分析
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  <div class="comments" id="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC80NzgzOC8yNDMzNQ=="></div>
+  </div>
+  
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#注解"><span class="nav-number">2.</span> <span class="nav-text">注解</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#部分内置注解"><span class="nav-number">2.1.</span> <span class="nav-text">部分内置注解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SuppressWarnings-参数"><span class="nav-number">2.1.1.</span> <span class="nav-text">@SuppressWarnings 参数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#使用参数的例子"><span class="nav-number">2.1.1.1.</span> <span class="nav-text">使用参数的例子</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义注解"><span class="nav-number">2.2.</span> <span class="nav-text">自定义注解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#元注解"><span class="nav-number">2.2.1.</span> <span class="nav-text">元注解</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Target"><span class="nav-number">2.2.1.1.</span> <span class="nav-text">@Target</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Retention"><span class="nav-number">2.2.1.2.</span> <span class="nav-text">@Retention</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#反射机制"><span class="nav-number">3.</span> <span class="nav-text">反射机制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Class-类"><span class="nav-number">3.1.</span> <span class="nav-text">Class 类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用反射机制获取类信息"><span class="nav-number">3.2.</span> <span class="nav-text">使用反射机制获取类信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用反射机制动态操作构造器、方法和属性"><span class="nav-number">3.3.</span> <span class="nav-text">使用反射机制动态操作构造器、方法和属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用反射机制操作泛型"><span class="nav-number">3.4.</span> <span class="nav-text">使用反射机制操作泛型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#例子"><span class="nav-number">3.4.1.</span> <span class="nav-text">例子</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用反射机制操作注解"><span class="nav-number">3.5.</span> <span class="nav-text">使用反射机制操作注解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#反射机制性能"><span class="nav-number">3.6.</span> <span class="nav-text">反射机制性能</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#动态编译"><span class="nav-number">4.</span> <span class="nav-text">动态编译</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#动态编译源文件"><span class="nav-number">4.1.</span> <span class="nav-text">动态编译源文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#动态运行已经编译的类"><span class="nav-number">4.2.</span> <span class="nav-text">动态运行已经编译的类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#通过-Runtime-启动新的进程运行"><span class="nav-number">4.2.1.</span> <span class="nav-text">通过 Runtime 启动新的进程运行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#通过反射运行已经编译的类"><span class="nav-number">4.2.2.</span> <span class="nav-text">通过反射运行已经编译的类</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#脚本引擎"><span class="nav-number">5.</span> <span class="nav-text">脚本引擎</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#脚本引擎执行-JavaScript-代码"><span class="nav-number">5.1.</span> <span class="nav-text">脚本引擎执行 JavaScript 代码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#字节码操作"><span class="nav-number">6.</span> <span class="nav-text">字节码操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Javassist-简单使用"><span class="nav-number">6.1.</span> <span class="nav-text">Javassist 简单使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用-Javassist-生成新类"><span class="nav-number">6.1.1.</span> <span class="nav-text">使用 Javassist 生成新类</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="陈逸凡"
+    src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">陈逸凡</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">陈逸凡</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+</body>
+</html>
