@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="学习基于阿里云 ECS 云服务器搭建大数据集群的笔记。笔记将搭建步骤和遇到的问题一一记录，用于自己查阅复习，也为小伙伴们提供一定参考帮助。 本篇是笔记的第三部分。上篇笔记完成了 Hadoop 全分布集群搭建。本篇将继续实现基于 ZooKeeper 的高可用集群搭建。">
+<meta name="keywords" content="大数据,阿里云,Hadoop,HA,ZooKeeper">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于阿里云 ECS 搭建大数据集群（三）">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;05&#x2F;13&#x2F;%E9%98%BF%E9%87%8C%E4%BA%91%E5%A4%A7%E6%95%B0%E6%8D%AE%E9%9B%86%E7%BE%A403&#x2F;index.html">
+<meta property="og:site_name" content="陈逸凡的博客">
+<meta property="og:description" content="学习基于阿里云 ECS 云服务器搭建大数据集群的笔记。笔记将搭建步骤和遇到的问题一一记录，用于自己查阅复习，也为小伙伴们提供一定参考帮助。 本篇是笔记的第三部分。上篇笔记完成了 Hadoop 全分布集群搭建。本篇将继续实现基于 ZooKeeper 的高可用集群搭建。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-05-14T13:58:56.492Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2020/05/13/%E9%98%BF%E9%87%8C%E4%BA%91%E5%A4%A7%E6%95%B0%E6%8D%AE%E9%9B%86%E7%BE%A403/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>基于阿里云 ECS 搭建大数据集群（三） | 陈逸凡的博客</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?57b343bca810fd9bc6bbf4ed8bd15279";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">陈逸凡的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">我想玩丝之歌</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/05/13/%E9%98%BF%E9%87%8C%E4%BA%91%E5%A4%A7%E6%95%B0%E6%8D%AE%E9%9B%86%E7%BE%A403/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="陈逸凡">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="陈逸凡的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          基于阿里云 ECS 搭建大数据集群（三）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-05-13 21:33:15" itemprop="dateCreated datePublished" datetime="2020-05-13T21:33:15+08:00">2020-05-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-05-14 21:58:56" itemprop="dateModified" datetime="2020-05-14T21:58:56+08:00">2020-05-14</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index">
+                    <span itemprop="name">笔记</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>学习基于阿里云 ECS 云服务器搭建大数据集群的笔记。笔记将搭建步骤和遇到的问题一一记录，用于自己查阅复习，也为小伙伴们提供一定参考帮助。</p>
+<p>本篇是笔记的第三部分。上篇笔记完成了 Hadoop 全分布集群搭建。本篇将继续实现基于 ZooKeeper 的高可用集群搭建。</p>
+<a id="more"></a>
+
+<h1 id="集群架构"><a href="#集群架构" class="headerlink" title="集群架构"></a>集群架构</h1><p>集群使用 4 台云服务器搭建，各节点角色如下：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>NN-1</th>
+<th>NN-2</th>
+<th>DN</th>
+<th>ZK</th>
+<th>ZKFC</th>
+<th>JNN</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Node00</strong></td>
+<td>*</td>
+<td></td>
+<td></td>
+<td></td>
+<td>*</td>
+<td>*</td>
+</tr>
+<tr>
+<td><strong>Node01</strong></td>
+<td></td>
+<td>*</td>
+<td>*</td>
+<td>*</td>
+<td>*</td>
+<td>*</td>
+</tr>
+<tr>
+<td><strong>Node02</strong></td>
+<td></td>
+<td></td>
+<td>*</td>
+<td>*</td>
+<td></td>
+<td>*</td>
+</tr>
+<tr>
+<td><strong>Node03</strong></td>
+<td></td>
+<td></td>
+<td>*</td>
+<td>*</td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<br  />
+
+<h1 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h1><h2 id="关闭集群"><a href="#关闭集群" class="headerlink" title="关闭集群"></a>关闭集群</h2><p>在 node00 使用命令<code>stop-dfs.sh</code>关闭集群。</p>
+<br />
+
+<h2 id="准备-ZooKeeper-安装包"><a href="#准备-ZooKeeper-安装包" class="headerlink" title="准备 ZooKeeper 安装包"></a>准备 ZooKeeper 安装包</h2><p>上传到 node00<code>/root/softwares</code>目录下备用。我使用的版本是 ZooKeeper 3.4.6。</p>
+<br />
+
+<h1 id="配置基于-QJM-的高可用"><a href="#配置基于-QJM-的高可用" class="headerlink" title="配置基于 QJM 的高可用"></a>配置基于 QJM 的高可用</h1><p>QJM 的全称是 Quorum Journal Manager，用于在 Active NameNode 和 NameNode Standby 之间同步数据。</p>
+<br />
+
+<h2 id="配置-hdfs-site-xml"><a href="#配置-hdfs-site-xml" class="headerlink" title="配置 hdfs-site.xml"></a>配置 hdfs-site.xml</h2><p>打开<code>/opt/hadoop/hadoop-2.6.5/etc/hadoop</code>目录下的<code>hdfs-site.xml</code>文件。</p>
+<br />
+
+<h3 id="删除-Secondary-NameNode-配置"><a href="#删除-Secondary-NameNode-配置" class="headerlink" title="删除 Secondary NameNode 配置"></a>删除 Secondary NameNode 配置</h3><p>由于已经不再需要 SNN，我们首先将<code>hdfs-site.xml</code>配置文件中关于 SNN 的配置删除。</p>
+<br />
+
+<h3 id="配置-nameservices-逻辑名称"><a href="#配置-nameservices-逻辑名称" class="headerlink" title="配置 nameservices 逻辑名称"></a>配置 nameservices 逻辑名称</h3><p>将 NameNode 归属到同一 NameService 才能实现主节点间的数据同步。我们首先为 NameService 配置逻辑名称，并在随后为 NameService 添加节点。</p>
+<p>在配置中添加：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.nameservices<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">value</span>&gt;</span>mycluster<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>其中 NameService 的名称<code>mycluster</code>可以随意指定。这里使用的是官网文档中的命名。如果需要配置联邦，这一项中可以同时配置多个 NameService 逻辑名称（使用逗号隔开）。</p>
+<br />
+
+<h3 id="配置-mycluster-下-NameNode-逻辑名称"><a href="#配置-mycluster-下-NameNode-逻辑名称" class="headerlink" title="配置 mycluster 下 NameNode 逻辑名称"></a>配置 mycluster 下 NameNode 逻辑名称</h3><p>在配置中添加：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.ha.namenodes.mycluster<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">value</span>&gt;</span>nn1,nn2<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>这一步为 mycluster 添加了两个逻辑节点 nn1 和 nn2。我们将在稍后为这两个逻辑节点指定具体的物理节点。</p>
+<blockquote>
+<p>Hadoop 2.x 下一个 NameService 只支持两个 NameNode</p>
+</blockquote>
+<br />
+
+<h3 id="指定-NameNodes"><a href="#指定-NameNodes" class="headerlink" title="指定 NameNodes"></a>指定 NameNodes</h3><p>在配置中添加：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.namenode.rpc-address.mycluster.nn1<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">value</span>&gt;</span>node00:8020<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.namenode.rpc-address.mycluster.nn2<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">value</span>&gt;</span>node01:8020<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>rpc 是远程服务调用（remote procedure call）的缩写</p>
+</blockquote>
+<br />
+
+<h3 id="配置-http-端口"><a href="#配置-http-端口" class="headerlink" title="配置 http 端口"></a>配置 http 端口</h3><p>在配置中添加：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.namenode.http-address.mycluster.nn1<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">value</span>&gt;</span>node00:50070<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.namenode.http-address.mycluster.nn2<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">value</span>&gt;</span>node01:50070<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<br />
+
+<h3 id="配置-JN-主机位置"><a href="#配置-JN-主机位置" class="headerlink" title="配置 JN 主机位置"></a>配置 JN 主机位置</h3><p>集群工作时，Active NameNode 将会向 JN 中写入 edits 数据，而 Standby 将会读取。这一步我们要指定 JN 主机位置。</p>
+<p>在配置中添加：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.namenode.shared.edits.dir<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">value</span>&gt;</span>qjournal://node00:8485;node01:8485;node02:8485/mycluster<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<br />
+
+<h3 id="配置代理类"><a href="#配置代理类" class="headerlink" title="配置代理类"></a>配置代理类</h3><p>直接照抄官方文档：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.client.failover.proxy.provider.mycluster<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">value</span>&gt;</span>org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<br />
+
+<h3 id="配置-Fencing-Method"><a href="#配置-Fencing-Method" class="headerlink" title="配置 Fencing Method"></a>配置 Fencing Method</h3><p>故障发生时 ANN 可能仍然在从 Client 读取数据并写入 edits，从而导致脑裂（split brain）。因此需要配置一种故障隔离方法。</p>
+<p>在配置中添加：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.ha.fencing.methods<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">value</span>&gt;</span>sshfence<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.ha.fencing.ssh.private-key-files<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">value</span>&gt;</span>/root/.ssh/hadoop.pem<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<br />
+
+<h3 id="配置-JN-日志文件保存位置"><a href="#配置-JN-日志文件保存位置" class="headerlink" title="配置 JN 日志文件保存位置"></a>配置 JN 日志文件保存位置</h3><p>在配置中添加：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.journalnode.edits.dir<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">value</span>&gt;</span>/var/aliyun-study/hadoop/ha/journalnode<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<br />
+
+<h2 id="配置-core-site-dfs"><a href="#配置-core-site-dfs" class="headerlink" title="配置 core-site.dfs"></a>配置 core-site.dfs</h2><p>打开<code>/opt/hadoop/hadoop-2.6.5/etc/hadoop</code>目录下的<code>core-site.xml</code>文件。</p>
+<br />
+
+<h3 id="配置-fs-defaultFS"><a href="#配置-fs-defaultFS" class="headerlink" title="配置 fs.defaultFS"></a>配置 fs.defaultFS</h3><p>我们的主节点不再是 node00 单节点，而是名为 mycluster 的逻辑节点。修改配置如下：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">name</span>&gt;</span>fs.defaultFS<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">value</span>&gt;</span>hdfs://mycluster<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<br />
+
+<h3 id="修改-hadoop-tmp-dir"><a href="#修改-hadoop-tmp-dir" class="headerlink" title="修改 hadoop.tmp.dir"></a>修改 hadoop.tmp.dir</h3><p>将 full 修改为 ha。</p>
+<br />
+
+<h1 id="基于-ZooKeeper-的自动故障转移"><a href="#基于-ZooKeeper-的自动故障转移" class="headerlink" title="基于 ZooKeeper 的自动故障转移"></a>基于 ZooKeeper 的自动故障转移</h1><p>经过上一段的配置，集群已经可以通过手动方式进行故障转移了。具体操作的方法可以在官方文档找到。接下来我们要配置基于 ZooKeeper 的自动故障转移。</p>
+<br />
+
+<h2 id="配置-hdfs"><a href="#配置-hdfs" class="headerlink" title="配置 hdfs"></a>配置 hdfs</h2><p>我们要打开 hdfs 自动故障转移功能，同时指定 ZK 集群的位置。所有配置完成后千万别忘了将配置分发到各个节点。</p>
+<br />
+
+<h3 id="打开自动故障转移功能"><a href="#打开自动故障转移功能" class="headerlink" title="打开自动故障转移功能"></a>打开自动故障转移功能</h3><p>在<code>hdfs-site.xml</code>中增加配置：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.ha.automatic-failover.enabled<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">value</span>&gt;</span>true<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<br />
+
+<h3 id="指定-ZK-集群位置"><a href="#指定-ZK-集群位置" class="headerlink" title="指定 ZK 集群位置"></a>指定 ZK 集群位置</h3><p>打开<code>core-site.xml</code>增加配置：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>ha.zookeeper.quorum<span class="tag">&lt;/<span class="name">name</span>&gt;</span>	</span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>node1:2181,node2:2181,node3:2181<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<br />
+
+<h3 id="分发配置文件"><a href="#分发配置文件" class="headerlink" title="分发配置文件"></a>分发配置文件</h3><p>在<code>/opt/hadoop/hadoop-2.6.5/etc/hadoop</code>目录下，仿照命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scp core-site.xml hdfs-site.xml node01:`pwd`</span><br></pre></td></tr></table></figure>
+
+<p>将配置文件分发到各个节点。</p>
+<br />
+
+<h2 id="搭建-ZK-集群"><a href="#搭建-ZK-集群" class="headerlink" title="搭建 ZK 集群"></a>搭建 ZK 集群</h2><p>以上我们只是完成了 hdfs 中与 ZK 有关的配置。ZK 本身的安装还没有完成。接下来进行 ZK 的安装。</p>
+<br />
+
+<h3 id="在-node01-安装-ZooKeeper"><a href="#在-node01-安装-ZooKeeper" class="headerlink" title="在 node01 安装 ZooKeeper"></a>在 node01 安装 ZooKeeper</h3><p>首先使用 scp 命令将 ZK 发送到 node01 节点下。新建目录<code>/opt/zookeeper/</code>接着使用命令<code>tar -zxvf zookeeper-3.4.6.tar.gz -C /opt/zookeeper</code>解包。</p>
+<br />
+
+<h3 id="修改-ZK-配置文件"><a href="#修改-ZK-配置文件" class="headerlink" title="修改 ZK 配置文件"></a>修改 ZK 配置文件</h3><p>下面要对 ZK 进行一些配置。打开<code>/opt/zookeeper/zookeeper-3.4.6/conf/</code>目录。该目录有名为<code>zoo_sample.cfg</code>的配置文件模板。使用 cp 命令复制模板并且改名为<code>zoo.cfg</code>。</p>
+<br />
+
+<h4 id="修改-dataDir"><a href="#修改-dataDir" class="headerlink" title="修改 dataDir"></a>修改 dataDir</h4><p>找到 dataDir 参数，修改为<code>/var/aliyun-study/zk</code>。</p>
+<br />
+
+<h4 id="配置-ZK-节点"><a href="#配置-ZK-节点" class="headerlink" title="配置 ZK 节点"></a>配置 ZK 节点</h4><p>在配置文件末尾添加：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">server.1=node01:2888:3888</span><br><span class="line">server.2=node02:2888:3888</span><br><span class="line">server.3=node03:2888:3888</span><br></pre></td></tr></table></figure>
+
+<p>我们通过三行配置为 ZK 配置了三台节点，并指定了节点的物理地址和编号。2888 端口是 ZK 主从节点通讯端口。3888 是选举机制通讯接口。</p>
+<br />
+
+<h3 id="向-node02-和-node03-分发-ZK"><a href="#向-node02-和-node03-分发-ZK" class="headerlink" title="向 node02 和 node03 分发 ZK"></a>向 node02 和 node03 分发 ZK</h3><p>回到目录<code>/opt</code>，仿照命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scp -r zookeeper/ node02:`pwd`</span><br></pre></td></tr></table></figure>
+
+<p>完成分发。</p>
+<br />
+
+<h3 id="创建-myid-文件"><a href="#创建-myid-文件" class="headerlink" title="创建 myid 文件"></a>创建 myid 文件</h3><p>在 node01 创建目录<code>/var/aliyun-study/zk</code>。使用命令<code>echo 1 &gt; /var/aliyun-study/zk/myid</code>创建 myid 文件。使用类似的方法在 node02 和 node03 创建对应的 myid 文件（注意编号的对应）。</p>
+<br />
+
+<h3 id="配置环境变量"><a href="#配置环境变量" class="headerlink" title="配置环境变量"></a>配置环境变量</h3><p>来到 node01。使用<code>vi + /etc/profile</code>添加环境变量。配置完成后将配置文件分发到 node02 和 node03。使用<code>. /etc/profile</code>加载配置。</p>
+<br />
+
+<h2 id="测试-ZK-集群"><a href="#测试-ZK-集群" class="headerlink" title="测试 ZK 集群"></a>测试 ZK 集群</h2><p>在 node01 到 node03 使用命令<code>zkServer.sh start</code>启动集群。有两种方式确认是否启动成功。第一种是通过 jps 查看。如果看到了 QuorumPeerMain 进程说明启动成功。第二种是通过<code>zkServer.sh status</code>命令查看。该命令会显示当前节点是 Leader 还是 Follower。</p>
+<blockquote>
+<p>如果你只启动了一台机器，那么 zkServer.sh status 将会提示集群可能未运行。这是因为根据过半原则，只有超过两台服务器启动后集群才能正常运行。再启动一台机器就能正常显示节点的角色了</p>
+</blockquote>
+<br />
+
+<h2 id="启动-hdfs-集群"><a href="#启动-hdfs-集群" class="headerlink" title="启动 hdfs 集群"></a>启动 hdfs 集群</h2><p>我们已经完成了 ZooKeeper 的安装。下一步启动 hdfs 集群。</p>
+<br />
+
+<h2 id="启动-JN"><a href="#启动-JN" class="headerlink" title="启动 JN"></a>启动 JN</h2><p>JN 是 NN 数据同步的基础。在格式化并启动 hdfs 之前我们要首先启动 JN。分别在 node00、node01 和 node02 使用命令<code>hadoop-daemon.sh start journalnode</code>启动 JN 进程。</p>
+<br />
+
+<h3 id="启动-NN"><a href="#启动-NN" class="headerlink" title="启动 NN"></a>启动 NN</h3><p>接下来我们要选定一台 NN 启动。该节点将成为 Active NN。我选择了 node00。来到 node00，使用命令<code>hdfs namenode -format</code>格式化 hdfs。这一步生成了 fsimage 和 edits文件。我们还需要使用命令<code>hadoop-daemon start namenode</code>手动启动 NN 进程。</p>
+<p>接着来到另一台 NN，这里是 node01，使用命令<code>hdfs namenode -bootstrapStandby</code>将 node00 的数据同步到 node01，并让其处于 Standby 状态。</p>
+<br />
+
+<h3 id="注册-Active-NameNode"><a href="#注册-Active-NameNode" class="headerlink" title="注册 Active NameNode"></a>注册 Active NameNode</h3><p>来到 node00 使用命令<code>hdfs zkfc -formatZK</code>向 ZK 注册节点。</p>
+<p>来到 node01 可以使用命令<code>zkCli.sh</code>进入 ZK 客户端进行管理。</p>
+<h3 id="启动-hdfs-集群-1"><a href="#启动-hdfs-集群-1" class="headerlink" title="启动 hdfs 集群"></a>启动 hdfs 集群</h3><p>来到 node00 使用命令<code>start-dfs.sh</code>启动集群。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag"># 大数据</a>
+              <a href="/tags/%E9%98%BF%E9%87%8C%E4%BA%91/" rel="tag"># 阿里云</a>
+              <a href="/tags/Hadoop/" rel="tag"># Hadoop</a>
+              <a href="/tags/HA/" rel="tag"># HA</a>
+              <a href="/tags/ZooKeeper/" rel="tag"># ZooKeeper</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/2020/05/12/%E9%98%BF%E9%87%8C%E4%BA%91%E5%A4%A7%E6%95%B0%E6%8D%AE%E9%9B%86%E7%BE%A402/" rel="next" title="基于阿里云 ECS 搭建大数据集群（二）">
+                  <i class="fa fa-chevron-left"></i> 基于阿里云 ECS 搭建大数据集群（二）
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  <div class="comments" id="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC80NzgzOC8yNDMzNQ=="></div>
+  </div>
+  
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#集群架构"><span class="nav-number">1.</span> <span class="nav-text">集群架构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#准备工作"><span class="nav-number">2.</span> <span class="nav-text">准备工作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#关闭集群"><span class="nav-number">2.1.</span> <span class="nav-text">关闭集群</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#准备-ZooKeeper-安装包"><span class="nav-number">2.2.</span> <span class="nav-text">准备 ZooKeeper 安装包</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置基于-QJM-的高可用"><span class="nav-number">3.</span> <span class="nav-text">配置基于 QJM 的高可用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#配置-hdfs-site-xml"><span class="nav-number">3.1.</span> <span class="nav-text">配置 hdfs-site.xml</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#删除-Secondary-NameNode-配置"><span class="nav-number">3.1.1.</span> <span class="nav-text">删除 Secondary NameNode 配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置-nameservices-逻辑名称"><span class="nav-number">3.1.2.</span> <span class="nav-text">配置 nameservices 逻辑名称</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置-mycluster-下-NameNode-逻辑名称"><span class="nav-number">3.1.3.</span> <span class="nav-text">配置 mycluster 下 NameNode 逻辑名称</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#指定-NameNodes"><span class="nav-number">3.1.4.</span> <span class="nav-text">指定 NameNodes</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置-http-端口"><span class="nav-number">3.1.5.</span> <span class="nav-text">配置 http 端口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置-JN-主机位置"><span class="nav-number">3.1.6.</span> <span class="nav-text">配置 JN 主机位置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置代理类"><span class="nav-number">3.1.7.</span> <span class="nav-text">配置代理类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置-Fencing-Method"><span class="nav-number">3.1.8.</span> <span class="nav-text">配置 Fencing Method</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置-JN-日志文件保存位置"><span class="nav-number">3.1.9.</span> <span class="nav-text">配置 JN 日志文件保存位置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置-core-site-dfs"><span class="nav-number">3.2.</span> <span class="nav-text">配置 core-site.dfs</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#配置-fs-defaultFS"><span class="nav-number">3.2.1.</span> <span class="nav-text">配置 fs.defaultFS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修改-hadoop-tmp-dir"><span class="nav-number">3.2.2.</span> <span class="nav-text">修改 hadoop.tmp.dir</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#基于-ZooKeeper-的自动故障转移"><span class="nav-number">4.</span> <span class="nav-text">基于 ZooKeeper 的自动故障转移</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#配置-hdfs"><span class="nav-number">4.1.</span> <span class="nav-text">配置 hdfs</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#打开自动故障转移功能"><span class="nav-number">4.1.1.</span> <span class="nav-text">打开自动故障转移功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#指定-ZK-集群位置"><span class="nav-number">4.1.2.</span> <span class="nav-text">指定 ZK 集群位置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分发配置文件"><span class="nav-number">4.1.3.</span> <span class="nav-text">分发配置文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#搭建-ZK-集群"><span class="nav-number">4.2.</span> <span class="nav-text">搭建 ZK 集群</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#在-node01-安装-ZooKeeper"><span class="nav-number">4.2.1.</span> <span class="nav-text">在 node01 安装 ZooKeeper</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修改-ZK-配置文件"><span class="nav-number">4.2.2.</span> <span class="nav-text">修改 ZK 配置文件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#修改-dataDir"><span class="nav-number">4.2.2.1.</span> <span class="nav-text">修改 dataDir</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置-ZK-节点"><span class="nav-number">4.2.2.2.</span> <span class="nav-text">配置 ZK 节点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#向-node02-和-node03-分发-ZK"><span class="nav-number">4.2.3.</span> <span class="nav-text">向 node02 和 node03 分发 ZK</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建-myid-文件"><span class="nav-number">4.2.4.</span> <span class="nav-text">创建 myid 文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置环境变量"><span class="nav-number">4.2.5.</span> <span class="nav-text">配置环境变量</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试-ZK-集群"><span class="nav-number">4.3.</span> <span class="nav-text">测试 ZK 集群</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动-hdfs-集群"><span class="nav-number">4.4.</span> <span class="nav-text">启动 hdfs 集群</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动-JN"><span class="nav-number">4.5.</span> <span class="nav-text">启动 JN</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#启动-NN"><span class="nav-number">4.5.1.</span> <span class="nav-text">启动 NN</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注册-Active-NameNode"><span class="nav-number">4.5.2.</span> <span class="nav-text">注册 Active NameNode</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动-hdfs-集群-1"><span class="nav-number">4.5.3.</span> <span class="nav-text">启动 hdfs 集群</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="陈逸凡"
+    src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">陈逸凡</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">陈逸凡</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+</body>
+</html>
