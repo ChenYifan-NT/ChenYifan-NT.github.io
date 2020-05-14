@@ -58,7 +58,7 @@
 <meta property="og:site_name" content="陈逸凡的博客">
 <meta property="og:description" content="学习基于阿里云 ECS 云服务器搭建大数据集群的笔记。笔记将搭建步骤和遇到的问题一一记录，用于自己查阅复习，也为小伙伴们提供一定参考帮助。 本篇是笔记的第三部分。上篇笔记完成了 Hadoop 全分布集群搭建。本篇将继续实现基于 ZooKeeper 的高可用集群搭建。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-05-14T13:58:56.492Z">
+<meta property="og:updated_time" content="2020-05-14T14:17:41.579Z">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="http://yoursite.com/2020/05/13/%E9%98%BF%E9%87%8C%E4%BA%91%E5%A4%A7%E6%95%B0%E6%8D%AE%E9%9B%86%E7%BE%A403/">
@@ -229,7 +229,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-05-14 21:58:56" itemprop="dateModified" datetime="2020-05-14T21:58:56+08:00">2020-05-14</time>
+                <time title="Modified: 2020-05-14 22:17:41" itemprop="dateModified" datetime="2020-05-14T22:17:41+08:00">2020-05-14</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -457,7 +457,12 @@
 
 <h3 id="注册-Active-NameNode"><a href="#注册-Active-NameNode" class="headerlink" title="注册 Active NameNode"></a>注册 Active NameNode</h3><p>来到 node00 使用命令<code>hdfs zkfc -formatZK</code>向 ZK 注册节点。</p>
 <p>来到 node01 可以使用命令<code>zkCli.sh</code>进入 ZK 客户端进行管理。</p>
+<br />
+
 <h3 id="启动-hdfs-集群-1"><a href="#启动-hdfs-集群-1" class="headerlink" title="启动 hdfs 集群"></a>启动 hdfs 集群</h3><p>来到 node00 使用命令<code>start-dfs.sh</code>启动集群。</p>
+<blockquote>
+<p>以后再启动只需要先启动 ZK 然后使用命令<code>start-dfs.sh</code>即可</p>
+</blockquote>
 
     </div>
 
