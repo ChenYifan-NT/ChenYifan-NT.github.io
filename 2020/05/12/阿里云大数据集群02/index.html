@@ -58,7 +58,7 @@
 <meta property="og:site_name" content="陈逸凡的博客">
 <meta property="og:description" content="学习基于阿里云 ECS 云服务器搭建大数据集群的笔记。笔记将搭建步骤和遇到的问题一一记录，用于自己查阅复习，也为小伙伴们提供一定参考帮助。 本篇是笔记的第二部分。上篇笔记完成了从服务器准备到 Hadoop 伪分布式集群搭建的工作。本篇将继续完成全分布集群的搭建。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-05-13T13:40:30.562Z">
+<meta property="og:updated_time" content="2020-05-15T07:36:22.939Z">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="http://yoursite.com/2020/05/12/%E9%98%BF%E9%87%8C%E4%BA%91%E5%A4%A7%E6%95%B0%E6%8D%AE%E9%9B%86%E7%BE%A402/">
@@ -229,7 +229,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-05-13 21:40:30" itemprop="dateModified" datetime="2020-05-13T21:40:30+08:00">2020-05-13</time>
+                <time title="Modified: 2020-05-15 15:36:22" itemprop="dateModified" datetime="2020-05-15T15:36:22+08:00">2020-05-15</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -295,7 +295,7 @@
 </tbody></table>
 <br />
 
-<h1 id="全分布式集群搭建"><a href="#全分布式集群搭建" class="headerlink" title="全分布式集群搭建"></a>全分布式集群搭建</h1><h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><h3 id="关闭防火墙"><a href="#关闭防火墙" class="headerlink" title="关闭防火墙"></a>关闭防火墙</h3><p>完全分布式搭建需要关闭各节点防火墙。之前在美国上学时有过服务器被劫持的经历。既然我们的集群只是出于学习目的，完全可以在使用时开放所有端口，其余时间关闭端口。开关端口可以通过阿里云控制台网络安全组设定实现。</p>
+<h1 id="全分布式集群搭建"><a href="#全分布式集群搭建" class="headerlink" title="全分布式集群搭建"></a>全分布式集群搭建</h1><h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>开始全分布搭建前需要完成的准备工作。</p>
 <br />
 
 <h3 id="关闭-selinux"><a href="#关闭-selinux" class="headerlink" title="关闭 selinux"></a>关闭 selinux</h3><p>查看<code>/etc/sysconfig/selinux</code>文件下 SELINUX 是否为 disabled。如果不是，设定为 disabled。</p>
@@ -316,12 +316,23 @@
 <p>来到<code>/opt/hadoop/hadoop-2.6.5/etc/</code>目录，使用<code>cp -r hadoop/ hadoop_pseudo</code>命令备份配置文件。备份完成后进入 hadoop 目录，修改 core-site.xml。将<code>hadoop.tmp.dir</code>临时文件目录从<code>pseudo</code>修改为<code>full</code>。</p>
 <p>接着打开 hdfs-site.xml，将<code>dfs.replication</code>修改为 2。同时将 SNN 由 node00 修改为 node01。</p>
 <p>接着打开 slaves，将 node01 到 node03 加入 DN 列表（记得删除 node00，因为它不再是从节点）。</p>
+<br />
+
 <h2 id="分发-hadoop"><a href="#分发-hadoop" class="headerlink" title="分发 hadoop"></a>分发 hadoop</h2><p>来到<code>/opt</code>目录，使用命令：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scp -r hadoop/ node01:`pwd`</span><br></pre></td></tr></table></figure>
 
 <p>将 hadoop 目录分发到 node01。node02 和 node03 也类似进行操作。</p>
+<br />
+
 <h2 id="配置环境变量"><a href="#配置环境变量" class="headerlink" title="配置环境变量"></a>配置环境变量</h2><p>仿照 node00 的<code>/etc/profile</code>，为其它节点配置环境变量。也可以使用<code>scp /etc/profile node01:/etc/</code>将配置文件分发到各个从节点。</p>
-<h2 id="启动集群"><a href="#启动集群" class="headerlink" title="启动集群"></a>启动集群</h2><h3 id="格式化集群"><a href="#格式化集群" class="headerlink" title="格式化集群"></a>格式化集群</h3><p>使用命令<code>hdfs namenode -format</code>格式化集群。</p>
+<br />
+
+<h2 id="启动集群"><a href="#启动集群" class="headerlink" title="启动集群"></a>启动集群</h2><p>完成配置后就可以启动集群了。</p>
+<br />
+
+<h3 id="格式化集群"><a href="#格式化集群" class="headerlink" title="格式化集群"></a>格式化集群</h3><p>使用命令<code>hdfs namenode -format</code>格式化集群。</p>
+<br />
+
 <h3 id="启动集群-1"><a href="#启动集群-1" class="headerlink" title="启动集群"></a>启动集群</h3><p>使用命令<code>start-dfs.sh</code>启动集群。使用<code>jps</code>命令检查各个节点进程情况。</p>
 
     </div>
@@ -395,7 +406,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#集群架构"><span class="nav-number">1.</span> <span class="nav-text">集群架构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#全分布式集群搭建"><span class="nav-number">2.</span> <span class="nav-text">全分布式集群搭建</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#准备工作"><span class="nav-number">2.1.</span> <span class="nav-text">准备工作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#关闭防火墙"><span class="nav-number">2.1.1.</span> <span class="nav-text">关闭防火墙</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关闭-selinux"><span class="nav-number">2.1.2.</span> <span class="nav-text">关闭 selinux</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#同步时间"><span class="nav-number">2.1.3.</span> <span class="nav-text">同步时间</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装-JDK"><span class="nav-number">2.1.4.</span> <span class="nav-text">安装 JDK</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置-node00"><span class="nav-number">2.2.</span> <span class="nav-text">配置 node00</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分发-hadoop"><span class="nav-number">2.3.</span> <span class="nav-text">分发 hadoop</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置环境变量"><span class="nav-number">2.4.</span> <span class="nav-text">配置环境变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动集群"><span class="nav-number">2.5.</span> <span class="nav-text">启动集群</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#格式化集群"><span class="nav-number">2.5.1.</span> <span class="nav-text">格式化集群</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动集群-1"><span class="nav-number">2.5.2.</span> <span class="nav-text">启动集群</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#集群架构"><span class="nav-number">1.</span> <span class="nav-text">集群架构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#全分布式集群搭建"><span class="nav-number">2.</span> <span class="nav-text">全分布式集群搭建</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#准备工作"><span class="nav-number">2.1.</span> <span class="nav-text">准备工作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#关闭-selinux"><span class="nav-number">2.1.1.</span> <span class="nav-text">关闭 selinux</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#同步时间"><span class="nav-number">2.1.2.</span> <span class="nav-text">同步时间</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装-JDK"><span class="nav-number">2.1.3.</span> <span class="nav-text">安装 JDK</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置-node00"><span class="nav-number">2.2.</span> <span class="nav-text">配置 node00</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分发-hadoop"><span class="nav-number">2.3.</span> <span class="nav-text">分发 hadoop</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置环境变量"><span class="nav-number">2.4.</span> <span class="nav-text">配置环境变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动集群"><span class="nav-number">2.5.</span> <span class="nav-text">启动集群</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#格式化集群"><span class="nav-number">2.5.1.</span> <span class="nav-text">格式化集群</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动集群-1"><span class="nav-number">2.5.2.</span> <span class="nav-text">启动集群</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
