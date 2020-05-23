@@ -58,7 +58,7 @@
 <meta property="og:site_name" content="陈逸凡的博客">
 <meta property="og:description" content="学习基于阿里云 ECS 云服务器搭建大数据集群的笔记。笔记将搭建步骤和遇到的问题一一记录，用于自己查阅复习，也为小伙伴们提供一定参考帮助。 本篇是笔记的第四部分。上篇笔记完成了基于 ZooKeeper 的高可用集群搭建。本篇将继续实现基于 Yarn 的调度框架配置。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-05-23T14:53:52.201Z">
+<meta property="og:updated_time" content="2020-05-23T14:57:16.369Z">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="http://yoursite.com/2020/05/23/%E9%98%BF%E9%87%8C%E4%BA%91%E5%A4%A7%E6%95%B0%E6%8D%AE%E9%9B%86%E7%BE%A404/">
@@ -223,7 +223,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2020-05-23 01:53:39 / Modified: 22:53:52" itemprop="dateCreated datePublished" datetime="2020-05-23T01:53:39+08:00">2020-05-23</time>
+              <time title="Created: 2020-05-23 01:53:39 / Modified: 22:57:16" itemprop="dateCreated datePublished" datetime="2020-05-23T01:53:39+08:00">2020-05-23</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -313,7 +313,11 @@
 </tr>
 </tbody></table>
 <p>处于均衡负载的目的，我们将 ResourceManager 设置在 node02 和 node03。另外，NodeManager 必须和 DataNode 设置在相同的节点才能获取计算所需要的数据。</p>
+<br />
+
 <h1 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h1><p>在搭建开始前，我们首先要使用命令<code>stop-dfs.sh</code>和<code>zkServer.sh stop</code>关闭 Hadoop 和 ZooKeeper 集群。</p>
+<br />
+
 <h1 id="配置-Yarn"><a href="#配置-Yarn" class="headerlink" title="配置 Yarn"></a>配置 Yarn</h1><p>在之前的基础上只需简单几步就可以完成 Yarn 的配置（毕竟它是 Hadoop 2.x 自带的组件）。</p>
 <br />
 
@@ -336,7 +340,7 @@
 
 <h2 id="测试集群"><a href="#测试集群" class="headerlink" title="测试集群"></a>测试集群</h2><p>我们随便新建一个文件，添加一些文本。我这里使用了 Pink Floyd 的歌曲《time》的歌词，文件名为 time-lyrics。使用命令<code>hdfs dfs -put time-lyrics /user/root/</code>将歌词上传到 HDFS 中。</p>
 <blockquote>
-<p>这是我们来到 node00:50070，应该可以在可视化界面中找到这个文件</p>
+<p>这时我们来到 node00:50070，应该可以在可视化界面中找到这个文件</p>
 </blockquote>
 <p>接着我们来到 Hadoop 安装目录下的<code>/share/hadoop/mapreduce</code>文件夹下。这个文件夹下有一些已经打包好的 jar 包可供测试。使用命令<code>hadoop jar hadoop-mapreduce-examples-2.6.5.jar wordcount  /user/root/time-lyrics  /user/root/wordcount</code>来执行 wordcount 程序，统计歌词里面各个单词出现的次数。注意最后两个参数。前者是数据的地址。后者是计算结果输出的位置。这个位置可以不存在，但是如果存在的话，必须保证文件夹是空的。</p>
 <p>如果计算成功的话，wordcount 文件夹下将会多出两个文件。其中<code>_SUCCESS</code>是任务成功的信号文件，而<code>part-r-00000</code>包含了具体的计算结果。使用命令<code>hdfs dfs -cat /user/root/wordcount/part-r-00000</code>查看结果。</p>
