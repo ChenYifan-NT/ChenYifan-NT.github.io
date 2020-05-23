@@ -58,7 +58,7 @@
 <meta property="og:site_name" content="陈逸凡的博客">
 <meta property="og:description" content="学习基于阿里云 ECS 云服务器搭建大数据集群的笔记。笔记将搭建步骤和遇到的问题一一记录，用于自己查阅复习，也为小伙伴们提供一定参考帮助。 本篇是笔记的第四部分。上篇笔记完成了基于 ZooKeeper 的高可用集群搭建。本篇将继续实现基于 Yarn 的调度框架配置。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-05-23T14:49:58.675Z">
+<meta property="og:updated_time" content="2020-05-23T14:53:52.201Z">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="http://yoursite.com/2020/05/23/%E9%98%BF%E9%87%8C%E4%BA%91%E5%A4%A7%E6%95%B0%E6%8D%AE%E9%9B%86%E7%BE%A404/">
@@ -223,7 +223,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2020-05-23 01:53:39 / Modified: 22:49:58" itemprop="dateCreated datePublished" datetime="2020-05-23T01:53:39+08:00">2020-05-23</time>
+              <time title="Created: 2020-05-23 01:53:39 / Modified: 22:53:52" itemprop="dateCreated datePublished" datetime="2020-05-23T01:53:39+08:00">2020-05-23</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -343,6 +343,9 @@
 <blockquote>
 <p>part 代表 partition，而 r 代表 reduce。默认只有一个分区，所有后面的数字是 0</p>
 </blockquote>
+<br />
+
+<h2 id="如何关闭集群"><a href="#如何关闭集群" class="headerlink" title="如何关闭集群"></a>如何关闭集群</h2><p>我们必须使用命令<code>yarn-daemon.sh stop resourcemanager</code>手动关闭 ResourceManager。而其它的组件可以使用<code>stop-all.sh</code>和<code>start-all.sh</code>关闭和启动 HDFS。最后使用<code>zkServer.sh stop</code>关闭 ZooKeeper。</p>
 
     </div>
 
@@ -412,7 +415,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#集群架构"><span class="nav-number">1.</span> <span class="nav-text">集群架构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#准备工作"><span class="nav-number">2.</span> <span class="nav-text">准备工作</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置-Yarn"><span class="nav-number">3.</span> <span class="nav-text">配置 Yarn</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#配置-mapred-site-xml"><span class="nav-number">3.1.</span> <span class="nav-text">配置 mapred-site.xml</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置-yarn-site-xml"><span class="nav-number">3.2.</span> <span class="nav-text">配置 yarn-site.xml</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分发配置文件"><span class="nav-number">3.3.</span> <span class="nav-text">分发配置文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动集群"><span class="nav-number">3.4.</span> <span class="nav-text">启动集群</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试集群"><span class="nav-number">3.5.</span> <span class="nav-text">测试集群</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#集群架构"><span class="nav-number">1.</span> <span class="nav-text">集群架构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#准备工作"><span class="nav-number">2.</span> <span class="nav-text">准备工作</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置-Yarn"><span class="nav-number">3.</span> <span class="nav-text">配置 Yarn</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#配置-mapred-site-xml"><span class="nav-number">3.1.</span> <span class="nav-text">配置 mapred-site.xml</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置-yarn-site-xml"><span class="nav-number">3.2.</span> <span class="nav-text">配置 yarn-site.xml</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分发配置文件"><span class="nav-number">3.3.</span> <span class="nav-text">分发配置文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动集群"><span class="nav-number">3.4.</span> <span class="nav-text">启动集群</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试集群"><span class="nav-number">3.5.</span> <span class="nav-text">测试集群</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何关闭集群"><span class="nav-number">3.6.</span> <span class="nav-text">如何关闭集群</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
