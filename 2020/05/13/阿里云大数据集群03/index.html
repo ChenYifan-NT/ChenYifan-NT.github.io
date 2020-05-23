@@ -58,7 +58,7 @@
 <meta property="og:site_name" content="陈逸凡的博客">
 <meta property="og:description" content="学习基于阿里云 ECS 云服务器搭建大数据集群的笔记。笔记将搭建步骤和遇到的问题一一记录，用于自己查阅复习，也为小伙伴们提供一定参考帮助。 本篇是笔记的第三部分。上篇笔记完成了 Hadoop 全分布集群搭建。本篇将继续实现基于 ZooKeeper 的高可用集群搭建。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-05-15T07:34:50.660Z">
+<meta property="og:updated_time" content="2020-05-23T12:04:49.866Z">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="http://yoursite.com/2020/05/13/%E9%98%BF%E9%87%8C%E4%BA%91%E5%A4%A7%E6%95%B0%E6%8D%AE%E9%9B%86%E7%BE%A403/">
@@ -229,7 +229,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-05-15 15:34:50" itemprop="dateModified" datetime="2020-05-15T15:34:50+08:00">2020-05-15</time>
+                <time title="Modified: 2020-05-23 20:04:49" itemprop="dateModified" datetime="2020-05-23T20:04:49+08:00">2020-05-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -310,7 +310,8 @@
 </tbody></table>
 <br  />
 
-<h1 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h1><h2 id="关闭集群"><a href="#关闭集群" class="headerlink" title="关闭集群"></a>关闭集群</h2><p>在 node00 使用命令<code>stop-dfs.sh</code>关闭集群。</p>
+<h1 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h1><p>搭建开始前需要进行一些准备工作。</p>
+<h2 id="关闭集群"><a href="#关闭集群" class="headerlink" title="关闭集群"></a>关闭集群</h2><p>在 node00 使用命令<code>stop-dfs.sh</code>关闭集群。</p>
 <br />
 
 <h2 id="准备-ZooKeeper-安装包"><a href="#准备-ZooKeeper-安装包" class="headerlink" title="准备 ZooKeeper 安装包"></a>准备 ZooKeeper 安装包</h2><p>上传到 node00<code>/root/softwares</code>目录下备用。我使用的版本是 ZooKeeper 3.4.6。</p>
@@ -493,6 +494,9 @@
             <span class="post-nav-divider"></span>
 
             <div class="post-nav-prev post-nav-item">
+                <a href="/2020/05/23/%E9%98%BF%E9%87%8C%E4%BA%91%E5%A4%A7%E6%95%B0%E6%8D%AE%E9%9B%86%E7%BE%A404/" rel="prev" title="基于阿里云 ECS 搭建大数据集群（四）">
+                  基于阿里云 ECS 搭建大数据集群（四） <i class="fa fa-chevron-right"></i>
+                </a>
             </div>
           </div>
       </footer>
@@ -552,7 +556,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-count">10</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -565,7 +569,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-count">21</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
