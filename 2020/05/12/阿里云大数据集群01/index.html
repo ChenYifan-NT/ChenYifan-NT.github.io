@@ -50,15 +50,15 @@
   };
 </script>
 
-  <meta name="description" content="学习基于阿里云 ECS 云服务器搭建大数据集群的笔记。笔记将搭建步骤和遇到的问题一一记录，用于自己查阅复习，也为小伙伴们提供一定参考帮助。 本篇是笔记的第一部分，从服务器相关的准备工作开始，到 Hadoop 伪分布式集群搭建完成为止。">
-<meta name="keywords" content="大数据,阿里云,Hadoop">
+  <meta name="description" content="学习基于阿里云 ECS 云服务器搭建大数据集群的笔记。笔记将搭建步骤和遇到的问题一一记录，用于自己查阅复习，也为小伙伴们提供一定参考帮助。 本篇是笔记的第一部分，从服务器相关的准备工作开始，到 HDFS 伪分布式集群搭建完成为止。">
+<meta name="keywords" content="大数据,阿里云,Hadoop,HDFS">
 <meta property="og:type" content="article">
 <meta property="og:title" content="基于阿里云 ECS 搭建大数据集群（一）">
 <meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;05&#x2F;12&#x2F;%E9%98%BF%E9%87%8C%E4%BA%91%E5%A4%A7%E6%95%B0%E6%8D%AE%E9%9B%86%E7%BE%A401&#x2F;index.html">
 <meta property="og:site_name" content="陈逸凡的博客">
-<meta property="og:description" content="学习基于阿里云 ECS 云服务器搭建大数据集群的笔记。笔记将搭建步骤和遇到的问题一一记录，用于自己查阅复习，也为小伙伴们提供一定参考帮助。 本篇是笔记的第一部分，从服务器相关的准备工作开始，到 Hadoop 伪分布式集群搭建完成为止。">
+<meta property="og:description" content="学习基于阿里云 ECS 云服务器搭建大数据集群的笔记。笔记将搭建步骤和遇到的问题一一记录，用于自己查阅复习，也为小伙伴们提供一定参考帮助。 本篇是笔记的第一部分，从服务器相关的准备工作开始，到 HDFS 伪分布式集群搭建完成为止。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-05-14T14:34:18.633Z">
+<meta property="og:updated_time" content="2020-05-24T15:43:16.576Z">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="http://yoursite.com/2020/05/12/%E9%98%BF%E9%87%8C%E4%BA%91%E5%A4%A7%E6%95%B0%E6%8D%AE%E9%9B%86%E7%BE%A401/">
@@ -229,7 +229,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-05-14 22:34:18" itemprop="dateModified" datetime="2020-05-14T22:34:18+08:00">2020-05-14</time>
+                <time title="Modified: 2020-05-24 23:43:16" itemprop="dateModified" datetime="2020-05-24T23:43:16+08:00">2020-05-24</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -255,68 +255,52 @@
 
       
         <p>学习基于阿里云 ECS 云服务器搭建大数据集群的笔记。笔记将搭建步骤和遇到的问题一一记录，用于自己查阅复习，也为小伙伴们提供一定参考帮助。</p>
-<p>本篇是笔记的第一部分，从服务器相关的准备工作开始，到 Hadoop 伪分布式集群搭建完成为止。</p>
+<p>本篇是笔记的第一部分，从服务器相关的准备工作开始，到 HDFS 伪分布式集群搭建完成为止。</p>
 <a id="more"></a>
 
-<h1 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h1><h2 id="购买阿里云-ECS-服务器"><a href="#购买阿里云-ECS-服务器" class="headerlink" title="购买阿里云 ECS 服务器"></a>购买阿里云 ECS 服务器</h2><p>基于阿里云搭建集群，首先自然要购买云服务器。购买过程中有大量可配置的选项，按照提示选择即可。我选择了 4 台双核 4GB 服务器，预装阿里云定制版 Linux 系统。网络部分选择按流量计费。可以在这一步配置好实例和主机名称，后续的管理会更加方便。</p>
+<h1 id="HDFS-伪分布式集群搭建"><a href="#HDFS-伪分布式集群搭建" class="headerlink" title="HDFS 伪分布式集群搭建"></a>HDFS 伪分布式集群搭建</h1><br />
+
+<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><h3 id="购买阿里云-ECS-服务器"><a href="#购买阿里云-ECS-服务器" class="headerlink" title="购买阿里云 ECS 服务器"></a>购买阿里云 ECS 服务器</h3><p>基于阿里云搭建集群，首先自然要购买云服务器。购买过程中有大量可配置的选项，按照提示选择即可。我选择了 4 台双核 4GB 服务器，预装阿里云定制版 Linux 系统。网络部分选择按流量计费。可以在这一步配置好实例和主机名称，后续的管理会更加方便。</p>
 <blockquote>
 <p>好记的主机名称有 master、worker01、worker02，或者 node0、node1、node2 等</p>
 </blockquote>
-<p>选购过程中系统会建议使用密钥对。按照提示新建密钥对并妥善下载保存系统提供的 .pem 文件。.pem 文件可以自己命名，我将它命名为 hadoop.pem。我所购买的四台服务器主机名分别为 node00、node01、node02 和 node03。请小伙伴们在阅读接下来的内容时务必区分自己和我所使用的主机名配置。</p>
+<p>选购过程中系统会建议生成并使用 ssh 密钥对。按照提示新建密钥对并妥善下载保存系统提供的 .pem 文件。.pem 文件可以自己命名，我将它命名为 hadoop.pem。我所购买的四台服务器主机名分别为 node00、node01、node02 和 node03。请小伙伴们务必区分笔记和实践中所使用的主机名配置。</p>
 <blockquote>
 <p>也请小伙伴们务必区分所使用的路径</p>
 </blockquote>
-<br />
-
-<h2 id="准备软件"><a href="#准备软件" class="headerlink" title="准备软件"></a>准备软件</h2><p>Hadoop 基于 Java 语言开发，所以我们需要同时准备 JDK 和 Hadoop 软件包。我使用的版本是 JDK7 和 Hadoop 2.6.5。从 Oracle 和  Hadoop 官网下载软件包。国内的小伙伴可能会遇到下载缓慢的问题。可以尝试翻墙，或连接手机热点下载（有奇效！）。下载时须注意软件版本是否与服务器操作系统兼容。将软件包下载到你自己的计算机待用即可。</p>
-<br />
-
-<h2 id="配置服务器之间的免密码互联"><a href="#配置服务器之间的免密码互联" class="headerlink" title="配置服务器之间的免密码互联"></a>配置服务器之间的免密码互联</h2><p>集群运行的过程中不同节点之间需要互相传递信息，因此我们要配置节点之间的免密码互连。</p>
-<br />
-
-<h3 id="本地连接到-node00"><a href="#本地连接到-node00" class="headerlink" title="本地连接到 node00"></a>本地连接到 node00</h3><p>从本地连接到服务器进行远程管理。将上文阿里云提供的 .pem 文件拷贝到本地 <code>~/.ssh</code>目录下。使用命令<code>chmod 400 hadoop.pem</code>将 .pem 文件设置为只读以防止文件的意外修改。在终端输入<code>ssh -i ~/.ssh/hadoop.pem root@[node00 的公网 IP 地址]</code>即可远程登陆到云服务器。</p>
+<h3 id="准备软件"><a href="#准备软件" class="headerlink" title="准备软件"></a>准备软件</h3><p>Hadoop 基于 Java 语言开发，所以我们需要同时准备 JDK 和 Hadoop 软件包。我使用的版本是 JDK7 和 Hadoop 2.6.5。从 Oracle 和  Hadoop 官网下载软件包。国内的小伙伴可能会遇到下载缓慢的问题。可以尝试翻墙，或连接手机热点下载（有时有奇效！）。下载时须注意软件版本是否与服务器操作系统兼容。将软件包下载到你自己的计算机待用即可。</p>
+<h3 id="配置服务器之间的免密码互联"><a href="#配置服务器之间的免密码互联" class="headerlink" title="配置服务器之间的免密码互联"></a>配置服务器之间的免密码互联</h3><p>集群运行的过程中不同节点之间需要互相传递数据和指令，因此我们要配置节点之间的免密码互连。</p>
+<h4 id="本地连接到-node00"><a href="#本地连接到-node00" class="headerlink" title="本地连接到 node00"></a>本地连接到 node00</h4><p>从本地连接到服务器进行远程管理。将上文阿里云提供的 .pem 文件拷贝到本地 <code>~/.ssh</code>目录下。使用命令<code>chmod 400 hadoop.pem</code>将 .pem 文件设置为只读以防止文件的意外修改。在终端输入<code>ssh -i ~/.ssh/hadoop.pem root@[node00 的公网 IP 地址]</code>即可远程登陆到云服务器。</p>
 <blockquote>
 <p>服务器的公网和内网 IP 地址可以在阿里云控制台找到</p>
 </blockquote>
-<br />
-
-<h3 id="分发-pem-文件"><a href="#分发-pem-文件" class="headerlink" title="分发 .pem 文件"></a>分发 .pem 文件</h3><p>使用命令<code>scp -i ~/.ssh/hadoop.pem ~/.ssh/hadoop.pem root@[公网 IP 地址]:/root/.ssh/</code>将 .pem 文件上传到各个节点。之后就可以从任意节点通过与上一小节类似的方法登陆到其它节点。</p>
-<br />
-
-<h3 id="修改-hosts-文件"><a href="#修改-hosts-文件" class="headerlink" title="修改 hosts 文件"></a>修改 hosts 文件</h3><p>在所有节点上打开<code>/etc/hosts</code>文件，将各个节点的内网 IP 信息添加到文件末尾：</p>
+<h4 id="分发-pem-文件"><a href="#分发-pem-文件" class="headerlink" title="分发 .pem 文件"></a>分发 .pem 文件</h4><p>使用命令<code>scp -i ~/.ssh/hadoop.pem ~/.ssh/hadoop.pem root@[公网 IP 地址]:/root/.ssh/</code>将 .pem 文件上传到各个节点。之后就可以从任意节点通过与上一小节类似的方法登陆到其它节点。</p>
+<h4 id="修改-hosts-文件"><a href="#修改-hosts-文件" class="headerlink" title="修改 hosts 文件"></a>修改 hosts 文件</h4><p>在所有节点上打开<code>/etc/hosts</code>文件，将各个节点的内网 IP 信息添加到文件末尾：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">172.***.***.*** node00 node00</span><br><span class="line">172.***.***.*** node01 node01</span><br><span class="line">172.***.***.*** node02 node02</span><br><span class="line">172.***.***.*** node03 node03</span><br></pre></td></tr></table></figure>
 
 <p>完成这一步后的各种命令中都可以使用 node0x 代替对应的内网 IP 地址了。</p>
-<br />
-
-<h3 id="配置-ssh-config"><a href="#配置-ssh-config" class="headerlink" title="配置 ssh_config"></a>配置 ssh_config</h3><p>现在服务器之间的远程登陆还需要使用<code>ssh -i</code>指定密钥位置。通过配置 ssh_config 可以免去麻烦。打开各个节点上<code>/etc/ssh/</code>目录下的<code>ssh_config</code>文件，按照如下格式在文件末尾添加：</p>
+<h4 id="配置-ssh-config"><a href="#配置-ssh-config" class="headerlink" title="配置 ssh_config"></a>配置 ssh_config</h4><p>现在服务器之间的远程登陆还需要使用<code>ssh -i</code>指定密钥位置。通过配置 ssh_config 可以免去这一麻烦。打开各个节点上<code>/etc/ssh/</code>目录下的<code>ssh_config</code>文件，按照如下格式在文件末尾添加：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Host node00  # 实例的名字</span><br><span class="line">    HostName 172.*.*.*  # 实例的内网 IP 地址</span><br><span class="line">    Port 22  # 端口号，默认为 22</span><br><span class="line">    User root  # 登录账号</span><br><span class="line">    IdentityFile /root/.ssh/...  # 公钥的地址</span><br></pre></td></tr></table></figure>
 
-<p><code>ssh_config</code>文件中的配置是以<code>Host</code>作为标记区分段落的。你可以根据需要添加多个不同的以<code>Host</code>为开头的段落，来配置不同的服务器。将全部四台节点的信息写入<code>ssh_config</code>文件中后，就可以直接通过<code>ssh node0x</code>命令来远程登陆各个节点了。</p>
+<p><code>ssh_config</code>文件中的配置是以<code>Host</code>为标记区分段落的。你可以根据需要添加多个不同的以<code>Host</code>为开头的段落，来配置不同的服务器。将全部四台节点的信息写入<code>ssh_config</code>文件中后，就可以直接通过<code>ssh node0x</code>命令来远程登陆各个节点了。</p>
 <p>一鼓作气，将全部节点的<code>ssh_config</code>文件配置完成吧！</p>
 <blockquote>
 <p>从各个节点手动登陆到其它节点（包括自身）可以同时起到测试配置以及添加 known_hosts 的作用</p>
 </blockquote>
 <br />
 
-<h1 id="伪分布式安装"><a href="#伪分布式安装" class="headerlink" title="伪分布式安装"></a>伪分布式安装</h1><p>我们首先在 node00 上进行伪分布式安装。接下来所有内容中的本地都指代我所使用的 Mac 系统。如果你使用的是 Windows 系统，还烦请自行查找对应的操作方法（并不难找！）。</p>
-<br />
-
-<h2 id="将软件包上传到服务器"><a href="#将软件包上传到服务器" class="headerlink" title="将软件包上传到服务器"></a>将软件包上传到服务器</h2><p>我首先在 node00 家目录下创建了 softwares 文件夹用于软件包的存放。回到本地，使用命令<code>scp -i ~/.ssh/hadoop.pem [要上传的文件路径] root@[node00 的公网 IP 地址]:~/softwares/</code>将先前准备的软件包上传到 node00 的 softwares 文件夹下。</p>
+<h2 id="伪分布式安装"><a href="#伪分布式安装" class="headerlink" title="伪分布式安装"></a>伪分布式安装</h2><p>我们首先在 node00 上进行伪分布式安装。接下来所有内容中的本地都指代我所使用的 Mac 系统。如果你使用的是 Windows 系统，还烦请自行查找对应的操作方法（并不难找！）。</p>
+<h3 id="将软件包上传到服务器"><a href="#将软件包上传到服务器" class="headerlink" title="将软件包上传到服务器"></a>将软件包上传到服务器</h3><p>我首先在 node00 家目录下创建了 softwares 文件夹用于软件包的存放。回到本地，使用命令<code>scp -i ~/.ssh/hadoop.pem [要上传的文件路径] root@[node00 的公网 IP 地址]:~/softwares/</code>将先前准备的软件包上传到 node00 的 softwares 文件夹下。</p>
 <blockquote>
 <p>如果提示 perimission denied，那可能是由于用户对于 softwares 文件夹没有修改权限。用 chmod 命令赋予 777 权限即可</p>
 </blockquote>
-<br />
-
-<h2 id="安装-JDK"><a href="#安装-JDK" class="headerlink" title="安装 JDK"></a>安装 JDK</h2><p>从 Oracle 官网下载的 JDK 一般有两种格式。如果你下载的是 rpm 格式，那么使用 <code>rpm -i [JDK 文件名]</code>安装即可。rpm 会依据 Linux 标准文件架构进行安装。</p>
+<h3 id="安装-JDK"><a href="#安装-JDK" class="headerlink" title="安装 JDK"></a>安装 JDK</h3><p>从 Oracle 官网下载的 JDK 一般有两种格式。如果你下载的是 rpm 格式，那么使用 <code>rpm -i [JDK 文件名]</code>安装即可。rpm 会依据 Linux 标准文件架构进行安装。</p>
 <p>如果你下载的是压缩包格式，首先使用命令<code>tar -xzvf [JDK 文件名]</code>解包。使用<code>mkdir /usr/java</code>新建一个用于存放 JDK 的文件夹，并将解包得到的文件夹拷贝到<code>/usr/java/</code>下。</p>
 <p>使用任何一种方式安装后都需要配置环境变量。使用<code>vi /etc/profile</code>打开配置文件，将下方的代码加入文件末尾：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export JAVA_HOME=/usr/java/jdk[一串版本号]</span><br><span class="line">PATH=$PATH:$JAVA_HOME/bin</span><br></pre></td></tr></table></figure>
 
 <p>保存退出并执行<code>. /etc/profile</code>重新加载配置文件。执行命令<code>java -version</code>检查安装配置情况。如果终端中出现了 java 版本信息，那么祝贺你，JDK 的安装成功了！</p>
-<br />
-
-<h2 id="安装-Hadoop"><a href="#安装-Hadoop" class="headerlink" title="安装 Hadoop"></a>安装 Hadoop</h2><p>新建目录<code>/opt/hadoop/</code>。来到 softwares 目录，使用命令<code>tar -zxvf hadoop-2.6.5.tar.gz -C /opt/hadoop/</code>命令解压 Hadoop 软件包。</p>
+<h3 id="安装-Hadoop"><a href="#安装-Hadoop" class="headerlink" title="安装 Hadoop"></a>安装 Hadoop</h3><p>新建目录<code>/opt/hadoop/</code>。来到 softwares 目录，使用命令<code>tar -zxvf hadoop-2.6.5.tar.gz -C /opt/hadoop/</code>命令解压 Hadoop 软件包。</p>
 <p>现在适合配置环境变量！打开<code>/etc/profile</code>，将文件末尾修改为：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export HADOOP_HOME=/opt/hadoop/hadoop-2.6.5</span><br><span class="line">PATH=$PATH:$JAVA_HOME/bin:$HADOOP_HOME/bin:$HADOOP_HOME/sbin</span><br></pre></td></tr></table></figure>
 
@@ -324,60 +308,51 @@
 <p>PATH 一行在前文 JDK 环境变量配置的基础上修改</p>
 </blockquote>
 <p>执行<code>. /etc/profile</code>加载配置文件。输入<code>hadoop version</code>检查环境变量的配置。如果出现了版本信息，那么环境变量的配置便成功了！</p>
-<br />
-
-<h2 id="配置-Hadoop"><a href="#配置-Hadoop" class="headerlink" title="配置 Hadoop"></a>配置 Hadoop</h2><p>在启动集群前，我们要对集群的节点个数、位置、Block 大小等参数进行配置才能正常使用。Hadoop 的配置文件在安装路径之下的<code>/etc/hadoop</code>目录下。</p>
-<br />
-
-<h3 id="JAVA-HOME-二次配置"><a href="#JAVA-HOME-二次配置" class="headerlink" title="JAVA_HOME 二次配置"></a>JAVA_HOME 二次配置</h3><p>分别打开<code>hadoop-env.sh</code>、<code>mapred-env.sh</code>、<code>yarn-env.sh</code>，找到<code>export JAVA_HOME</code>那一行，将<code>JAVA_HOME</code>设定为服务器上 JDK 的绝对路径<code>/usr/java/jdk[一串版本号]</code></p>
+<h3 id="配置-Hadoop"><a href="#配置-Hadoop" class="headerlink" title="配置 Hadoop"></a>配置 Hadoop</h3><p>在启动集群前，我们要对集群的节点个数、位置、Block 大小等参数进行配置才能正常使用。Hadoop 的配置文件在安装路径之下的<code>/etc/hadoop</code>目录下。</p>
+<h4 id="JAVA-HOME-二次配置"><a href="#JAVA-HOME-二次配置" class="headerlink" title="JAVA_HOME 二次配置"></a>JAVA_HOME 二次配置</h4><p>分别打开<code>hadoop-env.sh</code>、<code>mapred-env.sh</code>、<code>yarn-env.sh</code>，找到<code>export JAVA_HOME</code>那一行，将<code>JAVA_HOME</code>设定为服务器上 JDK 的绝对路径<code>/usr/java/jdk[一串版本号]</code></p>
 <blockquote>
 <p>JAVA_HOME 环境变量可能在不止一个地方进行了定义。指定绝对路径可以保证 Hadoop 能找到且使用我们想要的 JDK</p>
 </blockquote>
-<br />
-
-<h3 id="配置-NameNode"><a href="#配置-NameNode" class="headerlink" title="配置 NameNode"></a>配置 NameNode</h3><p>打开<code>core-site.xml</code>文件，按照如下内容进行配置：</p>
+<h4 id="配置-NameNode"><a href="#配置-NameNode" class="headerlink" title="配置 NameNode"></a>配置 NameNode</h4><p>打开<code>core-site.xml</code>文件，按照如下内容进行配置：</p>
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>fs.defaultFS<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>hdfs://node00:9000<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
-<br />
-
-<h3 id="配置副本数"><a href="#配置副本数" class="headerlink" title="配置副本数"></a>配置副本数</h3><p>打开<code>hdfs-site.xml</code>，按照如下内容进行配置：</p>
+<blockquote>
+<p>我们将 NameNode 指定为 node00，并且配置了端口号为 9000</p>
+</blockquote>
+<h4 id="配置副本数"><a href="#配置副本数" class="headerlink" title="配置副本数"></a>配置副本数</h4><p>打开<code>hdfs-site.xml</code>，按照如下内容进行配置：</p>
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.replication<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>1<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
 <blockquote>
 <p>伪分布式只有一台服务器，因此副本数为 1</p>
 </blockquote>
-<br />
-
-<h3 id="配置-DataNode"><a href="#配置-DataNode" class="headerlink" title="配置 DataNode"></a>配置 DataNode</h3><p>打开<code>slaves</code>，将 localhost 改为 node00。</p>
-<br />
-
-<h3 id="配置-Secondary-NameNode"><a href="#配置-Secondary-NameNode" class="headerlink" title="配置 Secondary NameNode"></a>配置 Secondary NameNode</h3><p>官网文档中并没有提到 SNN 的配置。在文档左侧导航栏中可以找到名为<code>hdfs-default.xml</code>的配置文件链接，里面是一些默认的配置参数。从中搜索 secondary 即可找到我们需要的配置项。找到的配置项为<code>dfs.namenode.secondary.http-address</code>，默认值为<code>0.0.0.0:50090</code>。</p>
+<h4 id="配置-DataNode"><a href="#配置-DataNode" class="headerlink" title="配置 DataNode"></a>配置 DataNode</h4><p>打开<code>slaves</code>，将 localhost 改为 node00。</p>
 <blockquote>
-<p>这是一项很重要的经历和能力！</p>
+<p>伪分布式安装中 NameNode 和 DataNode 都是 node00</p>
+</blockquote>
+<h4 id="配置-Secondary-NameNode"><a href="#配置-Secondary-NameNode" class="headerlink" title="配置 Secondary NameNode"></a>配置 Secondary NameNode</h4><p>官网文档中并没有提到 SNN 的配置。在文档左侧导航栏中可以找到名为<code>hdfs-default.xml</code>的配置文件链接，里面是一些默认的配置参数。从中搜索 secondary 即可找到我们需要的配置项。找到的配置项为<code>dfs.namenode.secondary.http-address</code>，默认值为<code>0.0.0.0:50090</code>。</p>
+<blockquote>
+<p>自行翻阅查找官方文档是一项很重要的能力！</p>
 </blockquote>
 <p>仍然打开<code>hdfs-site.xml</code>，增加一个 property，name 为 <code>dfs.namenode.secondary.http-address</code>，value 为<code>node00:50090</code>。</p>
-<br />
-
-<h3 id="配置临时文件目录"><a href="#配置临时文件目录" class="headerlink" title="配置临时文件目录"></a>配置临时文件目录</h3><p>Hadoop 2.x 默认将元数据和 Block 数据保存在<code>$hadoop.tmp.dir</code>变量对应的下。这默认是一个临时路径。一旦删除，节点数据将会全部丢失。因此我们需要重新配置这个参数。打开<code>core-site.xml</code>，增加一个 property，name 为<code>hadoop.tmp.dir</code>，value 为<code>/var/aliyun-study/hadoop/pseudo/</code>。</p>
+<h4 id="配置临时文件目录"><a href="#配置临时文件目录" class="headerlink" title="配置临时文件目录"></a>配置临时文件目录</h4><p>Hadoop 2.x 默认将元数据和 Block 数据保存在<code>$hadoop.tmp.dir</code>变量对应的路径下。这个路径默认是一个临时路径，非常容易导致节点数据的丢失。因此我们需要重新配置这个参数。打开<code>core-site.xml</code>，增加一个 property，name 为<code>hadoop.tmp.dir</code>，value 为<code>/var/aliyun-study/hadoop/pseudo/</code>。</p>
 <blockquote>
 <p>你可以选择其它的目录</p>
 </blockquote>
 <br />
 
-<h2 id="测试-Hadoop"><a href="#测试-Hadoop" class="headerlink" title="测试 Hadoop"></a>测试 Hadoop</h2><h3 id="格式化"><a href="#格式化" class="headerlink" title="格式化"></a>格式化</h3><p>Hadoop 启动前要首先进行格式化，生成或者读取 fsimage 和 edits 文件。使用命令<code>hdfs namenode -format</code>格式化 Hadoop。</p>
+<h2 id="测试-HDFS"><a href="#测试-HDFS" class="headerlink" title="测试 HDFS"></a>测试 HDFS</h2><h3 id="格式化"><a href="#格式化" class="headerlink" title="格式化"></a>格式化</h3><p>Hadoop 启动前要首先进行格式化，生成或者读取 fsimage 和 edits 文件。使用命令<code>hdfs namenode -format</code>格式化 Hadoop。</p>
 <blockquote>
 <p>格式化之前路径<code>/var/aliyun-study/hadoop/pseudo/</code>是不存在的。格式化过程中会创建该目录</p>
 </blockquote>
-<br />
-
 <h3 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h3><p>使用命令<code>start-dfs.sh</code>启动集群。使用<code>jps</code>命令可以查看到 NN、DN 和 SNN 对应的进程。</p>
-<br />
-
-<h3 id="测试文件"><a href="#测试文件" class="headerlink" title="测试文件"></a>测试文件</h3><p>接下来我们通过文件上传和操作来测试伪分布式集群的基本功能。使用命令<code>hdfs dfs -mkdir -p /user/root</code>创建目录，使用<code>hdfs dfs -ls /user</code>检查是否创建成功。</p>
+<h3 id="测试文件"><a href="#测试文件" class="headerlink" title="测试文件"></a>测试文件</h3><p>接下来我们通过文件上传和操作来测试伪分布式 HDFS 集群的基本功能。使用命令<code>hdfs dfs -mkdir -p /user/root</code>创建目录，使用<code>hdfs dfs -ls /user</code>检查是否创建成功。</p>
 <blockquote>
 <p>/user/root/ 是 hdfs 的默认上传目录</p>
 </blockquote>
-<p>接着测试文件上传。来到<code>/root/softwares/</code>目录下，使用命令<code>hdfs dfs -put hadoop-2.6.5.tar.gz /user/root/</code>将 Hadoop 安装包上传到 hdfs 中。</p>
+<p>接着测试文件上传。来到<code>/root/softwares/</code>目录下，使用命令<code>hdfs dfs -put hadoop-2.6.5.tar.gz /user/root/</code>将 Hadoop 安装包上传到 hdfs 中。在浏览器中输入<code>[node00 公网 IP]:50070</code>可以打开可视化管理界面，其中包含浏览 HDFS 文件目录的功能。如果不能正常访问，记得先检查阿里云 ECS 的网络安全策略。默认 50070 端口是不开放的，需要你手动设定规则将其开放。在公网上暴露过多的端口会带来安全隐患。我的解决办法是，在学习实践的时候打开所有端口，而在学习结束后将它们全部关闭。</p>
+<blockquote>
+<p>实际生产环境中应当将集群设置在内网</p>
+</blockquote>
 
     </div>
 
@@ -390,6 +365,7 @@
               <a href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" rel="tag"># 大数据</a>
               <a href="/tags/%E9%98%BF%E9%87%8C%E4%BA%91/" rel="tag"># 阿里云</a>
               <a href="/tags/Hadoop/" rel="tag"># Hadoop</a>
+              <a href="/tags/HDFS/" rel="tag"># HDFS</a>
           </div>
 
         
@@ -450,7 +426,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#准备工作"><span class="nav-number">1.</span> <span class="nav-text">准备工作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#购买阿里云-ECS-服务器"><span class="nav-number">1.1.</span> <span class="nav-text">购买阿里云 ECS 服务器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#准备软件"><span class="nav-number">1.2.</span> <span class="nav-text">准备软件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置服务器之间的免密码互联"><span class="nav-number">1.3.</span> <span class="nav-text">配置服务器之间的免密码互联</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#本地连接到-node00"><span class="nav-number">1.3.1.</span> <span class="nav-text">本地连接到 node00</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分发-pem-文件"><span class="nav-number">1.3.2.</span> <span class="nav-text">分发 .pem 文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修改-hosts-文件"><span class="nav-number">1.3.3.</span> <span class="nav-text">修改 hosts 文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置-ssh-config"><span class="nav-number">1.3.4.</span> <span class="nav-text">配置 ssh_config</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#伪分布式安装"><span class="nav-number">2.</span> <span class="nav-text">伪分布式安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#将软件包上传到服务器"><span class="nav-number">2.1.</span> <span class="nav-text">将软件包上传到服务器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装-JDK"><span class="nav-number">2.2.</span> <span class="nav-text">安装 JDK</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装-Hadoop"><span class="nav-number">2.3.</span> <span class="nav-text">安装 Hadoop</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置-Hadoop"><span class="nav-number">2.4.</span> <span class="nav-text">配置 Hadoop</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#JAVA-HOME-二次配置"><span class="nav-number">2.4.1.</span> <span class="nav-text">JAVA_HOME 二次配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置-NameNode"><span class="nav-number">2.4.2.</span> <span class="nav-text">配置 NameNode</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置副本数"><span class="nav-number">2.4.3.</span> <span class="nav-text">配置副本数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置-DataNode"><span class="nav-number">2.4.4.</span> <span class="nav-text">配置 DataNode</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置-Secondary-NameNode"><span class="nav-number">2.4.5.</span> <span class="nav-text">配置 Secondary NameNode</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置临时文件目录"><span class="nav-number">2.4.6.</span> <span class="nav-text">配置临时文件目录</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试-Hadoop"><span class="nav-number">2.5.</span> <span class="nav-text">测试 Hadoop</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#格式化"><span class="nav-number">2.5.1.</span> <span class="nav-text">格式化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动"><span class="nav-number">2.5.2.</span> <span class="nav-text">启动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试文件"><span class="nav-number">2.5.3.</span> <span class="nav-text">测试文件</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#HDFS-伪分布式集群搭建"><span class="nav-number">1.</span> <span class="nav-text">HDFS 伪分布式集群搭建</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#准备工作"><span class="nav-number">1.1.</span> <span class="nav-text">准备工作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#购买阿里云-ECS-服务器"><span class="nav-number">1.1.1.</span> <span class="nav-text">购买阿里云 ECS 服务器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#准备软件"><span class="nav-number">1.1.2.</span> <span class="nav-text">准备软件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置服务器之间的免密码互联"><span class="nav-number">1.1.3.</span> <span class="nav-text">配置服务器之间的免密码互联</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#本地连接到-node00"><span class="nav-number">1.1.3.1.</span> <span class="nav-text">本地连接到 node00</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分发-pem-文件"><span class="nav-number">1.1.3.2.</span> <span class="nav-text">分发 .pem 文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#修改-hosts-文件"><span class="nav-number">1.1.3.3.</span> <span class="nav-text">修改 hosts 文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置-ssh-config"><span class="nav-number">1.1.3.4.</span> <span class="nav-text">配置 ssh_config</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#伪分布式安装"><span class="nav-number">1.2.</span> <span class="nav-text">伪分布式安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#将软件包上传到服务器"><span class="nav-number">1.2.1.</span> <span class="nav-text">将软件包上传到服务器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装-JDK"><span class="nav-number">1.2.2.</span> <span class="nav-text">安装 JDK</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装-Hadoop"><span class="nav-number">1.2.3.</span> <span class="nav-text">安装 Hadoop</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置-Hadoop"><span class="nav-number">1.2.4.</span> <span class="nav-text">配置 Hadoop</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#JAVA-HOME-二次配置"><span class="nav-number">1.2.4.1.</span> <span class="nav-text">JAVA_HOME 二次配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置-NameNode"><span class="nav-number">1.2.4.2.</span> <span class="nav-text">配置 NameNode</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置副本数"><span class="nav-number">1.2.4.3.</span> <span class="nav-text">配置副本数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置-DataNode"><span class="nav-number">1.2.4.4.</span> <span class="nav-text">配置 DataNode</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置-Secondary-NameNode"><span class="nav-number">1.2.4.5.</span> <span class="nav-text">配置 Secondary NameNode</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置临时文件目录"><span class="nav-number">1.2.4.6.</span> <span class="nav-text">配置临时文件目录</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试-HDFS"><span class="nav-number">1.3.</span> <span class="nav-text">测试 HDFS</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#格式化"><span class="nav-number">1.3.1.</span> <span class="nav-text">格式化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动"><span class="nav-number">1.3.2.</span> <span class="nav-text">启动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试文件"><span class="nav-number">1.3.3.</span> <span class="nav-text">测试文件</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -479,7 +455,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-count">22</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
