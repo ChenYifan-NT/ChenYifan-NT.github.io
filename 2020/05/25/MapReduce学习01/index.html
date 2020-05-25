@@ -50,18 +50,24 @@
   };
 </script>
 
-  <meta name="description" content="“Hanging on in quiet desperation is the English way.”——《Time》">
-<meta name="keywords" content="Vim,MarkDown,IDE">
+  <meta name="description" content="在之前的数篇笔记中我们从零开始完成了 Hadoop 分布式集群的搭建。从这一篇笔记开始，我们要通过 MapReduce 计算框架的学习和实践，将集群转化为生产力。 本篇是系列的第一篇笔记。本篇笔记中我们将会手写一个 Word Count 程序。">
+<meta name="keywords" content="Hadoop,MapReduce">
 <meta property="og:type" content="article">
-<meta property="og:title" content="小抄">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;02&#x2F;09&#x2F;%E5%B0%8F%E6%8A%84&#x2F;index.html">
+<meta property="og:title" content="MapReduce 编程和源代码学习（一）">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;05&#x2F;25&#x2F;MapReduce%E5%AD%A6%E4%B9%A001&#x2F;index.html">
 <meta property="og:site_name" content="陈逸凡的博客">
-<meta property="og:description" content="“Hanging on in quiet desperation is the English way.”——《Time》">
+<meta property="og:description" content="在之前的数篇笔记中我们从零开始完成了 Hadoop 分布式集群的搭建。从这一篇笔记开始，我们要通过 MapReduce 计算框架的学习和实践，将集群转化为生产力。 本篇是系列的第一篇笔记。本篇笔记中我们将会手写一个 Word Count 程序。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-03-27T04:00:25.712Z">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;05&#x2F;25&#x2F;MapReduce%E5%AD%A6%E4%B9%A001&#x2F;Modules.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;05&#x2F;25&#x2F;MapReduce%E5%AD%A6%E4%B9%A001&#x2F;Artifacts.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;05&#x2F;25&#x2F;MapReduce%E5%AD%A6%E4%B9%A001&#x2F;Config">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;05&#x2F;25&#x2F;MapReduce%E5%AD%A6%E4%B9%A001&#x2F;Applications">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;05&#x2F;25&#x2F;MapReduce%E5%AD%A6%E4%B9%A001&#x2F;Run.png">
+<meta property="og:updated_time" content="2020-05-25T06:24:11.124Z">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;05&#x2F;25&#x2F;MapReduce%E5%AD%A6%E4%B9%A001&#x2F;Modules.png">
 
-<link rel="canonical" href="http://yoursite.com/2020/02/09/%E5%B0%8F%E6%8A%84/">
+<link rel="canonical" href="http://yoursite.com/2020/05/25/MapReduce%E5%AD%A6%E4%B9%A001/">
 
 
 <script id="page-configurations">
@@ -75,7 +81,7 @@
   };
 </script>
 
-  <title>小抄 | 陈逸凡的博客</title>
+  <title>MapReduce 编程和源代码学习（一） | 陈逸凡的博客</title>
   
 
 
@@ -199,7 +205,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/02/09/%E5%B0%8F%E6%8A%84/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/05/25/MapReduce%E5%AD%A6%E4%B9%A001/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.png">
@@ -212,7 +218,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          小抄
+          MapReduce 编程和源代码学习（一）
         </h1>
 
         <div class="post-meta">
@@ -221,16 +227,10 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
+              
 
-              <time title="Created: 2020-02-09 20:56:16" itemprop="dateCreated datePublished" datetime="2020-02-09T20:56:16+08:00">2020-02-09</time>
+              <time title="Created: 2020-05-25 00:38:27 / Modified: 14:24:11" itemprop="dateCreated datePublished" datetime="2020-05-25T00:38:27+08:00">2020-05-25</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-03-27 12:00:25" itemprop="dateModified" datetime="2020-03-27T12:00:25+08:00">2020-03-27</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
@@ -254,269 +254,40 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>“Hanging on in quiet desperation is the English way.”——《Time》</p>
+        <p>在之前的数篇笔记中我们从零开始完成了 Hadoop 分布式集群的搭建。从这一篇笔记开始，我们要通过 MapReduce 计算框架的学习和实践，将集群转化为生产力。</p>
+<p>本篇是系列的第一篇笔记。本篇笔记中我们将会手写一个 Word Count 程序。</p>
 <a id="more"></a>
 
-<p>Vim 也好，Shell 也好，Markdown 也好，总会遇上一些常常会用但又常常忘记的命令和方法。翻找别人的博客总是不便，不如在这里积累归纳，随时查用。一个简单的原则是只记录自己最常用的操作，提升查找速度的同时，降低记忆的难度。</p>
-<h1 id="Vim"><a href="#Vim" class="headerlink" title="Vim"></a>Vim</h1><h2 id="位移命令"><a href="#位移命令" class="headerlink" title="位移命令"></a>位移命令</h2><table>
-<thead>
-<tr>
-<th>命令</th>
-<th>作用</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>h, j, k, l</td>
-<td>方向移动</td>
-</tr>
-<tr>
-<td>w, b</td>
-<td>以单词为单位，前进后退（至单词的开头）</td>
-</tr>
-<tr>
-<td>e, ge</td>
-<td>以单词为单位，前进后退（至单词的结尾）</td>
-</tr>
-<tr>
-<td>0, $</td>
-<td>移动到行首和行尾</td>
-</tr>
-<tr>
-<td>gg, G</td>
-<td>移动到文档开头和结尾</td>
-</tr>
-</tbody></table>
-<h2 id="光标命令"><a href="#光标命令" class="headerlink" title="光标命令"></a>光标命令</h2><table>
-<thead>
-<tr>
-<th>命令</th>
-<th>作用</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>:number</td>
-<td>移动到指定行</td>
-</tr>
-<tr>
-<td>%</td>
-<td>移动到匹配括号</td>
-</tr>
-<tr>
-<td>C-d, C-e, C-f</td>
-<td>向下滚动半屏、一行、一屏</td>
-</tr>
-<tr>
-<td>C-u, C-y, C-b</td>
-<td>向上滚动半屏、一行、一屏</td>
-</tr>
-<tr>
-<td>zz, zt, zb</td>
-<td>当前行置于屏幕中央、顶端、底端</td>
-</tr>
-<tr>
-<td>ma</td>
-<td>在当前位置添加标记，a 是其名称。大小写字母共 52 个标记可选</td>
-</tr>
-<tr>
-<td>`a, ‘a</td>
-<td>移动到标记</td>
-</tr>
-<tr>
-<td>:marks</td>
-<td>列出所有标记</td>
-</tr>
-<tr>
-<td>:delmarks</td>
-<td>删除标记。跟名字则删除对应标记，跟 ! 则删除所有标记</td>
-</tr>
-</tbody></table>
-<h2 id="查找替换"><a href="#查找替换" class="headerlink" title="查找替换"></a>查找替换</h2><table>
-<thead>
-<tr>
-<th>命令</th>
-<th>作用</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>/string</td>
-<td>向下搜索字符串</td>
-</tr>
-<tr>
-<td>?string</td>
-<td>向上搜索字符串</td>
-</tr>
-<tr>
-<td>n, N</td>
-<td>搜索下一个/上一个（与最初的搜索方向相同或相反）</td>
-</tr>
-<tr>
-<td>*</td>
-<td>向下搜索当前光标所在的单词</td>
-</tr>
-<tr>
-<td>#</td>
-<td>向上搜索当前光标所在的单词</td>
-</tr>
-<tr>
-<td>^, $, ., \</td>
-<td>匹配一行开头、一行结尾、任意字符、特殊字符</td>
-</tr>
-<tr>
-<td>:s/old/new</td>
-<td>将本行的 old 替换为 new</td>
-</tr>
-<tr>
-<td>:1,10 s/old/new</td>
-<td>将 1 到 10 行的 old 替换为 new</td>
-</tr>
-<tr>
-<td>:0,$ s/old/new</td>
-<td>将文档开头到结尾的 old 替换为 new</td>
-</tr>
-</tbody></table>
-<h2 id="编辑命令"><a href="#编辑命令" class="headerlink" title="编辑命令"></a>编辑命令</h2><p>编辑命令最强大之处在于可以和位移命令组合使用，例如 cw 可以改变一个单词。还可以和命令计数配合组合使用，例如 d3w 可以删除三个单词。</p>
-<table>
-<thead>
-<tr>
-<th>命令</th>
-<th>作用</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>i, I</td>
-<td>在光标之前/行首插入</td>
-</tr>
-<tr>
-<td>a, A</td>
-<td>在光标之后/行尾插入</td>
-</tr>
-<tr>
-<td>c</td>
-<td>改变文本，相当于删除要改变的部分并且进入 insert 模式</td>
-</tr>
-<tr>
-<td>cc</td>
-<td>改变整行，保留原有缩进</td>
-</tr>
-<tr>
-<td>x</td>
-<td>删除光标位置的字符</td>
-</tr>
-<tr>
-<td>r</td>
-<td>替换当前光标所在字符，使用命令计数可以指定替换的字符数</td>
-</tr>
-<tr>
-<td>R</td>
-<td>一直替换，直到按下 esc</td>
-</tr>
-<tr>
-<td>d</td>
-<td>删除选中的内容</td>
-</tr>
-<tr>
-<td>dd</td>
-<td>删除一行</td>
-</tr>
-<tr>
-<td>y</td>
-<td>复制</td>
-</tr>
-<tr>
-<td>yy</td>
-<td>复制一行</td>
-</tr>
-<tr>
-<td>p, P</td>
-<td>在光标前/后粘贴</td>
-</tr>
-<tr>
-<td>u</td>
-<td>撤销</td>
-</tr>
-<tr>
-<td>C-r</td>
-<td>重做</td>
-</tr>
-<tr>
-<td>.</td>
-<td>重复命令，撤销重做除外</td>
-</tr>
-<tr>
-<td>v</td>
-<td>visual 模式</td>
-</tr>
-<tr>
-<td>V</td>
-<td>行模式</td>
-</tr>
-</tbody></table>
-<h1 id="MarkDown"><a href="#MarkDown" class="headerlink" title="MarkDown"></a>MarkDown</h1><h2 id="转义字符"><a href="#转义字符" class="headerlink" title="转义字符"></a>转义字符</h2><p>MarkDown 中一些特殊符号除了符号本身，还可以使用 html 中的转义字符来输入。以下是一些常见转义字符：</p>
-<table>
-<thead>
-<tr>
-<th>显示效果</th>
-<th>描述</th>
-<th>实体名称</th>
-<th>实体编号</th>
-</tr>
-</thead>
-<tbody><tr>
-<td></td>
-<td>空格</td>
-<td>&amp;nbsp;</td>
-<td>&amp;#160;</td>
-</tr>
-<tr>
-<td>&lt;</td>
-<td>小于</td>
-<td>&amp;lt;</td>
-<td>&amp;#60;</td>
-</tr>
-<tr>
-<td>&gt;</td>
-<td>大于</td>
-<td>&amp;gt;</td>
-<td>&amp;#62;</td>
-</tr>
-<tr>
-<td>&amp;</td>
-<td>与号</td>
-<td>&amp;amp;</td>
-<td>&amp;#38;</td>
-</tr>
-<tr>
-<td>“</td>
-<td>引号</td>
-<td>&amp;quot;</td>
-<td>&amp;#34;</td>
-</tr>
-<tr>
-<td>‘</td>
-<td>撇号</td>
-<td>&amp;apos;</td>
-<td>&amp;#39;</td>
-</tr>
-</tbody></table>
-<p>如果不希望字符被转义，可以在前面加上反斜杠。</p>
-<p>另外，想要在反引号`中转义反引号，使用反斜杠是不能做到的。正确的方法是在最外层使用两次反引号。</p>
-<h1 id="Intellij"><a href="#Intellij" class="headerlink" title="Intellij"></a>Intellij</h1><table>
-<thead>
-<tr>
-<th>快捷键</th>
-<th>作用</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Ctrl + /</td>
-<td>行注释当前行或者选中的行</td>
-</tr>
-<tr>
-<td>Ctrl + Shift + /</td>
-<td>块注释选中的行</td>
-</tr>
-</tbody></table>
+<h1 id="手写-Word-Count"><a href="#手写-Word-Count" class="headerlink" title="手写 Word Count"></a>手写 Word Count</h1><br />
 
+<h2 id="Hadoop-本地开发环境配置"><a href="#Hadoop-本地开发环境配置" class="headerlink" title="Hadoop 本地开发环境配置"></a>Hadoop 本地开发环境配置</h2><p>我们的程序必须封装成 JAR 包才能提交给 Hadoop 运行。通过打包、上传再运行的方式来测试代码是很令人烦躁的。因此我们要在本地搭建一个 Hadoop 开发环境。以后的代码可以先在本地使用少量数据进行测试，然后再提交到集群运行。我的开发环境基于 Intellij 和 JDK 1.8，使用的是 Mac 操作系统。</p>
+<h3 id="添加-Modules"><a href="#添加-Modules" class="headerlink" title="添加 Modules"></a>添加 Modules</h3><p>打开 File 下的 Project Structures，选择左侧边栏中的 Modules 标签，向项目添加 Hadoop JAR 包。JAR 包的位置在 hadoop 安装目录下的<code>/share/hadoop</code>文件夹内。点击窗口下方的小加号，选择<code>JARs or directories</code>，将以下文件夹添加到项目中：</p>
+<ul>
+<li>common</li>
+<li>hdfs</li>
+<li>mapreduce</li>
+<li>yarn</li>
+<li>common/lib</li>
+</ul>
+<p>添加完成后的效果如图：</p>
+<p><img src="Modules.png" alt=""></p>
+<h3 id="设置-Artifacts"><a href="#设置-Artifacts" class="headerlink" title="设置 Artifacts"></a>设置 Artifacts</h3><p>选择左侧边栏中的 Artifacts 标签。点击中栏的加号选择<code>JAR -&gt; Empty</code>。为 JAR 包取一个名字。接着点击右侧 output layout 下方的加号，选择<code>Module output</code>，选择当前项目。完成后的效果如图：</p>
+<p><img src="Artifacts.png" alt=""></p>
+<p>保存并关闭设置窗口。</p>
+<h3 id="如何运行程序"><a href="#如何运行程序" class="headerlink" title="如何运行程序"></a>如何运行程序</h3><p>点击图片中的位置（位于窗口上边栏中部），选择<code>Edit Configurations</code>。</p>
+<p><img src="Config" alt=""></p>
+<p>在弹出的窗口中点击左上方的加号，然后点击 Application。为 Config 取一个名字。</p>
+<p><img src="Applications" alt=""></p>
+<p>接下来在右侧填写项目运行的一些参数。在<code>Main Class</code>中填写<code>org.apache.hadoop.util.RunJar</code>。<code>Working directory</code>选择当前项目目录。<code>Program arguments</code>中可以根据需要填写参数。最前面的两个分别是 JAR 包所在位置和 main 函数所在的类。前者填写<code>项目根目录/out/artifacts/myHadoop/myHadoop.jar</code>。</p>
+<blockquote>
+<p>根据你的 JAR 包名称灵活修改</p>
+</blockquote>
+<p>而后两个参数对应输入和输出数据的位置。这里直接写成<code>/input</code>和<code>/output</code>。稍后运行程序前，我们要在项目根目录下创建 input 文件夹，并将数据放入其中。</p>
+<blockquote>
+<p>运行程序前要保证 output 文件夹是空的</p>
+</blockquote>
+<p><img src="Run.png" alt=""></p>
+<h2 id=""><a href="#" class="headerlink" title=""></a></h2>
     </div>
 
     
@@ -525,23 +296,22 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/Vim/" rel="tag"># Vim</a>
-              <a href="/tags/MarkDown/" rel="tag"># MarkDown</a>
-              <a href="/tags/IDE/" rel="tag"># IDE</a>
+              <a href="/tags/Hadoop/" rel="tag"># Hadoop</a>
+              <a href="/tags/MapReduce/" rel="tag"># MapReduce</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-next post-nav-item">
+                <a href="/2020/05/23/%E9%98%BF%E9%87%8C%E4%BA%91%E5%A4%A7%E6%95%B0%E6%8D%AE%E9%9B%86%E7%BE%A404/" rel="next" title="基于阿里云 ECS 搭建大数据集群（四）">
+                  <i class="fa fa-chevron-left"></i> 基于阿里云 ECS 搭建大数据集群（四）
+                </a>
             </div>
 
             <span class="post-nav-divider"></span>
 
             <div class="post-nav-prev post-nav-item">
-                <a href="/2020/03/12/Linux%E7%AE%80%E5%8D%95%E5%91%BD%E4%BB%A4%E5%92%8C%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" rel="prev" title="Linux 简单命令和基础知识">
-                  Linux 简单命令和基础知识 <i class="fa fa-chevron-right"></i>
-                </a>
             </div>
           </div>
       </footer>
@@ -585,7 +355,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Vim"><span class="nav-number">1.</span> <span class="nav-text">Vim</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#位移命令"><span class="nav-number">1.1.</span> <span class="nav-text">位移命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#光标命令"><span class="nav-number">1.2.</span> <span class="nav-text">光标命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查找替换"><span class="nav-number">1.3.</span> <span class="nav-text">查找替换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编辑命令"><span class="nav-number">1.4.</span> <span class="nav-text">编辑命令</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MarkDown"><span class="nav-number">2.</span> <span class="nav-text">MarkDown</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#转义字符"><span class="nav-number">2.1.</span> <span class="nav-text">转义字符</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Intellij"><span class="nav-number">3.</span> <span class="nav-text">Intellij</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#手写-Word-Count"><span class="nav-number">1.</span> <span class="nav-text">手写 Word Count</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Hadoop-本地开发环境配置"><span class="nav-number">1.1.</span> <span class="nav-text">Hadoop 本地开发环境配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#添加-Modules"><span class="nav-number">1.1.1.</span> <span class="nav-text">添加 Modules</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置-Artifacts"><span class="nav-number">1.1.2.</span> <span class="nav-text">设置 Artifacts</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何运行程序"><span class="nav-number">1.1.3.</span> <span class="nav-text">如何运行程序</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#null"><span class="nav-number">1.2.</span> <span class="nav-text"></span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
