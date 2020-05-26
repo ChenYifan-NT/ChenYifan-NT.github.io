@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.4.2',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="在之前的数篇笔记中我们从零开始完成了 Hadoop 分布式集群的搭建。从这一篇笔记开始，我们要通过 MapReduce 计算框架的学习和实践，将集群转化为生产力。 本篇是系列的第二篇笔记。本篇笔记中我们将会分析学习客户端作业提交相关源码，从而加深对相关流程的理解。">
+<meta name="keywords" content="Hadoop,MapReduce">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MapReduce 编程和源代码学习（二）">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;05&#x2F;25&#x2F;MapReduce%E5%AD%A6%E4%B9%A002&#x2F;index.html">
+<meta property="og:site_name" content="陈逸凡的博客">
+<meta property="og:description" content="在之前的数篇笔记中我们从零开始完成了 Hadoop 分布式集群的搭建。从这一篇笔记开始，我们要通过 MapReduce 计算框架的学习和实践，将集群转化为生产力。 本篇是系列的第二篇笔记。本篇笔记中我们将会分析学习客户端作业提交相关源码，从而加深对相关流程的理解。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-05-26T13:49:34.744Z">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2020/05/25/MapReduce%E5%AD%A6%E4%B9%A002/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>MapReduce 编程和源代码学习（二） | 陈逸凡的博客</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?57b343bca810fd9bc6bbf4ed8bd15279";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">陈逸凡的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">我想玩丝之歌</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/05/25/MapReduce%E5%AD%A6%E4%B9%A002/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="陈逸凡">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="陈逸凡的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MapReduce 编程和源代码学习（二）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-05-25 19:17:25" itemprop="dateCreated datePublished" datetime="2020-05-25T19:17:25+08:00">2020-05-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-05-26 21:49:34" itemprop="dateModified" datetime="2020-05-26T21:49:34+08:00">2020-05-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index">
+                    <span itemprop="name">笔记</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>在之前的数篇笔记中我们从零开始完成了 Hadoop 分布式集群的搭建。从这一篇笔记开始，我们要通过 MapReduce 计算框架的学习和实践，将集群转化为生产力。</p>
+<p>本篇是系列的第二篇笔记。本篇笔记中我们将会分析学习客户端作业提交相关源码，从而加深对相关流程的理解。</p>
+<a id="more"></a>
+
+<h1 id="MapReduce-客户端作业提交源码分析"><a href="#MapReduce-客户端作业提交源码分析" class="headerlink" title="MapReduce 客户端作业提交源码分析"></a>MapReduce 客户端作业提交源码分析</h1><p>回忆上一篇笔记中我们手写的 WordCount 程序：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// MyWordCount.java</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyWordCount</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException, ClassNotFoundException, InterruptedException </span>&#123;</span><br><span class="line"></span><br><span class="line">    Configuration conf = <span class="keyword">new</span> Configuration();</span><br><span class="line">    Job job = Job.getInstance(conf);</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    Path inPath = <span class="keyword">new</span> Path(args[<span class="number">0</span>]);</span><br><span class="line">    FileInputFormat.addInputPath(job, inPath);</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    job.setMapperClass(MyMapper.class);</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    job.setReducerClass(MyReducer.class);</span><br><span class="line"></span><br><span class="line">    System.exit(job.waitForCompletion(<span class="keyword">true</span>) ? <span class="number">0</span> : <span class="number">1</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们定义了任务的输入输出路径，指定了我们自己实现 Mapper 和 Reducer 类。这次我们重点关注，当我们将计算的细节定义完成后，任务提交的细节是怎样的。</p>
+<h2 id="作业参数"><a href="#作业参数" class="headerlink" title="作业参数"></a>作业参数</h2><p>首先打开 Job 类定义（Mac 版的 Intellij 中只需要按住 Command 键再点击类的名称即可）：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Job.java</span></span><br><span class="line"><span class="meta">@InterfaceAudience</span>.Public</span><br><span class="line"><span class="meta">@InterfaceStability</span>.Evolving</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Job</span> <span class="keyword">extends</span> <span class="title">JobContextImpl</span> <span class="keyword">implements</span> <span class="title">JobContext</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  ...</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Job 类实现了 JobContext 接口，而 JobContext 继承自 MRJobConfig 接口：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// MRJobConfig.java</span></span><br><span class="line"><span class="meta">@InterfaceAudience</span>.Private</span><br><span class="line"><span class="meta">@InterfaceStability</span>.Evolving</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">MRJobConfig</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Put all of the attribute names in here so that Job and JobContext are</span></span><br><span class="line">  <span class="comment">// consistent.</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String INPUT_FORMAT_CLASS_ATTR = <span class="string">"mapreduce.job.inputformat.class"</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String MAP_CLASS_ATTR = <span class="string">"mapreduce.job.map.class"</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String MAP_OUTPUT_COLLECTOR_CLASS_ATTR</span><br><span class="line">                                  = <span class="string">"mapreduce.job.map.output.collector.class"</span>;</span><br><span class="line">  ...</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>MRJobConfig 中定义了大量的常量，而这些常量就是我们在定义计算任务时需要修改的参数。例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String REDUCE_CLASS_ATTR = <span class="string">"mapreduce.job.reduce.class"</span>;</span><br></pre></td></tr></table></figure>
+
+<p>定义了默认的 Reduce 类。再比如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DEFAULT_MAP_MEMORY_MB = <span class="number">1024</span>;</span><br></pre></td></tr></table></figure>
+
+<p>定义了默认的 Map 作业内存大小。由此我们可知，Job 类通过继承 JobContext 和 MRJobConfig 获得了作业相关参数配置。我们也知道了，Job 类中的一系列 set、add 方法，本质就是在修改这些参数的值。</p>
+<h2 id="作业提交"><a href="#作业提交" class="headerlink" title="作业提交"></a>作业提交</h2><p>MyWordCount 中我们使用了 waitForCompletion 方法来提交任务。现在我们来看看这个方法具体都有哪些细节：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Job.java</span></span><br><span class="line">...</span><br><span class="line">  </span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">waitForCompletion</span><span class="params">(<span class="keyword">boolean</span> verbose</span></span></span><br><span class="line"><span class="function"><span class="params">                                   )</span> <span class="keyword">throws</span> IOException, InterruptedException,</span></span><br><span class="line"><span class="function">                                            ClassNotFoundException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (state == JobState.DEFINE) &#123;</span><br><span class="line">      submit();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (verbose) &#123;</span><br><span class="line">      monitorAndPrintJob();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="comment">// get the completion poll interval from the client.</span></span><br><span class="line">      <span class="keyword">int</span> completionPollIntervalMillis = </span><br><span class="line">        Job.getCompletionPollInterval(cluster.getConf());</span><br><span class="line">      <span class="keyword">while</span> (!isComplete()) &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">          Thread.sleep(completionPollIntervalMillis);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException ie) &#123;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> isSuccessful();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>verbose 参数很简单，作业运行时是否输出信息。这里真正重要的内容是<code>submit()</code>方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Job.java</span></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * Submit the job to the cluster and return immediately.</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@throws</span> IOException</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">submit</span><span class="params">()</span> </span></span><br><span class="line"><span class="function">         <span class="keyword">throws</span> IOException, InterruptedException, ClassNotFoundException </span>&#123;</span><br><span class="line">    ensureState(JobState.DEFINE);</span><br><span class="line">    setUseNewAPI();</span><br><span class="line">    connect();</span><br><span class="line">    <span class="keyword">final</span> JobSubmitter submitter = </span><br><span class="line">        getJobSubmitter(cluster.getFileSystem(), cluster.getClient());</span><br><span class="line">    status = ugi.doAs(<span class="keyword">new</span> PrivilegedExceptionAction&lt;JobStatus&gt;() &#123;</span><br><span class="line">      <span class="function"><span class="keyword">public</span> JobStatus <span class="title">run</span><span class="params">()</span> <span class="keyword">throws</span> IOException, InterruptedException, </span></span><br><span class="line"><span class="function">      ClassNotFoundException </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> submitter.submitJobInternal(Job.<span class="keyword">this</span>, cluster);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    state = JobState.RUNNING;</span><br><span class="line">    LOG.info(<span class="string">"The url to track the job: "</span> + getTrackingURL());</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>ensureState</code>会检查作业状态是否为 DEFINE（另一种作业状态是 RUNNING），同时也会检查作业是否与 JobTracker 相关联。<code>setUseNewAPI()</code>顾名思义，使用新的 Mapper 和 Reducer API。<code>connect()</code>检查并指定集群信息。再往下看会发现作业提交的重点在于<code>submitter.submitJobInternal()</code>方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// JobSubmitter.java</span></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * Internal method for submitting jobs to the system.</span></span><br><span class="line"><span class="comment">   * </span></span><br><span class="line"><span class="comment">   * &lt;p&gt;The job submission process involves:</span></span><br><span class="line"><span class="comment">   * &lt;ol&gt;</span></span><br><span class="line"><span class="comment">   *   &lt;li&gt;</span></span><br><span class="line"><span class="comment">   *   Checking the input and output specifications of the job.</span></span><br><span class="line"><span class="comment">   *   &lt;/li&gt;</span></span><br><span class="line"><span class="comment">   *   &lt;li&gt;</span></span><br><span class="line"><span class="comment">   *   Computing the &#123;<span class="doctag">@link</span> InputSplit&#125;s for the job.</span></span><br><span class="line"><span class="comment">   *   &lt;/li&gt;</span></span><br><span class="line"><span class="comment">   *   &lt;li&gt;</span></span><br><span class="line"><span class="comment">   *   Setup the requisite accounting information for the </span></span><br><span class="line"><span class="comment">   *   &#123;<span class="doctag">@link</span> DistributedCache&#125; of the job, if necessary.</span></span><br><span class="line"><span class="comment">   *   &lt;/li&gt;</span></span><br><span class="line"><span class="comment">   *   &lt;li&gt;</span></span><br><span class="line"><span class="comment">   *   Copying the job's jar and configuration to the map-reduce system</span></span><br><span class="line"><span class="comment">   *   directory on the distributed file-system. </span></span><br><span class="line"><span class="comment">   *   &lt;/li&gt;</span></span><br><span class="line"><span class="comment">   *   &lt;li&gt;</span></span><br><span class="line"><span class="comment">   *   Submitting the job to the &lt;code&gt;JobTracker&lt;/code&gt; and optionally</span></span><br><span class="line"><span class="comment">   *   monitoring it's status.</span></span><br><span class="line"><span class="comment">   *   &lt;/li&gt;</span></span><br><span class="line"><span class="comment">   * &lt;/ol&gt;&lt;/p&gt;</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> job the configuration to submit</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> cluster the handle to the Cluster</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@throws</span> ClassNotFoundException</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@throws</span> InterruptedException</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@throws</span> IOException</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="function">JobStatus <span class="title">submitJobInternal</span><span class="params">(Job job, Cluster cluster)</span> </span></span><br><span class="line"><span class="function">  <span class="keyword">throws</span> ClassNotFoundException, InterruptedException, IOException </span>&#123;</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line">    </span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>这个方法的注释告诉了我们作业提交的步骤：</p>
+<ol>
+<li>Checking the input and output specifications of the job.</li>
+<li>Computing the InputSplits for the job.</li>
+<li>Setup the requisite accounting information for the DistributedCache of the job, if necessary.</li>
+<li>Copying the job’s jar and configuration to the map-reduce system directory on the distributed file-system. </li>
+<li>Submitting the job to the JobTracker and optionally monitoring it’s status.</li>
+</ol>
+<h3 id="获取-split-列表，计算-split-切片数量、写-split"><a href="#获取-split-列表，计算-split-切片数量、写-split" class="headerlink" title="获取 split 列表，计算 split 切片数量、写 split"></a>获取 split 列表，计算 split 切片数量、写 split</h3><p>在 JobSubmitter 源代码 197 行有：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> maps = writeSplits(job, submitJobDir);</span><br><span class="line"></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>这里通过计算 split 的数量得到了 map 的数量（map 数量和 split 数量是相等的）。点开<code>writeSplits()</code>方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// JobSubmitter.java</span></span><br><span class="line">...</span><br><span class="line">  </span><br><span class="line">  <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">writeSplits</span><span class="params">(org.apache.hadoop.mapreduce.JobContext job,</span></span></span><br><span class="line"><span class="function"><span class="params">      Path jobSubmitDir)</span> <span class="keyword">throws</span> IOException,</span></span><br><span class="line"><span class="function">      InterruptedException, ClassNotFoundException </span>&#123;</span><br><span class="line">    JobConf jConf = (JobConf)job.getConfiguration();</span><br><span class="line">    <span class="keyword">int</span> maps;</span><br><span class="line">    <span class="keyword">if</span> (jConf.getUseNewMapper()) &#123;</span><br><span class="line">      maps = writeNewSplits(job, jobSubmitDir);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      maps = writeOldSplits(jConf, jobSubmitDir);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> maps;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>可以看到 API 的不同切分 split 的方法也不同。这里我们点开新的切片方法<code>writeNewSplits</code>：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// JobSubmitter.java</span></span><br><span class="line">...</span><br><span class="line">  </span><br><span class="line">  <span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line">  <span class="keyword">private</span> &lt;T extends InputSplit&gt;</span><br><span class="line">  <span class="function"><span class="keyword">int</span> <span class="title">writeNewSplits</span><span class="params">(JobContext job, Path jobSubmitDir)</span> <span class="keyword">throws</span> IOException,</span></span><br><span class="line"><span class="function">      InterruptedException, ClassNotFoundException </span>&#123;</span><br><span class="line">    Configuration conf = job.getConfiguration();</span><br><span class="line">    InputFormat&lt;?, ?&gt; input =</span><br><span class="line">      ReflectionUtils.newInstance(job.getInputFormatClass(), conf);</span><br><span class="line"></span><br><span class="line">    List&lt;InputSplit&gt; splits = input.getSplits(job);</span><br><span class="line">    T[] array = (T[]) splits.toArray(<span class="keyword">new</span> InputSplit[splits.size()]);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// sort the splits into order based on size, so that the biggest</span></span><br><span class="line">    <span class="comment">// go first</span></span><br><span class="line">    Arrays.sort(array, <span class="keyword">new</span> SplitComparator());</span><br><span class="line">    JobSplitWriter.createSplitFiles(jobSubmitDir, conf, </span><br><span class="line">        jobSubmitDir.getFileSystem(conf), array);</span><br><span class="line">    <span class="keyword">return</span> array.length;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>我们发现返回的切片数量其实是某个数组的长度，而这个数组来源于切片对象类数组<code>List&lt;InputSplit&gt; splits = input.getSplits(job);</code>。我们现在想知道系统到底是如何获得切片的。使用的方法是<code>input.getSplits()</code>。这里的 input 是使用反射生成的<code>InputFormat</code>的实现类，于是我们点开<code>job.getInputFormatClass()</code>方法：</p>
+<blockquote>
+<p>注意 job 的类型是 JobContext，是一个抽象类。我们这里要打开的应该是它的实现 JobContextImpl</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// JobContextImpl.java</span></span><br><span class="line">...</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">public</span> Class&lt;? extends InputFormat&lt;?,?&gt;&gt; getInputFormatClass() </span><br><span class="line">     <span class="keyword">throws</span> ClassNotFoundException &#123;</span><br><span class="line">    <span class="keyword">return</span> (Class&lt;? extends InputFormat&lt;?,?&gt;&gt;) </span><br><span class="line">      conf.getClass(INPUT_FORMAT_CLASS_ATTR, TextInputFormat.class);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>通过查看<code>getClass()</code>方法我们发现这里返回的实际就是<code>TextInputFormat</code>对象（我们没有定义<code>INPUT_FORMAT_CLASS_ATTR</code>）。那么问题来了，什么是 InputFormat 呢？根据代码中的注释，InputFormat 描述了输入数据的规格。MR 框架依赖该描述来：</p>
+<ol>
+<li>验证作业的输入格式</li>
+<li>将数据文件拆分成逻辑分片（InputSplit），并为每一个分片分配一个 Mapper</li>
+<li>创建用于搜集输入数据给 Mapper 的RecordReader</li>
+</ol>
+<p>简单来说，有了 InputFormat，MR 框架才知道应该如何拆分数据，形成逻辑切片。我们继续看 TextInputFormat 的<code>getSplits()</code>方法。发现在 TextInputFormat 类中找不到该方法，那么该方法一定是在它的父类中。于是我们在 FileInputFormat 类中找到该方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// FileInputFormat.java</span></span><br><span class="line">...</span><br><span class="line">  </span><br><span class="line">  <span class="function"><span class="keyword">public</span> List&lt;InputSplit&gt; <span class="title">getSplits</span><span class="params">(JobContext job)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    Stopwatch sw = <span class="keyword">new</span> Stopwatch().start();</span><br><span class="line">    <span class="keyword">long</span> minSize = Math.max(getFormatMinSplitSize(), getMinSplitSize(job));</span><br><span class="line">    <span class="keyword">long</span> maxSize = getMaxSplitSize(job);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// generate splits</span></span><br><span class="line">    List&lt;InputSplit&gt; splits = <span class="keyword">new</span> ArrayList&lt;InputSplit&gt;();</span><br><span class="line">    List&lt;FileStatus&gt; files = listStatus(job);</span><br><span class="line">  </span><br><span class="line">		...</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>先看这一小段。首先我们通过 minSize 和 maxSize 规定了切片大小的边界。进一步点开看的话还能发现，默认最小值为 1（字节），最大值为<code>Long.MAX_VALUE</code>。我们还知道了可以通过定义<code>SPLIT_MINSIZE</code>和<code>SPLIT_MAXSIZE</code>来改变切片大小范围。</p>
+<p>然后我们创建了一个空容器<code>splits</code>用来装切片对象。我们用<code>listStatus()</code>方法创建了 FileStatus 列表。FileStatus 对象其实就是封装了文件和目录元数据的对象。于是我们在这里得到了作业相关的 Block 文件的信息列表。继续往下看：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// FileInputFormat.java</span></span><br><span class="line">...</span><br><span class="line">  </span><br><span class="line">    <span class="keyword">for</span> (FileStatus file: files) &#123;</span><br><span class="line">      Path path = file.getPath();</span><br><span class="line">      <span class="keyword">long</span> length = file.getLen();</span><br><span class="line">      <span class="keyword">if</span> (length != <span class="number">0</span>) &#123;</span><br><span class="line">        </span><br><span class="line">				...</span><br><span class="line">          </span><br><span class="line">      &#125; <span class="keyword">else</span> &#123; </span><br><span class="line">        <span class="comment">//Create empty hosts array for zero length files</span></span><br><span class="line">        splits.add(makeSplit(path, <span class="number">0</span>, length, <span class="keyword">new</span> String[<span class="number">0</span>]));</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>可以看到我们遍历了文件列表，得到文件的路径和长度。接下来会进行一个判断，判断文件长度是否为 0。如果为 0，就创建一个空列表来表示它。</p>
+<p>继续看，如果文件长度不为 0 会怎样：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// FileInputFormat.java</span></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (length != <span class="number">0</span>) &#123;</span><br><span class="line">        BlockLocation[] blkLocations;</span><br><span class="line">        <span class="keyword">if</span> (file <span class="keyword">instanceof</span> LocatedFileStatus) &#123;</span><br><span class="line">          blkLocations = ((LocatedFileStatus) file).getBlockLocations();</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          FileSystem fs = path.getFileSystem(job.getConfiguration());</span><br><span class="line">          blkLocations = fs.getFileBlockLocations(file, <span class="number">0</span>, length);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (isSplitable(job, path)) &#123;</span><br><span class="line">          <span class="keyword">long</span> blockSize = file.getBlockSize();</span><br><span class="line">          <span class="keyword">long</span> splitSize = computeSplitSize(blockSize, minSize, maxSize);</span><br><span class="line"></span><br><span class="line">          <span class="keyword">long</span> bytesRemaining = length;</span><br><span class="line">          <span class="keyword">while</span> (((<span class="keyword">double</span>) bytesRemaining)/splitSize &gt; SPLIT_SLOP) &#123;</span><br><span class="line">            <span class="keyword">int</span> blkIndex = getBlockIndex(blkLocations, length-bytesRemaining);</span><br><span class="line">            splits.add(makeSplit(path, length-bytesRemaining, splitSize,</span><br><span class="line">                        blkLocations[blkIndex].getHosts(),</span><br><span class="line">                        blkLocations[blkIndex].getCachedHosts()));</span><br><span class="line">            bytesRemaining -= splitSize;</span><br><span class="line">          &#125;</span><br><span class="line"></span><br><span class="line">          <span class="keyword">if</span> (bytesRemaining != <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">int</span> blkIndex = getBlockIndex(blkLocations, length-bytesRemaining);</span><br><span class="line">            splits.add(makeSplit(path, length-bytesRemaining, bytesRemaining,</span><br><span class="line">                       blkLocations[blkIndex].getHosts(),</span><br><span class="line">                       blkLocations[blkIndex].getCachedHosts()));</span><br><span class="line">          &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123; <span class="comment">// not splitable</span></span><br><span class="line">          splits.add(makeSplit(path, <span class="number">0</span>, length, blkLocations[<span class="number">0</span>].getHosts(),</span><br><span class="line">                      blkLocations[<span class="number">0</span>].getCachedHosts()));</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>首先判断文件是否是 LocatedFileStatus，即是否来源于本地文件系统（区别于 HDFS 文件系统）。是和不是都有对应的获取 Block 位置的方法。其中读取 HDFS 上 Block 位置信息的方法值得记一记，其它地方有时也会用上。</p>
+<p>接下来会判断文件是否可以切分。如果可以切分，通过 blockSize、minSize 和 maxSize 计算出切片的大小。默认切片大小等于 Block 大小。接下来重点看切分的过程：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// FileInputFormat.java</span></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">          <span class="keyword">long</span> bytesRemaining = length;</span><br><span class="line">          <span class="keyword">while</span> (((<span class="keyword">double</span>) bytesRemaining)/splitSize &gt; SPLIT_SLOP) &#123;</span><br><span class="line">            <span class="keyword">int</span> blkIndex = getBlockIndex(blkLocations, length-bytesRemaining);</span><br><span class="line">            splits.add(makeSplit(path, length-bytesRemaining, splitSize,</span><br><span class="line">                        blkLocations[blkIndex].getHosts(),</span><br><span class="line">                        blkLocations[blkIndex].getCachedHosts()));</span><br><span class="line">            bytesRemaining -= splitSize;</span><br><span class="line">          &#125;</span><br><span class="line"></span><br><span class="line">          <span class="keyword">if</span> (bytesRemaining != <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">int</span> blkIndex = getBlockIndex(blkLocations, length-bytesRemaining);</span><br><span class="line">            splits.add(makeSplit(path, length-bytesRemaining, bytesRemaining,</span><br><span class="line">                       blkLocations[blkIndex].getHosts(),</span><br><span class="line">                       blkLocations[blkIndex].getCachedHosts()));</span><br><span class="line">          &#125;</span><br><span class="line"></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>首先定义了一个变量 bytesRemaining 等于文件的长度。循环条件中的 SPLIT_SLOP 值为 1.1。在循环体内，我们首先将 Block 位置信息和偏移量作为参数传递给<code>getBlockIndex()</code>方法获得 Block 的索引值。之后通过<code>makeSplit()</code>方法创建切片。<code>makeSplit()</code>方法需要传递的参数包括文件路径、起始位置（类似于偏移量）、需要处理的文件长度、保存有 Block 的主机列表、在内存中储存有 Block 的主机列表。这些信息将用于 Split 相关的计算。</p>
+<p>到这一步我们就已经获得了 splits 列表了。根据这个列表的大小我们一路追溯，知道了需要多少个 Mapper。同时在<code>writeNewSplits()</code>方法的最后，我们也将 splits 文件写到了磁盘当中（点开来可以发现一个文件输出流）。</p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>这篇笔记中我们重点分析的其实是作业提交过程中 Mapper 数量的取得过程。由此引申出 Split 切片的获得过程。另外我们也了解了和作业相关的一些参数配置在哪里。知道了这一点，配置参数就更加容易了。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Hadoop/" rel="tag"># Hadoop</a>
+              <a href="/tags/MapReduce/" rel="tag"># MapReduce</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/2020/05/25/MapReduce%E5%AD%A6%E4%B9%A001/" rel="next" title="MapReduce 编程和源代码学习（一）">
+                  <i class="fa fa-chevron-left"></i> MapReduce 编程和源代码学习（一）
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  <div class="comments" id="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC80NzgzOC8yNDMzNQ=="></div>
+  </div>
+  
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#MapReduce-客户端作业提交源码分析"><span class="nav-number">1.</span> <span class="nav-text">MapReduce 客户端作业提交源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#作业参数"><span class="nav-number">1.1.</span> <span class="nav-text">作业参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#作业提交"><span class="nav-number">1.2.</span> <span class="nav-text">作业提交</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#获取-split-列表，计算-split-切片数量、写-split"><span class="nav-number">1.2.1.</span> <span class="nav-text">获取 split 列表，计算 split 切片数量、写 split</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#小结"><span class="nav-number">1.3.</span> <span class="nav-text">小结</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="陈逸凡"
+    src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">陈逸凡</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">陈逸凡</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.0.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.4.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+</body>
+</html>
