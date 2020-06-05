@@ -58,7 +58,7 @@
 <meta property="og:site_name" content="陈逸凡的博客">
 <meta property="og:description" content="在之前的数篇笔记中我们从零开始完成了 Hadoop 分布式集群的搭建。从这一篇笔记开始，我们要通过 MapReduce 计算框架的学习和实践，将集群转化为生产力。 本篇是系列的第二篇笔记。本篇笔记中我们将会分析学习客户端作业提交相关源码，从而加深对相关流程的理解。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-05-26T16:57:43.019Z">
+<meta property="og:updated_time" content="2020-06-03T16:07:14.301Z">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="http://yoursite.com/2020/05/25/MapReduce%E5%AD%A6%E4%B9%A002/">
@@ -229,7 +229,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-05-27 00:57:43" itemprop="dateModified" datetime="2020-05-27T00:57:43+08:00">2020-05-27</time>
+                <time title="Modified: 2020-06-04 00:07:14" itemprop="dateModified" datetime="2020-06-04T00:07:14+08:00">2020-06-04</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -330,7 +330,9 @@
 
 <p>首先定义了一个变量 bytesRemaining 等于文件的长度。循环条件中的 SPLIT_SLOP 值为 1.1。在循环体内，我们首先将 Block 位置信息和偏移量作为参数传递给<code>getBlockIndex()</code>方法获得 Block 的索引值。之后通过<code>makeSplit()</code>方法创建切片。<code>makeSplit()</code>方法需要传递的参数包括文件路径、起始位置（类似于偏移量）、需要处理的文件长度、保存有 Block 的主机列表、在内存中储存有 Block 的主机列表。这些信息将用于 Split 相关的计算。</p>
 <p>到这一步我们就已经获得了 splits 列表了。根据这个列表的大小我们一路追溯，知道了需要多少个 Mapper。同时在<code>writeNewSplits()</code>方法的最后，我们也将 splits 文件写到了磁盘当中（点开来可以发现一个文件输出流）。</p>
-<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>这篇笔记中我们重点分析的其实是作业提交过程中 Mapper 数量的取得过程。由此引申出 Split 切片的获得过程。另外我们也了解了和作业相关的一些参数配置在哪里。知道了这一点，配置参数就更加容易了。</p>
+<br />
+
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>这篇笔记中我们重点分析的其实是作业提交过程中 Mapper 数量的取得过程。由此引申出 Split 切片的获得过程。另外我们也了解了和作业相关的一些参数配置在哪里（JobContext、MRJobConfig）。知道了这一点，配置参数就更加容易了。值得注意的是 InputFormat 类。在这部分的源码中我们通过该类实现了数据的逻辑切片。在后面的源码分析中还会多次见到 InputFormat 类。另外我们现在得到的 splits 只是一个逻辑的切片，其中并不包含真正的数据。</p>
 
     </div>
 
@@ -418,7 +420,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-count">14</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
